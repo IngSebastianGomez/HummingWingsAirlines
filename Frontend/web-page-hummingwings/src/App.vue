@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <MyComponent />
+      <my-component></my-component>
   </div>
 </template>
 
-<script>
 
+<script>
 import MyComponent from './components/MyComponent.vue'
+
 
 export default {
   name: 'App',
   components: {
     MyComponent
-}
+  }
 }
 </script>
 
@@ -24,6 +24,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-color: #182a3f;
+  min-height: 100vh;
 }
+
+body{
+  margin: 0; 
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  background-color: #182a3f;
+  min-height: 100vh;
+}
+
 </style>
