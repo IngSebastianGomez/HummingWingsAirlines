@@ -5,6 +5,7 @@
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+      <router-link to="/detail">Detail</router-link>
     </p>
     <h3>Installed CLI Plugins</h3>
     <ul>
@@ -40,19 +41,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style>
+.hello {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Usar min-height en lugar de height */
+    background-color: blueviolet; /* Cambiar el color de fondo aquí */
+  }
 </style>

@@ -10,11 +10,22 @@
       <a href="#">Nosotros</a>
       <a href="#">Contacto</a>
     </nav>
-    <b-dropdown id="dropdown-dropleft" dropleft text="Sesión" variant="primary" class="m-2">
-      <b-dropdown-item>Iniciar Sesión</b-dropdown-item>
-      <b-dropdown-item>Registrarse</b-dropdown-item>
-      <b-dropdown-item>Opción 3</b-dropdown-item>
-    </b-dropdown>
+    <div class="dropdown ml-auto"> <!-- Add ml-auto class here -->
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton1"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Login
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
+        <li><a class="dropdown-item" href="#">Crear Cuenta</a></li>
+        <li><a class="dropdown-item" href="#">¿Ayuda?</a></li>
+      </ul>
+    </div>
   </div>
 </template>
 

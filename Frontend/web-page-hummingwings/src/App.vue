@@ -3,6 +3,7 @@
     <header>
       <MyHeader/>
     </header>
+    <body><RouterView> </RouterView></body>
   </div>
 </template>
 
@@ -20,9 +21,7 @@ export default {
 
 // Función para mostrar la vista oculta
 function mostrarVistaOculta() {
-  //var vistaOculta = document.getElementById("vista-oculta");
-  //vistaOculta.style.display = "block";
-  window.location.href = "https://www.example.com"; // Replace with the URL of the page you want to open
+  window.location.href = "http://localhost:8080/#/login"; // Replace with the URL of the page you want to open
 }
 
 // Función para manejar el evento de teclado
@@ -37,16 +36,6 @@ document.addEventListener("keydown", handleKeyPress);
 
 <style>
 #app {
-  background-color: #182a3f;
-  min-height: 100vh;
-}
-
-body{
-  margin: 0; 
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   background-color: #182a3f;
   min-height: 100vh;
 }
