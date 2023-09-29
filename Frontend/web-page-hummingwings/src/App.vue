@@ -1,29 +1,42 @@
 <template>
   <div id="app">
-      <my-component></my-component>
+    <header>
+      <MyHeader/>
+    </header>
   </div>
 </template>
 
 
 <script>
-import MyComponent from './components/MyComponent.vue'
-
+import MyHeader from './components/Header.vue'
 
 export default {
   name: 'App',
   components: {
-    MyComponent
+    MyHeader
+  }
+
+}
+
+// Función para mostrar la vista oculta
+function mostrarVistaOculta() {
+  //var vistaOculta = document.getElementById("vista-oculta");
+  //vistaOculta.style.display = "block";
+  window.location.href = "https://www.example.com"; // Replace with the URL of the page you want to open
+}
+
+// Función para manejar el evento de teclado
+function handleKeyPress(event) {
+  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "r") {
+    mostrarVistaOculta();
   }
 }
+// Agregar un escuchador de eventos para detectar la combinación de teclas
+document.addEventListener("keydown", handleKeyPress);
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
   background-color: #182a3f;
   min-height: 100vh;
 }
