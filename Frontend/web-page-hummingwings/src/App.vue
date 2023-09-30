@@ -3,20 +3,41 @@
     <header>
       <MyHeader/>
     </header>
-    <body><RouterView> </RouterView></body>
+    <!--<body><RouterView> </RouterView></body>-->
+    <div>
+      <CarouselSlider v-if="isHomePage" />
+      <h1>{{ $route.path }}</h1>
+    </div>
+    <div>
+      <RouterView> </RouterView>
+    </div>
   </div>
 </template>
 
 
 <script>
+import { useRoute } from 'vue-router'
 import MyHeader from './components/Header.vue'
+import CarouselSlider from './components/CarouselSliderAd.vue'
+
 
 export default {
   name: 'App',
   components: {
-    MyHeader
-  }
+    MyHeader,
+    CarouselSlider,
+  },
+  setup() {
+    const route = useRoute()
+    const isHomePage = route.path === '/' 
 
+    console.log('isHomePage:', isHomePage)
+    console.log('Current Route:', route.path)
+    
+    return {
+      isHomePage,
+    }
+  },
 }
 
 // Función para mostrar la vista oculta

@@ -13,7 +13,7 @@
         <button id="button">Login</button>
       </form>
     </div>
-  </template>
+</template>
 
 <script>
 export default {
