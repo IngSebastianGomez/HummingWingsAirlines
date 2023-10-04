@@ -3,11 +3,6 @@
     <header>
       <MyHeader/>
     </header>
-    <!--<body><RouterView> </RouterView></body>-->
-    <div>
-      <CarouselSlider v-if="isHomePage" />
-      <h1>{{ $route.path }}</h1>
-    </div>
     <div>
       <RouterView> </RouterView>
     </div>
@@ -18,14 +13,12 @@
 <script>
 import { useRoute } from 'vue-router'
 import MyHeader from './components/Header.vue'
-import CarouselSlider from './components/CarouselSliderAd.vue'
 
 
 export default {
   name: 'App',
   components: {
     MyHeader,
-    CarouselSlider,
   },
   setup() {
     const route = useRoute()

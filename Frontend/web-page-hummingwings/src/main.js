@@ -11,10 +11,9 @@ const About = { template: '<div>About</div>' }
 
 //definir rutas
 const routes = [
-  { path: '/', component: HelloWorld },
+  { path: '/', component: HelloWorld }, //poner el slide aqui y dejarñp como pag de inicio
   { path: '/about', component: About },
   { path: '/login', component: LoginRoot },
-  { path: '/hello', component: HelloWorld },
   { path: '/detail', component: DetailComponent}
 ]
 //crear obejto rutas de vue router

@@ -16,11 +16,14 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
+      error: null,
     };
   },
   methods: {
@@ -31,17 +34,31 @@ export default {
       const username = this.username;
       const password = this.password;
 
-      // Hacer algo con los valores (por ejemplo, enviarlos a través de una solicitud AJAX)
-      console.log('Usuario:', username);
-      console.log('Contraseña:', password);
+      // Realiza una solicitud POST a un servidor para validar el usuario y la contraseña
+      axios
+        .post("/api/login", {
+          username,
+          password,
+        })
+        .then((response) => {
+          // Aquí puedes manejar la respuesta del servidor
+          console.log("Respuesta del servidor:", response.data);
 
-      // Restablecer los valores de usuario y contraseña si es necesario
-      this.username = '';
-      this.password = '';
+          // Restablecer los valores de usuario y contraseña si es necesario
+          this.username = "";
+          this.password = "";
+          this.error = null; // Limpia cualquier mensaje de error anterior
+        })
+        .catch((error) => {
+          // Manejar errores de la solicitud
+          console.error("Error:", error);
+          this.error = "Error de autenticación"; // Puedes mostrar un mensaje de error al usuario
+        });
     },
   },
 };
 </script>
+
   
 <style scoped>
   .container {

@@ -10,7 +10,7 @@
       <a href="#">Nosotros</a>
       <a href="#">Contacto</a>
     </nav>
-    <div class="dropdown">
+    <div class="dropdown ml-auto">
   <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
     Sing In
   </button>
