@@ -10,15 +10,14 @@ class Root(AbstractBaseUser):
     Python class representation for User database model
 
     """
-    first_name = models.CharField("Nombre(s)", 
+    username = models.CharField("Username", 
         max_length=50, null=False, blank=True)
-    last_name = models.CharField("Apellido(s)",
-        max_length=50, null=False, blank=True)
-    rol = models.CharField("Rol", default=ROOT)
+    password = models.CharField("Password",
+        max_length=128, null=False, blank=True)
 
-    USERNAME_FIELD = 'first_name'
+    USERNAME_FIELD = 'username'
     def __str__(self):
-        return self.first_name
+        return self.username
     
     def has_perm(self, perm, obj=None):
         return True
