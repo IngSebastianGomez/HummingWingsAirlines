@@ -1,7 +1,15 @@
 """ Contains the User model """
 
+from django.core.files import File
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils import timezone
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+
+from ..models.constants import _GENDER_CHOICES, _STATUS_CHOICES
+from ..models.constants import _TYPE_DOCUMENT_CHOICES, _USER_ROL_CHOICES
+from ..models.constants import CLIENT, PENDING
 
 FILE_PATHS = {
     "profile_image": "user/profile_image/user_{}_profile_image_{}.{}",
@@ -11,32 +19,6 @@ FILE_EXTENSIONS = {
     "profile_image": (".jpeg", ".png", ".jpg")
 }
 
-CLIENT = "Cliente"
-ADMIN = "Administrador"
-
-_USER_ROL_CHOICES = (
-    (CLIENT, "Cliente"),
-    (ADMIN, "Administrador")
-)
-
-_STATUS_CHOICES = (
-    ("pending", "Pendiente"),
-    ("approved", "Aprobado"),
-    ("rejected", "Rechazado")
-)
-
-_GENDER_CHOICES = (
-    ("Masculino", "Masculino"),
-    ("Femenino", "Femenino"),
-    ("Otro", "Otro")
-)
-
-_TYPE_DOCUMENT_CHOICES = (
-    ("C.C.", "C.C."),
-    ("C.E.", "C.E."),
-    ("Pasaporte", "Pasaporte")
-)
-
 
 class User(AbstractBaseUser):
     """ Extends native django user model adding new
@@ -45,10 +27,8 @@ class User(AbstractBaseUser):
     Python class representation for User database model
 
     """
-    first_name = models.CharField("Nombre(s)", 
-        max_length=50, null=False, blank=True)
-    last_name = models.CharField("Apellido(s)",
-        max_length=50, null=False, blank=True)
+    first_name = models.CharField("Nombre(s)", max_length=255)
+    last_name = models.CharField("Apellido(s)", max_length=255)
     birth_date = models.DateField("Fecha de Nacimiento", 
         null=True, blank=True)
     email = models.EmailField("Correo", unique=True)
@@ -57,24 +37,66 @@ class User(AbstractBaseUser):
         choices=_TYPE_DOCUMENT_CHOICES, default="C.C.")
     document = models.CharField("Identificación", max_length=255, unique=True)
     address = models.CharField("Dirección", max_length=255)
+    cellphone = models.CharField("Celular", max_length=255)
     gender = models.CharField("Género", max_length=255, 
         choices=_GENDER_CHOICES, default="Otro")
     status = models.CharField("Estado", max_length=255, choices=_STATUS_CHOICES,
-        default="pending")
+        default=PENDING)
+    token = models.CharField("Token cambio de contraseña", max_length=255)
     profile_image = models.FileField("Imagen de perfil", 
         upload_to="user/profile_image", null=True, blank=True)
-    
-    
+
+
     class Meta:
         """ Sets human readable name """
         db_table = "Usuarios"
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
 
-    USERNAME_FIELD = "first_name"   
-
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"  
-    
+
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return (
+            f"{self.pk}. {self.first_name} {self.last_name}"
+            f" - {self.status} - {self.rol}"
+        )
+
+    def upload_file(self, file_path, file):
+        """ Saves files in model and s3 with custom name
+
+        Parameters
+        ----------
+
+        file_path: str
+            Contains the file path
+
+        file: file
+            Contain the file to save in the model
+
+        Return
+        ------
+
+        result: boolean
+            True if the file is save succesfull or False if  it is no saved succesfull
+        """
+        # pylint:disable=no-member
+        if file_path not in FILE_PATHS:
+            return False
+        if not isinstance(file, InMemoryUploadedFile):
+            if isinstance(file, File):
+                file.name = ".pdf"
+            else:
+                return False
+        if not file.name.endswith(FILE_EXTENSIONS[file_path]):
+            return False
+        timestamp = str(timezone.now().timestamp()).replace('.', '_')
+        extension = file.name.split('.')[-1:][0]
+        file.name = FILE_PATHS[file_path].format(
+            self.pk,
+            timestamp,
+            extension
+        )
+        setattr(self, file_path, file)
+        self.save()
+        return True

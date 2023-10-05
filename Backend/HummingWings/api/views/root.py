@@ -1,4 +1,5 @@
-# appHummingWings/views.py
+""" Contains root user management definition """
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,7 +7,7 @@ from rest_framework import status
 from ..models.root import Root
 from ..serializers.rootSerializer import RootSerializer
 
-class RootListCreateView(APIView):
+class RootApi(APIView):
     def get(self, request):
         roots = Root.objects.all()
         serializer = RootSerializer(roots, many=True)

@@ -16,11 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views.rootView import RootListCreateView
-from api.views.userView import UserListCreateView
+from ..api.views.auth import AuthApi, NewPasswordApi, RefreshTokenApi
+from ..api.views.root import RootApi
+from ..api.views.user import UserApi
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('roots/', RootListCreateView.as_view(), name='root-list-create'),
-    path('users/', UserListCreateView.as_view(), name='user-list-create'),
+    path('auth/', AuthApi.as_view(), name='authentication'),
+    path('refresh_token/', RefreshTokenApi.as_view(), name='refresh_token'),
+    path('change_password/<int: user_pk>', NewPasswordApi.as_view(), name='change_password'),
+    path('roots/', RootApi.as_view(), name='root'),
+    path('users/', UserApi.as_view(), name='user'),
 ]
