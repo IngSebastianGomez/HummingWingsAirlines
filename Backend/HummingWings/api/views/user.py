@@ -16,9 +16,11 @@ from ..helpers.token import TokenHandler
 from ..helpers.email import send_template_email
 from ..helpers.envs import getenv
 
-from ..models.email_template import CLIENT_REGISTER_CONFIRMATION
-from ..models.constants import _GENDER_CHOICES, _STATUS_400_MESSAGE, _STATUS_401_MESSAGE, _STATUS_CHOICES, _TYPE_DOCUMENT_CHOICES, APPROVED
-from ..models.constants import _USER_ROL_CHOICES, PENDING, ADMIN, CLIENT 
+from ..models.email_template import ADMIN_REGISTER_CONFIRMATION, CLIENT_REGISTER_CONFIRMATION
+from ..models.constants import _GENDER_CHOICES, _TYPE_DOCUMENT_CHOICES, _USER_ROL_CHOICES
+from ..models.constants import _STATUS_403_MESSAGE, _STATUS_400_MESSAGE, _STATUS_401_MESSAGE
+from ..models.constants import APPROVED, PENDING, ADMIN, CLIENT
+from ..models.root import Root
 from ..models.user import User
 
 
@@ -47,7 +49,8 @@ class UserApi(APIView, TokenHandler):
             "birth_date": {
                 "required": True, "type": "string", 
                 "regex": r"((19[0-9]{2}|20[0-9]{2})-([0][1-9]|[1][0-2])-"
-                        r"(10|20|[0-2][1-9]|[3][0-1]))"},
+                        r"(10|20|[0-2][1-9]|[3][0-1]))"
+            },
             "email": {"required": True, "type": "string"},
             "rol": {
                 "required": True, "type": "string",
@@ -317,10 +320,85 @@ class SpecificClientApi(APIView, TokenHandler):
         }, status=status.HTTP_200_OK)
 
 
+class AdminApi(APIView, TokenHandler):
+    """ Defines the http verbs to admin management """
+    
+    def post(self, request): 
+        """ Creates a new Admin.
+
+        Parameters
+        ----------
+
+        request: dict
+            Contains http transaction information.
+
+        Returns
+        -------
+
+        Response: (dict, int)
+            Body response and status code.
+
+        """
+        validator = Validator({
+            "email": {"required": True, "type": "string"},
+            "document_type": {
+                "required": True, "type": "string",
+                "allowed": [item[0] for item in _TYPE_DOCUMENT_CHOICES]
+            },
+            "document": {"required": True, "type": "string", "regex": r"^\d*$"},
+            "password": {
+                "required": True, "type": "string",
+                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'},
+        })
+        if not validator.validate(request.data):
+            return Response({
+                "code": "invalid_body",
+                "detailed": _STATUS_400_MESSAGE,
+                "data": validator.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        payload, user = self.get_payload(request)
+        if not payload or not isinstance(user, Root):
+            return Response({
+                "code": "do_not_have_permission",
+                "detailed": _STATUS_403_MESSAGE
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        admin = User.objects.filter(
+            Q(document=request.data["document"]) | Q(email=request.data["email"]))
+        if admin:
+            return Response({
+                "code": "integrity_error",
+                "detailed": "Ya existe un usuario registrado con ese documento o email"
+            }, status=status.HTTP_409_CONFLICT)
+
+        request.data["rol"] = ADMIN
+        request.data["token"] = random.randint(0000, 9999)
+        request.data["password"] = make_password(request.data["password"])
+
+        admin = User.objects.create(**request.data)
+
+        send_template_email(
+            email_id=ADMIN_REGISTER_CONFIRMATION,
+            params={
+                "full_name": admin.get_full_name,
+                "url": "" ## Acá lo tengo que mandar a una vista de front, donde pueda llenar los datos, con el token y el pk
+            },
+            receivers=admin.email,
+            tracking_dict={
+                "id_module": admin.pk,
+                "type_module": ADMIN
+            }
+        )
+        return Response({
+            "inserted": admin.pk
+        }, status=status.HTTP_201_CREATED)
+
+
 class ConfirmRegisterApi(APIView, TokenHandler):
     """ Defines the http verbs to confirm register management """
 
-    def get(self, request, pk, token):
+    def patch(self, request, pk, token):
         """ Confirms the register of an specific client
 
         Parameters
@@ -342,16 +420,70 @@ class ConfirmRegisterApi(APIView, TokenHandler):
             Body response and status code.
 
         """
-        user = User.objects.filter(pk=pk, token=token).first()
+        validator = Validator({
+            "is_admin": {"required": False, "type": "boolean"},
+            "first_name": {
+                "required": True, "type": "string", 
+                "dependencies": {"is_admin": True}
+            },
+            "last_name": {
+                "required": True, "type": "string", 
+                "dependencies": {"is_admin": True}
+            },
+            "birth_date": {
+                "required": True, "type": "string", 
+                "regex": r"((19[0-9]{2}|20[0-9]{2})-([0][1-9]|[1][0-2])-"
+                        r"(10|20|[0-2][1-9]|[3][0-1]))", 
+                "dependencies": {"is_admin": True}
+            },
+            "email": {
+                "required": True, "type": "string", 
+                "dependencies": {"is_admin": True}
+            },
+            "address": {
+                "required": True, "type": "string",
+                "dependencies": {"is_admin": True}
+            },
+            "cellphone": {
+                "required": True, "type": "string", 
+                "minlength": 10, "dependencies": {"is_admin": True}
+            },
+            "gender": {
+                "required": True, "type": "string",
+                "allowed": [item[0] for item in _GENDER_CHOICES],
+                "dependencies": {"is_admin": True}
+            }
+        })
+        if not validator.validate(request.data):
+            return Response({
+                "code": "invalid_body",
+                "detailed": _STATUS_400_MESSAGE,
+                "data": validator.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(
+            pk=pk, token=token, 
+            rol=CLIENT if "is_admin" not in request.data else ADMIN
+        )
+
         if not user:
             return Response({
                 "code": "invalid_token",
-                "detailed": "El token es inválido"
+                "detailed": "No existe un usuario con ese id y token"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        user.status = APPROVED
-        user.token = random.randint(0000, 9999)
-        user.save()
+        if user.rol == ADMIN:
+            request.data["status"] = APPROVED
+            request.data["token"] = random.randint(0000, 9999)
+            user.update(**request.data)
+            return Response({
+                "code": "admin_approved",
+                "detailed": "Administrador aprobado correctamente"
+            }, status=status.HTTP_200_OK)
+
+        user.first().status = APPROVED
+        user.first().token = random.randint(0000, 9999)
+        user.first().save()
         return Response({
             "code": "user_approved",
             "detailed": "Usuario aprobado correctamente"

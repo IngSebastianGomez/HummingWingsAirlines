@@ -6,6 +6,8 @@ from django.conf import settings
 from django.utils import timezone
 
 from ..models.auth import Auth
+from ..models.constants import ROOT
+from ..models.root import Root
 from ..models.user import User
 
 
@@ -52,8 +54,11 @@ class TokenHandler:
                 expiration_date < timezone.now()):
             return None, None
 
-        user = User.objects.filter(
-            email=token["email"], rol=token["type"]).first()
+        if token["type"] != ROOT:
+            user = User.objects.filter(
+                email=token["email"], rol=token["type"]).first()
+        else:
+            user = Root.objects.filter(username=token["username"]).first()
 
         if not user:
             return None, None

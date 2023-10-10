@@ -38,7 +38,7 @@ def _get_user_type(obj):
 
     """
     if isinstance(obj, Root):
-        return obj.type
+        return ROOT
     elif isinstance(obj, User):
         return ADMIN if obj.rol == ADMIN else CLIENT
     else:
@@ -114,6 +114,7 @@ class AuthApi(APIView):
                 else timedelta(days=getenv("KEEP_LOGGED_IN_TOKEN_EXP_DAYS"))
             )),
             "email": obj.email if isinstance(obj, User) else None,
+            "username": obj.username if isinstance(obj, Root) else None,
             "type": _get_user_type(obj),
             "refresh": refresh
         }, settings.SECRET_KEY, algorithm="HS256").decode("utf-8")

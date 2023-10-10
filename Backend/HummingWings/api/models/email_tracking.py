@@ -13,9 +13,11 @@ _STATUSES_CHOICES = (
 )
 
 CLIENT = "cliente"
+ADMIN = "administrador"
 
 _MODULES_CHOICES = (
     (CLIENT, "Clientes"),
+    (ADMIN, "Administradores")
 )
 
 

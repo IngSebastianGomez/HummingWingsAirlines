@@ -3,11 +3,16 @@
 from django.db import models
 
 CLIENT_REGISTER_CONFIRMATION = "client_register_confirmation"
+ADMIN_REGISTER_CONFIRMATION = "admin_register_confirmation"
 
 _TEMPLATES = (
     (
         CLIENT_REGISTER_CONFIRMATION,
         "Confirmación de registro - Cliente"
+    ),
+    (
+        ADMIN_REGISTER_CONFIRMATION,
+        "Confirmación de registro - Administrador"
     ),
 )
 
