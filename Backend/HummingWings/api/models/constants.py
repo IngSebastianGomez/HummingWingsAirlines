@@ -1,7 +1,7 @@
 """ Constants definition """
 
-CLIENT = "Cliente"
-ADMIN = "Administrador"
+CLIENT = "cliente"
+ADMIN = "administrador"
 ROOT = "root"
 
 _USER_ROL_CHOICES = (
@@ -29,8 +29,18 @@ _GENDER_CHOICES = (
     (OTHER, "Otro")
 )
 
+CC = "C.C."
+CE = "C.E."
+PASSPORT = "Pasaporte"
+
 _TYPE_DOCUMENT_CHOICES = (
-    ("C.C.", "C.C."),
-    ("C.E.", "C.E."),
-    ("Pasaporte", "Pasaporte")
+    (CC, "C.C."),
+    (CE, "C.E."),
+    (PASSPORT, "Pasaporte")
 )
+
+############### ERROR CODE MESSAGE ####################
+_STATUS_400_MESSAGE = "Cuerpo con estructura inválida"
+_STATUS_401_MESSAGE = "No estás autenticado"
+_STATUS_403_MESSAGE = "No tienes permiso para ejecutar esta acción"
+_STATUS_404_MESSAGE = f"No se encontró el recurso solicitado"

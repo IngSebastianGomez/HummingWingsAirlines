@@ -12,13 +12,12 @@ class Root(AbstractBaseUser):
 
     """
     username = models.CharField("Username", max_length=50, unique=True)
-    password = models.CharField("Password", max_length=128)
 
     class Meta:
         """ Sets human readable name """
-        db_table = "ROOT"
-        verbose_name = "Usuario raiz"
-        verbose_name_plural = "Usuarios raiz"
+        db_table = "Root"
+        verbose_name = "Root"
+        verbose_name_plural = "Roots"
 
     USERNAME_FIELD = 'username'
     def __str__(self):

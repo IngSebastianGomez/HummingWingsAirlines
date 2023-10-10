@@ -10,8 +10,6 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.utils.crypto import get_random_string
-from Backend.HummingWings.api.models.constants import ADMIN, CLIENT, ROOT
-from Backend.HummingWings.api.models.root import Root
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,6 +18,8 @@ from rest_framework.views import APIView
 from ..helpers.envs import getenv
 
 from ..models.auth import Auth
+from ..models.constants import ADMIN, CLIENT, ROOT
+from ..models.root import Root
 from ..models.user import User
 
 
@@ -38,7 +38,7 @@ def _get_user_type(obj):
 
     """
     if isinstance(obj, Root):
-        return obj.type
+        return ROOT
     elif isinstance(obj, User):
         return ADMIN if obj.rol == ADMIN else CLIENT
     else:
@@ -114,6 +114,7 @@ class AuthApi(APIView):
                 else timedelta(days=getenv("KEEP_LOGGED_IN_TOKEN_EXP_DAYS"))
             )),
             "email": obj.email if isinstance(obj, User) else None,
+            "username": obj.username if isinstance(obj, Root) else None,
             "type": _get_user_type(obj),
             "refresh": refresh
         }, settings.SECRET_KEY, algorithm="HS256").decode("utf-8")
@@ -325,7 +326,7 @@ class NewPasswordApi(APIView):
 
         """
         validator = Validator({
-            "token": {"required": True, "type": "string", "empty": False},
+            "token": {"required": True, "type": "integer", "empty": False},
             "new_password": {"required": True, "type": "string", "minlength": 8}
         })
         if not validator.validate(request.data):
