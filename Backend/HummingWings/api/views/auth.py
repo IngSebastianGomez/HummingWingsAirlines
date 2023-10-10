@@ -10,8 +10,6 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.utils.crypto import get_random_string
-from Backend.HummingWings.api.models.constants import ADMIN, CLIENT, ROOT
-from Backend.HummingWings.api.models.root import Root
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,6 +18,8 @@ from rest_framework.views import APIView
 from ..helpers.envs import getenv
 
 from ..models.auth import Auth
+from ..models.constants import ADMIN, CLIENT, ROOT
+from ..models.root import Root
 from ..models.user import User
 
 
@@ -325,7 +325,7 @@ class NewPasswordApi(APIView):
 
         """
         validator = Validator({
-            "token": {"required": True, "type": "string", "empty": False},
+            "token": {"required": True, "type": "integer", "empty": False},
             "new_password": {"required": True, "type": "string", "minlength": 8}
         })
         if not validator.validate(request.data):

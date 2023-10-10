@@ -33,7 +33,7 @@ class User(AbstractBaseUser):
         null=True, blank=True)
     email = models.EmailField("Correo", unique=True)
     rol = models.CharField("Rol", choices=_USER_ROL_CHOICES, default=CLIENT)
-    type_document = models.CharField("Tipo de documento", max_length=255,
+    document_type = models.CharField("Tipo de documento", max_length=255,
         choices=_TYPE_DOCUMENT_CHOICES, default="C.C.")
     document = models.CharField("Identificación", max_length=255, unique=True)
     address = models.CharField("Dirección", max_length=255)
@@ -42,10 +42,12 @@ class User(AbstractBaseUser):
         choices=_GENDER_CHOICES, default="Otro")
     status = models.CharField("Estado", max_length=255, choices=_STATUS_CHOICES,
         default=PENDING)
-    token = models.CharField("Token cambio de contraseña", max_length=255)
+    token = models.IntegerField("Token cambio de contraseña",
+        null=True, blank=True)
     profile_image = models.FileField("Imagen de perfil", 
         upload_to="user/profile_image", null=True, blank=True)
 
+    USERNAME_FIELD = "document"
 
     class Meta:
         """ Sets human readable name """
