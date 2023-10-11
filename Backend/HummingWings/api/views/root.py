@@ -17,7 +17,7 @@ class RootApi(APIView, TokenHandler):
     """ Contains root user management definition """
 
     def post(self, request):
-        """ Creates a new Admin.
+        """ Creates a new Root.
 
         Parameters
         ----------
@@ -36,7 +36,8 @@ class RootApi(APIView, TokenHandler):
             "username": {"required": True, "type": "string"},
             "password": {
                 "required": True, "type": "string",
-                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'},
+                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'
+            }
         })
         if not validator.validate(request.data):
             return Response({
