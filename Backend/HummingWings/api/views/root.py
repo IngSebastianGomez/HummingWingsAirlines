@@ -9,7 +9,7 @@ from rest_framework import status
 
 from ..helpers.token import TokenHandler
 
-from ..models.constants import _STATUS_400_MESSAGE, _STATUS_403_MESSAGE
+from ..models.constants import _STATUS_400_MESSAGE, _STATUS_401_MESSAGE
 from ..models.root import Root
 
 
@@ -50,8 +50,8 @@ class RootApi(APIView, TokenHandler):
         if not payload or not isinstance(user, Root):
             return Response({
                 "code": "do_not_have_permission",
-                "detailed": _STATUS_403_MESSAGE
-            }, status=status.HTTP_403_FORBIDDEN)
+                "detailed": _STATUS_401_MESSAGE
+            }, status=status.HTTP_401_UNAUTHORIZED)
 
         root = Root.objects.filter(username=request.data["username"])
         if root:
