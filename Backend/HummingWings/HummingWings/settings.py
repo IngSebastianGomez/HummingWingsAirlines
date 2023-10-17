@@ -25,8 +25,9 @@ SECRET_KEY = 'django-insecure-t0s*$^q*(1k^=l!tyt7g=uybszu+%+*k*8p4*=6sd8v9o^_-ok
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
+APPEND_SLASH=False 
 
 # Application definition
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'rest_framework',
+    'huey.contrib.djhuey'
 ]
 
 MIDDLEWARE = [
@@ -93,6 +95,18 @@ DATABASES = {
     }
 }
 
+HUEY = {
+    'huey_class': 'huey.RedisHuey',
+    'name': DATABASES['default']['NAME'],
+    'immediate': False,
+    'consumer': {'workers': 10, 'worker_type': 'thread', 'periodic': True},
+    'connection': {
+        'host': '127.0.0.1',
+        'port': 6379,
+    }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

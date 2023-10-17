@@ -1,7 +1,8 @@
+""" Root user django model definition """
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
-ROOT = "root"
 
 class Root(AbstractBaseUser):
     """ Extends native django user model adding new
@@ -10,21 +11,23 @@ class Root(AbstractBaseUser):
     Python class representation for User database model
 
     """
-    first_name = models.CharField("Nombre(s)", 
-        max_length=50, null=False, blank=True)
-    last_name = models.CharField("Apellido(s)",
-        max_length=50, null=False, blank=True)
-    rol = models.CharField("Rol", default=ROOT)
+    username = models.CharField("Username", max_length=50, unique=True)
 
-    USERNAME_FIELD = 'first_name'
+    class Meta:
+        """ Sets human readable name """
+        db_table = "Root"
+        verbose_name = "Root"
+        verbose_name_plural = "Roots"
+
+    USERNAME_FIELD = 'username'
     def __str__(self):
-        return self.first_name
-    
+        return self.username
+
     def has_perm(self, perm, obj=None):
         return True
-    
+
     def has_module_perms(self, app_label):
         return True
-    
+
     def is_staff(self):
         return True
