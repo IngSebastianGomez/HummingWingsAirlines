@@ -33,7 +33,7 @@ CC = "C.C."
 CE = "C.E."
 PASSPORT = "Pasaporte"
 
-_TYPE_DOCUMENT_CHOICES = (
+_DOCUMENT_TYPE_CHOICES = (
     (CC, "C.C."),
     (CE, "C.E."),
     (PASSPORT, "Pasaporte")

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t0s*$^q*(1k^=l!tyt7g=uybszu+%+*k*8p4*=6sd8v9o^_-ok
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 APPEND_SLASH=False 
 
@@ -88,7 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'local_humming_wings',
-        'USER': 'netropy',
+        'USER': 'aether',
         'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '5432',

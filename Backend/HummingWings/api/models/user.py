@@ -8,7 +8,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 from ..models.constants import _GENDER_CHOICES, _STATUS_CHOICES
-from ..models.constants import _TYPE_DOCUMENT_CHOICES, _USER_ROL_CHOICES
+from ..models.constants import _DOCUMENT_TYPE_CHOICES, _USER_ROL_CHOICES
 from ..models.constants import CLIENT, PENDING
 
 FILE_PATHS = {
@@ -34,7 +34,7 @@ class User(AbstractBaseUser):
     email = models.EmailField("Correo", unique=True)
     rol = models.CharField("Rol", choices=_USER_ROL_CHOICES, default=CLIENT)
     document_type = models.CharField("Tipo de documento", max_length=255,
-        choices=_TYPE_DOCUMENT_CHOICES, default="C.C.")
+        choices=_DOCUMENT_TYPE_CHOICES, default="C.C.")
     document = models.CharField("Identificación", max_length=255, unique=True)
     address = models.CharField("Dirección", max_length=255)
     cellphone = models.CharField("Celular", max_length=255)
