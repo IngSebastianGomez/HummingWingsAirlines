@@ -263,7 +263,10 @@ class SpecificUserApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "rol": {"required": False, "type": "string", "allowed": [item[0] for item in _USER_ROL_CHOICES]},
+            "rol": {
+                "required": True, "type": "string", 
+                "allowed": [item[0] for item in _USER_ROL_CHOICES]
+            },
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"},
             "email": {"required": False, "type": "string"},
@@ -290,17 +293,23 @@ class SpecificUserApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)
-        if not payload or not user:
+        if not payload or not user or not isinstance(user, User):
             return Response({
                 "code": "do_not_have_permission",
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
 
-        if request.data["rol"] == ADMIN and user.rol != ADMIN:
+        if request.data["rol"] != user.rol:
             return Response({
                 "code": "do_not_have_permission",
                 "detailed": _STATUS_403_MESSAGE
             }, status=status.HTTP_403_FORBIDDEN)
+
+        if "password" in request.data and "token" not in request.data:
+            return Response({
+                "code": "invalid_body",
+                "detailed": "El token es requerido para actualizar la contraseña"
+            }, status=status.HTTP_400_BAD_REQUEST)  
 
         user_to_update = User.objects.filter(pk=user_pk, rol=request.data["rol"])
         if not user:
@@ -322,9 +331,13 @@ class SpecificUserApi(APIView, TokenHandler):
             data["cellphone"] = request.data["cellphone"]
         if "gender" in request.data:
             data["gender"] = request.data["gender"]
-        if "password" in request.data and request.data["token"] == user_to_update.token:
+        if "password" in request.data and request.data["token"] == user_to_update.first().token:
             data["password"] = make_password(request.data["password"])
-        elif request.data["token"] != user_to_update.token:
+            data["token"] = random.randint(0000, 9999)
+        elif ( 
+            "password" in request.data and
+            request.data["token"] != user_to_update.first().token
+        ):
             return Response({
                 "code": "invalid_token",
                 "detailed": "El token es inválido"
@@ -332,7 +345,7 @@ class SpecificUserApi(APIView, TokenHandler):
 
         user_to_update.update(**data)
         return Response({
-            "updated": user_to_update.pk,
+            "updated": user_to_update.first().pk,
             "code": "user_updated",
             "detailed": "Usuario actualizado correctamente"
         }, status=status.HTTP_200_OK)
@@ -358,7 +371,10 @@ class SpecificUserApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "rol": {"required": False, "type": "string", "allowed": _USER_ROL_CHOICES},
+            "rol": {
+                "required": True, "type": "string", 
+                "allowed": [item[0] for item in _USER_ROL_CHOICES]
+            }
         })
         if not validator.validate(request.data):
             return Response({
@@ -479,8 +495,8 @@ class AdminApi(APIView, TokenHandler):
         }, status=status.HTTP_201_CREATED)
 
 
-class ConfirmRegisterApi(APIView, TokenHandler):
-    """ Defines the http verbs to confirm register management """
+class ConfirmUserRegisterApi(APIView, TokenHandler):
+    """ Defines the http verbs to confirm user register """
 
     def patch(self, request, pk, token):
         """ Confirms the register of an specific client
@@ -491,7 +507,7 @@ class ConfirmRegisterApi(APIView, TokenHandler):
         request: dict
             Contains http transaction information.
 
-        client_pk: int
+        pk: int
             Pk of specific user
             
         token: int
@@ -504,37 +520,67 @@ class ConfirmRegisterApi(APIView, TokenHandler):
             Body response and status code.
 
         """
+        user = User.objects.filter(
+            pk=pk, token=token, rol=CLIENT).first()
+
+        if not user:
+            return Response({
+                "code": "invalid_token",
+                "detailed": "No existe un usuario con ese id y token"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        user.status = APPROVED
+        user.token = random.randint(0000, 9999)
+        user.save()
+        return Response({
+            "code": "user_approved",
+            "detailed": "Usuario aprobado correctamente"
+        }, status=status.HTTP_200_OK)
+
+
+class ConfirmAdminRegisterApi(APIView, TokenHandler):
+    """ Defines the http verbs to confirm admin register """
+
+    def patch(self, request, pk, token):
+        """ Confirms the register of an specific admin
+
+        Parameters
+        ----------
+
+        request: dict
+            Contains http transaction information.
+
+        pk: int
+            Pk of specific admin user
+            
+        token: int
+            Token to confirm the register
+
+        Returns
+        -------
+
+        Response: (dict, int)
+            Body response and status code.
+
+        """
         validator = Validator({
-            "is_admin": {"required": True, "type": "boolean"},
             "first_name": {
-                "required": True, "type": "string", 
-                "dependencies": {"is_admin": True}
+                "required": True, "type": "string"
             },
-            "last_name": {
-                "required": True, "type": "string", 
-                "dependencies": {"is_admin": True}
-            },
+            "last_name": {"required": True, "type": "string", },
             "birth_date": {
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
-                "dependencies": {"is_admin": True}
             },
-            "email": {
-                "required": True, "type": "string", 
-                "dependencies": {"is_admin": True}
-            },
-            "address": {
-                "required": True, "type": "string",
-                "dependencies": {"is_admin": True}
-            },
+            "email": {"required": True, "type": "string"},
+            "address": {"required": True, "type": "string"},
             "cellphone": {
                 "required": True, "type": "string", 
-                "minlength": 10, "dependencies": {"is_admin": True}
+                "minlength": 10, 
             },
             "gender": {
                 "required": True, "type": "string",
-                "allowed": [item[0] for item in _GENDER_CHOICES],
-                "dependencies": {"is_admin": True}
+                "allowed": [item[0] for item in _GENDER_CHOICES]   
             }
         })
         if not validator.validate(request.data):
@@ -545,31 +591,20 @@ class ConfirmRegisterApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(
-            pk=pk, token=token, 
-            rol=CLIENT if "is_admin" not in request.data else ADMIN
-        )
+            pk=pk, token=token, rol=ADMIN)
 
-        if not user:
+        if not user:            
             return Response({
                 "code": "invalid_token",
-                "detailed": "No existe un usuario con ese id y token"
+                "detailed": "No existe un usuario administrador con ese id y token"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if user.first().rol == ADMIN:
-            request.data["status"] = APPROVED
-            request.data["token"] = random.randint(0000, 9999)
-            user.update(**request.data)
-            return Response({
-                "code": "admin_approved",
-                "detailed": "Administrador aprobado correctamente"
-            }, status=status.HTTP_200_OK)
-
-        user.first().status = APPROVED
-        user.first().token = random.randint(0000, 9999)
-        user.first().save()
+        request.data["status"] = APPROVED
+        request.data["token"] = random.randint(0000, 9999)
+        user.update(**request.data)
         return Response({
-            "code": "user_approved",
-            "detailed": "Usuario aprobado correctamente"
+            "code": "admin_approved",
+            "detailed": "Administrador aprobado correctamente"
         }, status=status.HTTP_200_OK)
 
 
