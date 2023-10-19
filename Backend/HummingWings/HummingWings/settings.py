@@ -91,11 +91,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'local_humming_wings',
-<<<<<<< Updated upstream
-        'USER': 'juanse',
-=======
         'USER': 'netropy',
->>>>>>> Stashed changes
         'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '5432',
