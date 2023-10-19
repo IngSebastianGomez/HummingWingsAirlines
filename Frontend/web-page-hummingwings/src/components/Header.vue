@@ -1,14 +1,16 @@
 <template>
   <div class="MyHeader">
     <div class="d-flex">
-      <img src="../assets/Logo_HummingWings.png" class="mr-3">
-      <h1 id="titulo">Humming <br> Wings</h1>
+      <a href="#">
+        <img src="../assets/Logo_HummingWings.png" class="mr-3">
+      </a>
+      <h1 class="myText" id="titulo">Humming <br> Wings</h1>
     </div>
     <nav class="nav"> 
       <a href="#">Inicio</a>
-      <a href="#">Servicios</a>
+      <a href="#/adminOptions">Servicios</a>
       <a href="#">Nosotros</a>
-      <a href="#">Contacto</a>
+      <a href="#/createAdmin">Contacto</a>
     </nav>
     <div class="btn-group">
     <!-- Muestra el botón de inicio de sesión si el usuario no ha iniciado sesión -->

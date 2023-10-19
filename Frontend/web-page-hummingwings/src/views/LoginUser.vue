@@ -1,5 +1,5 @@
 <template>
-    <div class="container-sm mt-5" style="max-width: 600px;">
+    <div class="container-sm mt-5">
       <h1>Iniciar Sesión</h1>
       <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
         <form>
@@ -88,5 +88,6 @@ export default {
       border-radius: 40px;
       margin-bottom: 2rem;
       max-width: 600px;
+      box-shadow: 0 5px 10px rgba(71, 3, 6, 0.7);
     }
   </style>
