@@ -5,7 +5,7 @@
 Recurso POST
 ------------
 
-.. http:post:: /api/v1/entrenchment_property_change
+.. http:post:: /api/v1/root/
 
 Crea un nuevo usuario Root
 
