@@ -9,7 +9,7 @@
 
       <div class="row bg-transparent" style="padding: 1.5rem;">
       <div class="col bg-transparent">
-        <p class="fs-1 text-danger" style="font-family: ;">Opciones de control del Root</p>
+        <p class="fs-1 myText" style="color: red;">Opciones de control del Root</p>
       </div>
     </div>
 

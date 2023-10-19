@@ -53,6 +53,11 @@ export default {
 
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Aclonica&display=swap');
+
+.myText{
+    font-family: 'Aclonica', sans-serif;
+  }
 #app {
   background-color: #182a3f;
   min-height: 100vh;

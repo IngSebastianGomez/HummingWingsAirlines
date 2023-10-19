@@ -5,9 +5,9 @@
   <div class="container">
     <div class="row bg-transparent" style="padding: 1.5rem;">
       <div class="col bg-transparent">
-        <h1 class="myText">Bienvenido Admin</h1>
+        <h1 class="myText" style="color: white;">Bienvenido Admin</h1>
         <br>
-        <p class="myText">¿Que desea hacer?</p>
+        <p class="myText" style="color: white;">¿Que desea hacer?</p>
       </div>
     </div>
     <div class="row bg-transparent justify-content-evenly" style="padding-bottom: 1rem;">
@@ -22,11 +22,5 @@
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Aclonica&display=swap');
-
-.myText{
-    font-family: 'Aclonica', sans-serif;
-    color: white;
-  }
   
 </style>

@@ -5,7 +5,7 @@
   <div class="container">
     <div class="row bg-transparent" style="padding: 1.5rem;">
       <div class="col bg-transparent">
-        <p class="fs-1 text-danger justify-center">Control de Root</p>
+        <p class="fs-1 myText justify-center" style="color: red;">Control de Root</p>
       </div>
     </div>
     <div class="row bg-transparent justify-content-evenly" style="padding-bottom: 1rem;">
