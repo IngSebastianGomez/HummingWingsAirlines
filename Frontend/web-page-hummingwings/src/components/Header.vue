@@ -1,8 +1,10 @@
 <template>
   <div class="MyHeader">
     <div class="d-flex">
-      <img src="../assets/Logo_HummingWings.png" class="mr-3">
-      <h1 id="titulo">Humming <br> Wings</h1>
+      <a href="#">
+        <img src="../assets/Logo_HummingWings.png" class="mr-3">
+      </a>
+      <h1 class="myText" id="titulo">Humming <br> Wings</h1>
     </div>
     <nav class="nav"> 
       <a href="#">Inicio</a>
