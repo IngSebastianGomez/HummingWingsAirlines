@@ -1,59 +1,71 @@
 <template>
-    <div class="container">
-      <form action="">
-        <h1 class="title">LoginRoot</h1>
-        <label>
-          <i class="fa-solid fa-user"></i>
-          <input placeholder="username" type="text" id="username">
-        </label>
-        <label>
-          <i class="fa-solid fa-lock"></i>
-          <input placeholder="password" type="password" id="password">
-        </label>
-        <button id="button">Login</button>
-      </form>
-    </div>
+  <div class="container">
+    <form @submit="login">
+      <h1 class="title">LoginRoot</h1>
+      <label>
+        <i class="fa-solid fa-user"></i>
+        <input placeholder="username" type="text" v-model="username">
+      </label>
+      <label>
+        <i class="fa-solid fa-lock"></i>
+        <input placeholder="password" type="password" v-model="password">
+      </label>
+      <button type="submit">Login</button>
+    </form>
+  </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+// Importa Vuex y la mutación que definirás para actualizar el nombre de usuario
+import { mapMutations } from 'vuex';
 
 export default {
   data() {
     return {
-      username: "",
-      password: "",
-      error: null,
+      username: '',
+      password: '',
     };
   },
   methods: {
-    handleSubmit(event) {
-      event.preventDefault(); // Evita que el formulario se envíe
-
-      // Accede a los valores de usuario y contraseña desde data
-      const username = this.username;
-      const password = this.password;
-
-      // Realiza una solicitud POST a un servidor para validar el usuario y la contraseña
-      axios
-        .post("/api/login", {
-          username,
-          password,
-        })
-        .then((response) => {
-          // Aquí puedes manejar la respuesta del servidor
-          console.log("Respuesta del servidor:", response.data);
-
-          // Restablecer los valores de usuario y contraseña si es necesario
-          this.username = "";
-          this.password = "";
-          this.error = null; // Limpia cualquier mensaje de error anterior
-        })
-        .catch((error) => {
-          // Manejar errores de la solicitud
-          console.error("Error:", error);
-          this.error = "Error de autenticación"; // Puedes mostrar un mensaje de error al usuario
+    // Mapea la mutación que actualizará el nombre de usuario en Vuex
+    ...mapMutations(['setUsername', 'setId', 'setType', 'setToken']), // Asegúrate de definir 'setUsername' en tu store
+    
+    async login() {
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', {
+          user: this.username,
+          password: this.password,
+          keep_logged_in: true,
+          type: 'root',
         });
+
+        if (response.status >= 200 && response.status < 300) {
+          // La solicitud fue exitosa (código de estado HTTP 2xx).
+          
+          // Después de recibir el token en la respuesta
+          const token = response.data.token;
+          localStorage.setItem('sessionToken', token);
+
+          // Actualiza los datos de Vuex
+          this.setUsername(response.data.username);
+          this.setId(response.data.id);
+          this.setType(response.data.type);
+          //poner loginLogged de vuex en true
+          this.$store.commit('loginLogged', true);
+          
+
+          // Redirige al usuario a la vista "opcionesRoot" después del inicio de sesión exitoso.
+          this.$router.push('/opcionesRoot');
+        } else {
+          // La solicitud no fue exitosa (código de estado HTTP diferente de 2xx).
+          console.error('Error en la solicitud:', response.status, response.data);
+          // Puedes mostrar un mensaje de error al usuario o realizar otras acciones según el caso.
+        }
+      } catch (error) {
+        // Maneja los errores, por ejemplo, muestra un mensaje de error al usuario.
+        console.error('Error en la solicitud:', error);
+      }
     },
   },
 };

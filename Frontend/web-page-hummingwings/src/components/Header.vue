@@ -4,43 +4,36 @@
       <img src="../assets/Logo_HummingWings.png" class="mr-3">
       <h1 id="titulo">Humming <br> Wings</h1>
     </div>
-    <nav class="nav ml-auto"> <!-- Aplica la clase ml-auto aquí -->
+    <nav class="nav"> 
       <a href="#">Inicio</a>
       <a href="#">Servicios</a>
       <a href="#">Nosotros</a>
       <a href="#">Contacto</a>
     </nav>
-    <div class="dropdown ml-auto">
-  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-    Sing In
-  </button>
-  <form class="dropdown-menu p-4">
-    <div class="mb-3">
-      <label for="exampleDropdownFormEmail2" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="exampleDropdownFormEmail2" placeholder="email@example.com">
-    </div>
-    <div class="mb-3">
-      <label for="exampleDropdownFormPassword2" class="form-label">Password</label>
-      <input type="password" class="form-control" id="exampleDropdownFormPassword2" placeholder="Password">
-    </div>
-    <div class="mb-3">
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="dropdownCheck2">
-        <label class="form-check-label" for="dropdownCheck2">
-          Remember me
-        </label>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Sign in</button>
-  </form>
-</div>
+    <div class="btn-group">
+    <!-- Muestra el botón de inicio de sesión si el usuario no ha iniciado sesión -->
+    <button-session v-if="!loggedIn"></button-session>
+    
+    <!-- Muestra el avatar si el usuario ha iniciado sesión -->
+    <user-avatar v-else></user-avatar>
+  </div>
   </div>
 </template>
 
 
 <script>
+import { mapState } from 'vuex';
+import ButtonSession from './ButtonSession.vue';
+import UserAvatar from './UserAvatar.vue';
 export default {
   name: 'MyHeader',
+  components: {
+    'button-session': ButtonSession,
+    'UserAvatar': UserAvatar,
+  },
+  computed: {
+    ...mapState(['loggedIn']),
+  },
   data() {
     return {
       message: 'Hello from MyHeader.vue!'
@@ -55,6 +48,7 @@ export default {
 .MyHeader {
   position: relative; /* Permite posicionar elementos hijos con respecto a este elemento */
   display: flex; /* Utiliza flexbox para controlar la alineación y el espaciado */
+  justify-content: space-between; /* Alinea los elementos a los extremos */
   align-items: center; /* Alinea elementos verticalmente al centro */
   padding: 5px 14px; /* Agrega espaciado interior para separar el contenido del borde */
   background-color: green; /* Establece el color de fondo del encabezado */
@@ -77,15 +71,14 @@ export default {
 /* Reemplaza "Nueva Fuente" con el nombre de la fuente que desees utilizar */
 
 .nav{
-  color: white;
   font-family: "Nueva Fuente", sans-serif;
   font-size: 20px;
   padding: 10px;
   margin: 10px;
-  text-align: right;
-}
-.nav a {
-  margin-right: 15px;
+  margin-left: auto; /* Alinea el elemento a la derecha */
 }
 
+.nav a {
+  margin-right: 10px; /* Agrega un margen a la derecha de cada enlace */
+}
 </style>

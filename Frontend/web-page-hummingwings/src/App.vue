@@ -11,9 +11,8 @@
 
 
 <script>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import MyHeader from './components/Header.vue'
-
 
 export default {
   name: 'App',
@@ -22,31 +21,36 @@ export default {
   },
   setup() {
     const route = useRoute()
+    const router = useRouter() // Accede a $router desde el contexto setup
+
     const isHomePage = route.path === '/' 
 
     console.log('isHomePage:', isHomePage)
     console.log('Current Route:', route.path)
     
+    // Función para mostrar la vista oculta
+    function mostrarVistaOculta() {
+      // Usamos router para ir a la vista oculta de root LoginRoot
+      router.push('/LoginRoot');
+    }
+
+    // Función para manejar el evento de teclado
+    function handleKeyPress(event) {
+      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "r") {
+        mostrarVistaOculta();
+      }
+    }
+    
+    // Agregar un escuchador de eventos para detectar la combinación de teclas
+    document.addEventListener("keydown", handleKeyPress);
+
     return {
       isHomePage,
     }
   },
 }
-
-// Función para mostrar la vista oculta
-function mostrarVistaOculta() {
-  window.location.href = "http://localhost:8080/#/login"; // Replace with the URL of the page you want to open
-}
-
-// Función para manejar el evento de teclado
-function handleKeyPress(event) {
-  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "r") {
-    mostrarVistaOculta();
-  }
-}
-// Agregar un escuchador de eventos para detectar la combinación de teclas
-document.addEventListener("keydown", handleKeyPress);
 </script>
+
 
 <style>
 #app {

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'rest_framework',
+    'corsheaders',
     'huey.contrib.djhuey'
 ]
 
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'HummingWings.urls'
@@ -88,7 +91,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'local_humming_wings',
-        'USER': 'aether',
+        'USER': 'juanse',
         'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -126,6 +129,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Añade aquí la URL de tu aplicación Vue.js
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
