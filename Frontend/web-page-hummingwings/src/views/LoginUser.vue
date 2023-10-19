@@ -14,6 +14,7 @@
           <div class="d-grid gap-2 pb-5">
             <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
           </div>
+          <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
         </form>
       </div>
     </div>
@@ -43,8 +44,7 @@ export default {
 
         if (response.status >= 200 && response.status < 300) {
           // La solicitud fue exitosa (código de estado HTTP 2xx).
-          // Realiza las acciones necesarias después del inicio de sesión exitoso.
-          this.$router.push('/');
+          this.handleSuccessfulLogin(response.data);
         } else {
           // La solicitud no fue exitosa (código de estado HTTP diferente de 2xx).
           console.error('Error en la solicitud:', response.status, response.data);
@@ -54,6 +54,27 @@ export default {
         // Maneja los errores, por ejemplo, muestra un mensaje de error al usuario.
         console.error('Error en la solicitud:', error);
       }
+    },
+    handleSuccessfulLogin(data) {
+      // Actualiza los datos de Vuex con los datos de la respuesta
+      this.$store.commit('setId', data.id);
+      this.$store.commit('setUsername', data.email);
+      this.$store.commit('setType', data.type);
+      this.$store.commit('setToken', data.token);
+      this.$store.commit('setRefresh', data.refresh);
+      this.$store.commit('setEmail', data.email);
+      this.$store.commit('setCellphone', data.cellphone);
+      this.$store.commit('setFirstName', data.first_name);
+      this.$store.commit('setLastName', data.last_name);
+      this.$store.commit('setGender', data.gender);
+      this.$store.commit('setRol', data.rol);
+      this.$store.commit('setStatus', data.status);
+      this.$store.commit('setDocument', data.document);
+      this.$store.commit('setDocumentType', data.document_type);
+      //poner loginLogged de vuex en true
+      this.$store.commit('loginLogged', true);
+      // Redirige al usuario a la página principal después del inicio de sesión exitoso
+      this.$router.push('/');
     },
   },
 };

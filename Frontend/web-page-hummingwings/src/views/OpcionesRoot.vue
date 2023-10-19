@@ -21,29 +21,19 @@
           <router-link to="/ListaAdministradores" class="btn btn-danger btn-lg btn-block">Editar Admin</router-link> 
       </div>
     </div>   
-    <button @click="handleLogout">Cerrar Sesión</button>
     </div>
     
   </template>
   
   <script>
-  import { mapState, mapActions } from 'vuex'; // Si estás utilizando Vuex
+  import { mapState } from 'vuex'; // Si estás utilizando Vuex
   
   export default {
   computed: {
-    ...mapState(['username', 'id', 'type', 'loggedIn']),
+    ...mapState(['username', 'id', 'type', 'loggedIn', 'token']),
     // Recupera el token desde el Local Storage en las propiedades computadas
-    token() {
-      return localStorage.getItem('sessionToken') || ''; // Si no hay token en el Local Storage, devuelve una cadena vacía
-    },
+    
   },
-  methods: {
-  ...mapActions(['logout']), // Importa la acción de cierre de sesión
-  handleLogout() {
-    this.logout(); // Llama a la acción de cierre de sesión
-    this.$router.push('/'); // Redirige al usuario a la página de inicio de sesión o a la ruta deseada
-  },
-},
 };
 </script>
 

@@ -44,13 +44,14 @@ export default {
           // La solicitud fue exitosa (código de estado HTTP 2xx).
           
           // Después de recibir el token en la respuesta
-          const token = response.data.token;
-          localStorage.setItem('sessionToken', token);
+          //const token = response.data.token;
+          //localStorage.setItem('sessionToken', token);
 
           // Actualiza los datos de Vuex
           this.setUsername(response.data.username);
           this.setId(response.data.id);
           this.setType(response.data.type);
+          this.setToken(response.data.token);
           //poner loginLogged de vuex en true
           this.$store.commit('loginLogged', true);
           

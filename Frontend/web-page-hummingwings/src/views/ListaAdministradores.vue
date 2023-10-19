@@ -18,6 +18,7 @@
   
   <script>
   import axios from 'axios';
+  import { mapState } from 'vuex';
   
   export default {
     data() {
@@ -25,17 +26,21 @@
         admins: [], // Aquí almacenarás la lista de administradores
       };
     },
+    computed: {
+    ...mapState(['token']),
+    // Recupera el token desde el Local Storage en las propiedades computadas
+    
+  },
     created() {
-      // Recupera el token del localStorage
-      const TokenBearer = localStorage.getItem('sessionToken');
-  
+      //traer el token desde vuex 
+      const token = this.token;
       // Verifica si hay un token
-      if (TokenBearer) {
+      if (token) {
         // Realizar una solicitud HTTP al servidor con el token Bearer
         axios
           .get('http://127.0.0.1:8000/api/v1/user/?rol=administrador', {
             headers: {
-              Authorization: `Bearer ${TokenBearer}`,
+              Authorization: `Bearer ${token}`,
             },
           })
           .then((response) => {
