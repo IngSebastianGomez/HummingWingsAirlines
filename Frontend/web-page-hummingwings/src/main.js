@@ -6,6 +6,11 @@ import "bootstrap"
 import HelloWorld from './components/HelloWorld.vue'
 import DetailComponent from './components/DetailComponent.vue'
 import LoginRoot from './views/LoginRoot.vue'
+import AdminOptions from './views/AdminOptions.vue'
+import CreateAdmin from './views/CreateAdminUser.vue'
+import LoginUser from './views/LoginUser.vue'
+import RootOptions from './views/RootOptions.vue'
+
 
 const About = { template: '<div>About</div>' }
 
@@ -14,7 +19,11 @@ const routes = [
   { path: '/', component: HelloWorld }, //poner el slide aqui y dejarñp como pag de inicio
   { path: '/about', component: About },
   { path: '/login', component: LoginRoot },
-  { path: '/detail', component: DetailComponent}
+  { path: '/detail', component: DetailComponent },
+  { path: '/adminOptions', component: AdminOptions },
+  { path: '/createAdmin', component: CreateAdmin },
+  { path: '/loginUser' , component: LoginUser},
+  { path: '/rootOptions', component: RootOptions},
 ]
 //crear obejto rutas de vue router
 const router = createRouter({

@@ -1,7 +1,7 @@
 <template>
-  <div class="container-sm mt-5" style="max-width: 600px;">
-    <h1>Crear usuario administrador</h1>
-    <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
+  <div class="container-sm mt-5 degradade-user" style="max-width: 600px;">
+    <h1>Iniciar sesion</h1>
+    <div class="container" style="padding-left: 3rem; padding-right: 3rem; padding-top: 2rem;">
       <form>
         <div class="mb-3">
           <label for="EmailAdmin" class="form-label">Correo electronico</label>
@@ -28,5 +28,6 @@
     padding: 1rem;
     border-radius: 40px;
     margin-bottom: 2rem;
+    max-width: 600px;
   }
 </style>
