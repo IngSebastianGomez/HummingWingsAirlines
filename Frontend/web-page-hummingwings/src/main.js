@@ -6,24 +6,29 @@ import "bootstrap"
 import HelloWorld from './components/HelloWorld.vue'
 import DetailComponent from './components/DetailComponent.vue'
 import LoginRoot from './views/LoginRoot.vue'
-import AdminOptions from './views/AdminOptions.vue'
-import CreateAdmin from './views/CreateAdminUser.vue'
+import OpcionesRoot from './views/OpcionesRoot.vue'
+import storage from '../storage'
+import CreateAdmin from './views/CreateAdmin.vue'
+import RegistroUsuario from './components/RegistroUsuario.vue'
+import ListaAdministradores from './views/ListaAdministradores.vue'
 import LoginUser from './views/LoginUser.vue'
-import RootOptions from './views/RootOptions.vue'
-
+import AdminOptions from './views/AdminOptions.vue'
 
 const About = { template: '<div>About</div>' }
 
 //definir rutas
 const routes = [
-  { path: '/', component: HelloWorld }, //poner el slide aqui y dejarñp como pag de inicio
+  { path: '/', component: HelloWorld }, 
   { path: '/about', component: About },
-  { path: '/login', component: LoginRoot },
-  { path: '/detail', component: DetailComponent },
-  { path: '/adminOptions', component: AdminOptions },
-  { path: '/createAdmin', component: CreateAdmin },
-  { path: '/loginUser' , component: LoginUser},
-  { path: '/rootOptions', component: RootOptions},
+  { path: '/loginRoot', component: LoginRoot },
+  { path: '/opcionesRoot', component: OpcionesRoot },
+  { path: '/detail', component: DetailComponent},
+  { path: '/CreateAdmin', component: CreateAdmin},
+  { path: '/RegistroUsuario', component: RegistroUsuario},
+  { path: '/ListaAdministradores', component: ListaAdministradores},
+  { path: '/LoginUser', component: LoginUser},
+  { path: '/AdminOptions', component: AdminOptions},
+  
 ]
 //crear obejto rutas de vue router
 const router = createRouter({
@@ -37,5 +42,6 @@ export default router;
 //Vue.use(BootstrapVue)
 const app = createApp(App)
 app.use(router)
+app.use(storage); // Agregar Vuex a la aplicación
 
 app.mount('#app');

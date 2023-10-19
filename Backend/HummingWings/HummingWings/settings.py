@@ -25,8 +25,9 @@ SECRET_KEY = 'django-insecure-t0s*$^q*(1k^=l!tyt7g=uybszu+%+*k*8p4*=6sd8v9o^_-ok
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
+APPEND_SLASH=False 
 
 # Application definition
 
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'rest_framework',
+    'corsheaders',
+    'huey.contrib.djhuey'
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'HummingWings.urls'
@@ -86,13 +91,25 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'local_humming_wings',
-        'USER': 'aether',
+        'USER': 'juanse',
         'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
+HUEY = {
+    'huey_class': 'huey.RedisHuey',
+    'name': DATABASES['default']['NAME'],
+    'immediate': False,
+    'consumer': {'workers': 10, 'worker_type': 'thread', 'periodic': True},
+    'connection': {
+        'host': '127.0.0.1',
+        'port': 6379,
+    }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -112,6 +129,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Añade aquí la URL de tu aplicación Vue.js
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
