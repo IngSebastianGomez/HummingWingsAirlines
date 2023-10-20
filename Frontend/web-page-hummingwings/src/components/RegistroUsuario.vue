@@ -91,10 +91,10 @@ export default {
       // Ejemplo usando Axios:
       axios.post('http://127.0.0.1:8000/api/v1/user/', this.formData)
         .then((response) => {
-          // Manejar la respuesta del servidor (éxito)
-          console.log("Formulario enviado con éxito:", response.data);
+          
           // Redirigir a otra página o realizar otras acciones según el caso
           this.$router.push('/');
+          console.log("Formulario enviado con éxito:", response.data);
         })
         .catch((error) => {
           // Manejar errores de la solicitud al servidor
