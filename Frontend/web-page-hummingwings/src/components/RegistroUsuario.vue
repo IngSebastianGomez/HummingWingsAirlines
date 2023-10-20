@@ -34,14 +34,14 @@
         <label for="gender" class="form-label">Género</label>
         <select class="form-select" v-model="formData.gender">
           <option value="" disabled selected>Género</option>
-          <option value="Hombre">masculino</option>
-          <option value="Mujer">femenino</option>
+          <option value="masculino">masculino</option>
+          <option value="femenino">femenino</option>
           <option value="Prefiero no decirlo">Prefiero no decirlo</option>
         </select>
       </div>
 
       <div class="mb-3">
-        <label for="InputPhoneNumber" class="form-label">Número de teléfono</label>
+        <label for="InputPhoneNumber" class="form-label">Número de teléfono</label> <!-- Aqui hay que poner una condicion para que tenga minimo 10 digitos -->
         <input type="text" class="form-control" id="InputPhoneNumber" v-model="formData.cellphone">
       </div>
 

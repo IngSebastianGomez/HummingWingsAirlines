@@ -1,24 +1,24 @@
 <template>
-    <div class="container-sm mt-5">
-      <h1>Iniciar Sesión</h1>
-      <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
-        <form>
-          <div class="mb-3">
-            <label for="EmailAdmin" class="form-label">Correo electrónico</label>
-            <input type="email" class="form-control" id="EmailAdmin" v-model="email">
-          </div>
-          <div class="mb-3">
-            <label for="Password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="Password" v-model="password">
-          </div>
-          <div class="d-grid gap-2 pb-5">
-            <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
-          </div>
-          <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
-        </form>
-      </div>
+  <div class="container-sm mt-5">
+    <h1>Iniciar Sesión</h1>
+    <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
+      <form>
+        <div class="mb-3">
+          <label for="EmailAdmin" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control" id="EmailAdmin" v-model="email">
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="Password" v-model="password">
+        </div>
+        <div class="d-grid gap-2 pb-5">
+          <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
+        </div>
+        <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
+      </form>
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 import axios from 'axios';
@@ -32,27 +32,46 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        const requestData = {
-          user: this.email,
-          password: this.password,
-          keep_logged_in: true,
-          type: 'cliente',
-        };
+      // Intento de inicio de sesión con el rol 'cliente'
+      const clientLogin = await this.tryLogin('cliente');
 
-        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', requestData);
+      if (clientLogin.success) {
+        // La solicitud fue exitosa para el rol 'cliente'.
+        this.handleSuccessfulLogin(clientLogin.data);
+      } else {
+        // Intento de inicio de sesión con el rol 'cliente no exitoso.
+        // Intento de inicio de sesión con el rol 'administrador'.
+        const adminLogin = await this.tryLogin('administrador');
 
-        if (response.status >= 200 && response.status < 300) {
-          // La solicitud fue exitosa (código de estado HTTP 2xx).
-          this.handleSuccessfulLogin(response.data);
+        if (adminLogin.success) {
+          // La solicitud fue exitosa para el rol 'administrador'.
+          this.handleSuccessfulLogin(adminLogin.data);
         } else {
-          // La solicitud no fue exitosa (código de estado HTTP diferente de 2xx).
-          console.error('Error en la solicitud:', response.status, response.data);
+          // Ambos intentos de inicio de sesión fallaron.
+          console.error('Error en la solicitud para ambos roles.');
           // Puedes mostrar un mensaje de error al usuario o realizar otras acciones según el caso.
         }
+      }
+    },
+    async tryLogin(role) {
+      const requestData = {
+        user: this.email,
+        password: this.password,
+        keep_logged_in: true,
+        type: role,
+      };
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', requestData);
+        return {
+          success: response.status >= 200 && response.status < 300,
+          data: response.data,
+        };
       } catch (error) {
-        // Maneja los errores, por ejemplo, muestra un mensaje de error al usuario.
-        console.error('Error en la solicitud:', error);
+        return {
+          success: false,
+          error: error,
+        };
       }
     },
     handleSuccessfulLogin(data) {
