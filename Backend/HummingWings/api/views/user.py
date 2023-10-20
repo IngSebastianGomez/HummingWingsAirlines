@@ -100,7 +100,7 @@ class UserApi(APIView, TokenHandler):
         send_template_email(
             email_id=CLIENT_REGISTER_CONFIRMATION,
             params={
-                "full_name": client.get_full_name,
+                "full_name": client.get_full_name(),
                 "url": f"{getenv('API_HOSTNAME')}/api/v1/user/{client.pk}/confirm_email/{client.token}"
             },
             receivers=client.email,

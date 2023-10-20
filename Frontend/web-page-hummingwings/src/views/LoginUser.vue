@@ -49,7 +49,7 @@ export default {
         } else {
           // Ambos intentos de inicio de sesión fallaron.
           // Muestra un mensaje de error genérico.
-          this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
+          //this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
         }
       }
     },
@@ -68,13 +68,13 @@ export default {
           data: response.data,
         };
       } catch (error) {
-        if (error.response.data && error.response.data.code === 'incorrect_password') {
+        if (error.response.data && error.response.status === 401) {
           this.errorMessage = 'Contraseña incorrecta.';
-        } else if (error.response.data && error.response.data.code === 'user_not_found') {
+        } else if (error.response.data && error.response.status === 400) {
           this.errorMessage = 'Usuario no encontrado o inactivo.';
         } else {
           // Error genérico.
-          this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
+          this.errorMessage = 'Usuario o contraseña incorrecto.';
         }
 
         return {

@@ -13,6 +13,7 @@ import RegistroUsuario from './components/RegistroUsuario.vue'
 import ListaAdministradores from './views/ListaAdministradores.vue'
 import LoginUser from './views/LoginUser.vue'
 import AdminOptions from './views/AdminOptions.vue'
+import VisualDatos from './views/VisualDatos.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -28,6 +29,7 @@ const routes = [
   { path: '/ListaAdministradores', component: ListaAdministradores},
   { path: '/LoginUser', component: LoginUser},
   { path: '/AdminOptions', component: AdminOptions},
+  { path: '/VisualDatos', component: VisualDatos},
   
 ]
 //crear obejto rutas de vue router

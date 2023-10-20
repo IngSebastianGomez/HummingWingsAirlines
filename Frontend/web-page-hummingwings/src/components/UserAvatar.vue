@@ -15,7 +15,7 @@
 
     <div class="dropdown-menu" aria-labelledby="avatar-button">
       <!-- Opciones del menú desplegable -->
-      <a class="dropdown-item" href="#">Perfil</a>
+      <a class="dropdown-item" href="#" @click="irVisualDatos">Perfil</a> <!-- Agrega un enlace a la vista de perfil -->
       <a class="dropdown-item" href="#">Configuración</a>
       <div class="dropdown-divider"></div>
 
@@ -25,7 +25,7 @@
       <a class="dropdown-item" href="#" @click="handleLogout">Cerrar Sesión</a>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import { mapState, mapActions } from 'vuex';
@@ -46,6 +46,10 @@ export default {
     irARutaAdmin() {
       // Agrega aquí la lógica para redirigir a la ruta de opciones de administrador
       this.$router.push('/AdminOptions');
+    },
+    irVisualDatos() {
+      // Agrega aquí la lógica para redirigir a la ruta de opciones de administrador
+      this.$router.push('/VisualDatos');
     },
   },
 };

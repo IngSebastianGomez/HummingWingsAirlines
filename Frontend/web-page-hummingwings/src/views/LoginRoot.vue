@@ -44,17 +44,17 @@ export default {
       try {
         // Validación mínima de la contraseña NO FUNCIONA CORRECTAMENTE PENDIENTE POR CORREGIR
         if (this.password.length < 7) {
-          this.errorMessage = 'La contraseña debe tener al menos 9 caracteres.';
+          this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
           return;
         }
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', {
           user: this.username,
           password: this.password,
-          keep_logged_in: true,
+          keep_logged_in: false, // Cambia a true si quieres que el usuario permanezca conectado
           type: 'root',
         });
 
-        if (response.status >= 200 && response.status < 300) {
+        if (response.status >= 200 && response.status < 300) { 
           // La solicitud fue exitosa (código de estado HTTP 2xx).
           
           // Después de recibir el token en la respuesta
@@ -72,25 +72,18 @@ export default {
 
           // Redirige al usuario a la vista "opcionesRoot" después del inicio de sesión exitoso.
           this.$router.push('/opcionesRoot');
-        } else {
-          // Maneja respuestas con errores
-          console.log('Error al hacer la solicitud:');
-          if (response.data.code === 'incorrect_password') {
-            this.errorMessage = 'Clave incorrecta.';
-          } else if (response.data.code === 'user_not_found') {
-            this.errorMessage = 'Usuario root no registrado o inactivo.';
-          } else {
-            console.error('Error en la solicitud:', response.status, response.data);
-            // Puedes mostrar un mensaje de error genérico al usuario o realizar otras acciones según el caso.
-          }
-        
-        }
+        } 
       } catch (error) {
-        
-        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde. Código de error: ${error.response.data.code}`;
+        // Error en la solicitud de red.
+        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde.`;
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Clave incorrecta.';
+        } else if (error.response && error.response.status === 404) {
+          this.errorMessage = 'Usuario root no registrado o inactivo.';
+        }
         console.error('Error en la solicitud:', error);
       }
-    },
+    }, // poner los if por aqui 
   },
 };
 </script>
