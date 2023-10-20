@@ -68,61 +68,82 @@ export default {
   data() {
     return {
       admins: [],
-      mostrandoConfirmacion: false, // Variable para mostrar/ocultar el cuadro de diálogo de confirmación
-      adminAEliminar: null, // Variable para almacenar el ID del administrador a eliminar
+      mostrandoConfirmacion: false,
+      adminAEliminar: null,
     };
   },
-    computed: {
+  computed: {
     ...mapState(['token']),
-    // Recupera el token desde el Local Storage en las propiedades computadas
-    
   },
-    created() {
-      //traer el token desde vuex 
-      const token = this.token;
-      // Verifica si hay un token
-      if (token) {
-        // Realizar una solicitud HTTP al servidor con el token Bearer
-        axios
-          .get('http://127.0.0.1:8000/api/v1/user/?rol=administrador', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            // Al recibir la respuesta del servidor, actualiza la lista de administradores
-            this.admins = response.data;
-          })
-          .catch((error) => {
-            console.error('Error al obtener la lista de administradores:', error);
-          });
-      } else {
-        console.error('Token de autorización no encontrado en el localStorage');
-        // Puedes redirigir al usuario al inicio de sesión si el token no está disponible
-      }
-    },
+  created() {
+    const token = this.token;
 
-    methods: {
-    /*editarAdmin(admin) {
-      // Implementa la lógica para editar una cuenta de administrador
-    },*/
+    if (token) {
+      axios
+        .get('http://127.0.0.1:8000/api/v1/user/?rol=administrador', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          this.admins = response.data;
+        })
+        .catch((error) => {
+          console.error('Error al obtener la lista de administradores:', error);
+        });
+    } else {
+      console.error('Token de autorización no encontrado en el localStorage');
+    }
+  },
+  methods: {
     mostrarConfirmacion(adminId) {
-      this.adminAEliminar = adminId; // Guarda el ID del administrador a eliminar
-      this.mostrandoConfirmacion = true; // Muestra el cuadro de diálogo de confirmación
+      this.adminAEliminar = adminId;
+      this.mostrandoConfirmacion = true;
     },
     cerrarConfirmacion() {
-      this.mostrandoConfirmacion = false; // Oculta el cuadro de diálogo de confirmación
+      this.mostrandoConfirmacion = false;
     },
     eliminarAdmin(adminId) {
-      // Implementa la lógica para eliminar una cuenta de administrador
-      console.log('Eliminar administrador con ID:', adminId);
+      const url = `http://127.0.0.1:8000/api/v1/user/${adminId}`;
+      const data = {
+        rol: 'administrador',
+      };
 
-      // Luego de eliminar, cierra el cuadro de diálogo de confirmación
-      this.cerrarConfirmacion();
+      axios
+        .delete(url, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+          data,
+        })
+        .then(response => {
+          this.cargarListaAdmins(); // Actualiza la lista después de eliminar
+
+          console.log('Administrador eliminado con éxito:', response.data);
+          this.cerrarConfirmacion();
+        })
+        .catch(error => {
+          console.error('Error al eliminar administrador:', error);
+        });
+    },
+    cargarListaAdmins() {
+      axios
+        .get('http://127.0.0.1:8000/api/v1/user/?rol=administrador', {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
+        .then(response => {
+          this.admins = response.data; // Actualiza la lista de administradores
+        })
+        .catch(error => {
+          console.error('Error al obtener la lista de administradores:', error);
+        });
     },
   },
 };
 </script>
+
 
 <style>
 .custom-modal {

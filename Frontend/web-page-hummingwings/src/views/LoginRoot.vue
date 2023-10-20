@@ -15,6 +15,10 @@
           <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Login</button>
         </div>
       </form>
+      <!-- Agrega un div para mostrar mensajes de error -->
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +33,7 @@ export default {
     return {
       username: '',
       password: '',
+      errorMessage: '', // Variable para mostrar mensajes de error
     };
   },
   methods: {
@@ -37,6 +42,11 @@ export default {
     
     async login() {
       try {
+        // Validación mínima de la contraseña NO FUNCIONA CORRECTAMENTE PENDIENTE POR CORREGIR
+        if (this.password.length < 7) {
+          this.errorMessage = 'La contraseña debe tener al menos 9 caracteres.';
+          return;
+        }
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', {
           user: this.username,
           password: this.password,
@@ -63,12 +73,21 @@ export default {
           // Redirige al usuario a la vista "opcionesRoot" después del inicio de sesión exitoso.
           this.$router.push('/opcionesRoot');
         } else {
-          // La solicitud no fue exitosa (código de estado HTTP diferente de 2xx).
-          console.error('Error en la solicitud:', response.status, response.data);
-          // Puedes mostrar un mensaje de error al usuario o realizar otras acciones según el caso.
+          // Maneja respuestas con errores
+          console.log('Error al hacer la solicitud:');
+          if (response.data.code === 'incorrect_password') {
+            this.errorMessage = 'Clave incorrecta.';
+          } else if (response.data.code === 'user_not_found') {
+            this.errorMessage = 'Usuario root no registrado o inactivo.';
+          } else {
+            console.error('Error en la solicitud:', response.status, response.data);
+            // Puedes mostrar un mensaje de error genérico al usuario o realizar otras acciones según el caso.
+          }
+        
         }
       } catch (error) {
-        // Maneja los errores, por ejemplo, muestra un mensaje de error al usuario.
+        
+        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde. Código de error: ${error.response.data.code}`;
         console.error('Error en la solicitud:', error);
       }
     },

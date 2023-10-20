@@ -55,15 +55,6 @@
         <input type="password" class="form-control" id="exampleInputPassword1" v-model="formData.password">
       </div>
 
-      <div class="mb-3">
-        <label for="contactName" class="form-label">Nombre de un contacto</label>
-        <input type="text" class="form-control" id="contactName" v-model="formData.contact_name">
-      </div>
-      
-      <div class="mb-3">
-        <label for="numberContactName" class="form-label">Número de un contacto</label>
-        <input type="text" class="form-control" id="numberContactName" v-model="formData.contact_number">
-      </div>
 
       <div class="d-grid gap-2 pb-5">
         <button class="btn btn-primary" type="button">Subir foto de perfil</button>

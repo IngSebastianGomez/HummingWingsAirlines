@@ -6,12 +6,7 @@
       </a>
       <h1 class="myText" id="titulo">Humming <br> Wings</h1>
     </div>
-    <nav class="nav"> 
-      <a href="#">Inicio</a>
-      <a href="#/adminOptions">Servicios</a>
-      <a href="#">Nosotros</a>
-      <a href="#/createAdmin">Contacto</a>
-    </nav>
+    
     <div class="btn-group">
     <!-- Muestra el botón de inicio de sesión si el usuario no ha iniciado sesión -->
     <button-session v-if="!loggedIn"></button-session>

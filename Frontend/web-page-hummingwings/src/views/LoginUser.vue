@@ -16,6 +16,10 @@
         </div>
         <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
       </form>
+      <!-- Agrega un div para mostrar mensajes de error -->
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
     </div>
   </div>
 </template>
@@ -28,28 +32,24 @@ export default {
     return {
       email: '',
       password: '',
+      errorMessage: '', // Variable para mostrar mensajes de error
     };
   },
   methods: {
     async login() {
-      // Intento de inicio de sesión con el rol 'cliente'
       const clientLogin = await this.tryLogin('cliente');
 
       if (clientLogin.success) {
-        // La solicitud fue exitosa para el rol 'cliente'.
         this.handleSuccessfulLogin(clientLogin.data);
       } else {
-        // Intento de inicio de sesión con el rol 'cliente no exitoso.
-        // Intento de inicio de sesión con el rol 'administrador'.
         const adminLogin = await this.tryLogin('administrador');
 
         if (adminLogin.success) {
-          // La solicitud fue exitosa para el rol 'administrador'.
           this.handleSuccessfulLogin(adminLogin.data);
         } else {
           // Ambos intentos de inicio de sesión fallaron.
-          console.error('Error en la solicitud para ambos roles.');
-          // Puedes mostrar un mensaje de error al usuario o realizar otras acciones según el caso.
+          // Muestra un mensaje de error genérico.
+          this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
         }
       }
     },
@@ -68,6 +68,15 @@ export default {
           data: response.data,
         };
       } catch (error) {
+        if (error.response.data && error.response.data.code === 'incorrect_password') {
+          this.errorMessage = 'Contraseña incorrecta.';
+        } else if (error.response.data && error.response.data.code === 'user_not_found') {
+          this.errorMessage = 'Usuario no encontrado o inactivo.';
+        } else {
+          // Error genérico.
+          this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
+        }
+
         return {
           success: false,
           error: error,
