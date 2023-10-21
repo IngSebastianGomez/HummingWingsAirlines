@@ -14,6 +14,7 @@ import ListaAdministradores from './views/ListaAdministradores.vue'
 import LoginUser from './views/LoginUser.vue'
 import AdminOptions from './views/AdminOptions.vue'
 import VisualDatos from './views/VisualDatos.vue'
+import ConfirmAdmin from './emails/ConfirmAdmin.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -30,6 +31,11 @@ const routes = [
   { path: '/LoginUser', component: LoginUser},
   { path: '/AdminOptions', component: AdminOptions},
   { path: '/VisualDatos', component: VisualDatos},
+  {
+    path: '/ConfirmarAdmin/:pk/:token',
+    name: 'ConfirmarAdmin',
+    component: ConfirmAdmin, // Reemplaza con el componente que corresponda
+  },
   
 ]
 //crear obejto rutas de vue router
