@@ -572,7 +572,7 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
             },
-            "email": {"required": True, "type": "string"},
+            "email": {"required": False, "type": "string"},
             "address": {"required": True, "type": "string"},
             "cellphone": {
                 "required": True, "type": "string", 

@@ -66,7 +66,7 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://127.0.0.1:8000/api/v1/admin/';
-const DEFAULT_EMAIL = 'admin6@yopmail.com';  // Cambia esto a tu valor predeterminado
+//const DEFAULT_EMAIL = 'admin7@yopmail.com';  // Cambia esto a tu valor predeterminado
 
 export default {
   data() {
@@ -75,7 +75,6 @@ export default {
         address: '',
         birth_date: '',
         cellphone: '',
-        email: DEFAULT_EMAIL,
         first_name: '',
         gender: '',
         last_name: ''
