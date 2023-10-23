@@ -12,7 +12,8 @@
           <input type="password" class="form-control" id="Password" v-model="password">
         </div>
         <div class="d-grid gap-2 pb-5">
-          <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
+          <button v-if="!isAdminButtonVisible" class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
+          <button v-if="isAdminButtonVisible" class="admin-button" @click="AdLogin">Iniciar Sesión como Administrador</button>
         </div>
         <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
       </form>
@@ -33,26 +34,39 @@ export default {
       email: '',
       password: '',
       errorMessage: '', // Variable para mostrar mensajes de error
+      isAdminButtonVisible: false, // Variable para mostrar el botón de inicio de sesión de administrador
     };
   },
+  created() {
+    // Escucha el evento global de teclado
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+  destroyed() {
+    // Limpia el evento global de teclado cuando se destruye el componente
+    window.removeEventListener('keydown', this.handleKeyDown);
+  },
   methods: {
-    async login() {
-      const clientLogin = await this.tryLogin('cliente');
-
-      if (clientLogin.success) {
-        this.handleSuccessfulLogin(clientLogin.data);
-      } else {
-        const adminLogin = await this.tryLogin('administrador');
-
-        if (adminLogin.success) {
-          this.handleSuccessfulLogin(adminLogin.data);
-        } else {
-          // Ambos intentos de inicio de sesión fallaron.
-          // Muestra un mensaje de error genérico.
-          //this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
-        }
+    handleKeyDown(event) {
+      // Comprueba si se presiona Ctrl + Shift + U y si estamos en la ruta deseada
+      if (event.ctrlKey && event.shiftKey && event.key === 'U' && this.$route.path === '/LoginUser') {
+        this.isAdminButtonVisible = !this.isAdminButtonVisible;
       }
     },
+    async login() {
+  const clientLogin = await this.tryLogin('cliente');
+
+  if (clientLogin && clientLogin.success) {
+    this.handleSuccessfulLogin(clientLogin.data);
+  } 
+},
+
+async AdLogin() {
+  const adminLogin = await this.tryLogin('administrador');
+
+  if (adminLogin && adminLogin.success) {
+    this.handleSuccessfulLogin(adminLogin.data);
+  }
+},
     async tryLogin(role) {
       const requestData = {
         user: this.email,
@@ -60,27 +74,33 @@ export default {
         keep_logged_in: true,
         type: role,
       };
+      if (this.password.length < 7) {
+          this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
+          return;
+        }
 
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', requestData);
-        return {
-          success: response.status >= 200 && response.status < 300,
-          data: response.data,
-        };
-      } catch (error) {
-        if (error.response.data && error.response.status === 401) {
-          this.errorMessage = 'Contraseña incorrecta.';
-        } else if (error.response.data && error.response.status === 400) {
-          this.errorMessage = 'Usuario no encontrado o inactivo.';
-        } else {
-          // Error genérico.
-          this.errorMessage = 'Usuario o contraseña incorrecto.';
+        if (response.status >= 200 && response.status < 300) {
+      // La solicitud fue exitosa
+      return {
+        success: true,
+        data: response.data,
+      };
+    } else {
+      // La solicitud no fue exitosa
+      this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
+      console.error('Error en la solicitud. Código de estado:', response.status);
+    }
+  } catch (error) {
+        // Error en la solicitud de red.
+        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde.`;
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Clave incorrecta.';
+        } else if (error.response && error.response.status === 404) {
+          this.errorMessage = 'Usuario no registrado o inactivo.';
         }
-
-        return {
-          success: false,
-          error: error,
-        };
+        console.error('Error en la solicitud:', error);
       }
     },
     handleSuccessfulLogin(data) {

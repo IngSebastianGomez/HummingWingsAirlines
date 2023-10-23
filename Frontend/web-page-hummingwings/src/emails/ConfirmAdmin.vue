@@ -1,8 +1,5 @@
 <template>
   <div>
-    <p>Parámetro 'pk': {{ $route.params.pk }}</p>
-    <p>Parámetro 'token': {{ $route.params.token }}</p>
-
     <div class="container-sm mt-5">
       <h2>Rellena los campos para terminar el registro</h2>
 

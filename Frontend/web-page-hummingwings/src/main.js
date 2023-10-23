@@ -15,6 +15,7 @@ import LoginUser from './views/LoginUser.vue'
 import AdminOptions from './views/AdminOptions.vue'
 import VisualDatos from './views/VisualDatos.vue'
 import ConfirmAdmin from './emails/ConfirmAdmin.vue'
+import ConfirmUser from './emails/ConfirmUser.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -35,6 +36,11 @@ const routes = [
     path: '/ConfirmarAdmin/:pk/:token',
     name: 'ConfirmarAdmin',
     component: ConfirmAdmin, // Reemplaza con el componente que corresponda
+  },
+  {
+    path: '/ConfirmarUser/:pk/:token',
+    name: 'ConfirmarUser',
+    component: ConfirmUser, // Reemplaza con el componente que corresponda
   },
   
 ]

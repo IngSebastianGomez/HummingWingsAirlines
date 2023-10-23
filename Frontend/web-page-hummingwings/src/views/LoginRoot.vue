@@ -1,5 +1,5 @@
 <template>
-  <div class="container-sm mt-5" style="background: linear-gradient(114deg, #881610 0%, #019970 100%);">
+  <div v-if="!loggedIn" class="container-sm mt-5" style="background: linear-gradient(114deg, #881610 0%, #019970 100%);">
     <h1 class="myText">LoginRoot</h1>
     <div class="container" style="padding-left: 4rem; padding-top: 1rem;">
       <form>
@@ -21,6 +21,9 @@
       </div>
     </div>
   </div>
+      <div v-else>
+        <p>Debes cerrar sesion para ver esta vista</p>
+      </div>
 </template>
 
 <script>
