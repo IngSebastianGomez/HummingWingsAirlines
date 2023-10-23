@@ -5,11 +5,11 @@
       <form>
         <div class="mb-3">
           <label for="EmailAdmin" class="form-label">Correo electrónico</label>
-          <input type="email" class="form-control" id="EmailAdmin" v-model="email">
+          <input type="text" class="form-control" id="EmailAdmin" v-model="email" required>
         </div>
         <div class="mb-3">
           <label for="Password" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" id="Password" v-model="password">
+          <input type="password" class="form-control" id="Password" v-model="password" required>
         </div>
         <div class="d-grid gap-2 pb-5">
           <button v-if="!isAdminButtonVisible" class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
@@ -74,10 +74,6 @@ async AdLogin() {
         keep_logged_in: true,
         type: role,
       };
-      if (this.password.length < 7) {
-          this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
-          return;
-        }
 
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', requestData);
@@ -94,7 +90,7 @@ async AdLogin() {
     }
   } catch (error) {
         // Error en la solicitud de red.
-        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde.`;
+        this.errorMessage = `Ingresa los campos necesarios y correctos`;
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Clave incorrecta.';
         } else if (error.response && error.response.status === 404) {

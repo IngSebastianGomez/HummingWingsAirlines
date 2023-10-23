@@ -5,11 +5,11 @@
       <form>
         <div class="mb-3">
           <label for="username" class="form-label">Username</label><br>
-          <input  class="form-control" id="username" placeholder="username" type="text" v-model="username">
+          <input  class="form-control" id="username" placeholder="username" type="text" v-model="username" required>
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label><br>
-          <input class="form-control" id="password" placeholder="password" type="password" v-model="password">
+          <input class="form-control" id="password" placeholder="password" type="password" v-model="password" required>
         </div>
         <div class="d-grid gap-2 pb-5">
           <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Login</button>
@@ -45,11 +45,6 @@ export default {
     
     async login() {
       try {
-        // Validación mínima de la contraseña NO FUNCIONA CORRECTAMENTE PENDIENTE POR CORREGIR
-        if (this.password.length < 7) {
-          this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
-          return;
-        }
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', {
           user: this.username,
           password: this.password,
@@ -78,7 +73,7 @@ export default {
         } 
       } catch (error) {
         // Error en la solicitud de red.
-        this.errorMessage = `Error en la solicitud. Por favor, intenta de nuevo más tarde.`;
+        this.errorMessage = `Ingresa los campos necesarios y correctos`;
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Clave incorrecta.';
         } else if (error.response && error.response.status === 404) {
