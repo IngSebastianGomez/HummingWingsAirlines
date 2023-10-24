@@ -16,9 +16,14 @@ from ..helpers.token import TokenHandler
 from ..helpers.email import send_template_email
 from ..helpers.envs import getenv
 
-from ..models.email_template import ADMIN_REGISTER_CONFIRMATION, CLIENT_REGISTER_CONFIRMATION
-from ..models.constants import _GENDER_CHOICES, _STATUS_CHOICES, _DOCUMENT_TYPE_CHOICES, _USER_ROL_CHOICES
-from ..models.constants import _STATUS_403_MESSAGE, _STATUS_400_MESSAGE, _STATUS_401_MESSAGE
+from ..models.email_template import (
+    ADMIN_REGISTER_CONFIRMATION, CLIENT_REGISTER_CONFIRMATION)
+from ..models.constants import (
+    _GENDER_CHOICES, _STATUS_CHOICES, _DOCUMENT_TYPE_CHOICES)
+from ..models.constants import (
+    _USER_ROL_CHOICES, EMAIL_REGEX, PASSWORD_REGEX)
+from ..models.constants import (
+    _STATUS_403_MESSAGE, _STATUS_400_MESSAGE, _STATUS_401_MESSAGE)
 from ..models.constants import APPROVED, PENDING, ADMIN, CLIENT
 from ..models.root import Root
 from ..models.user import User
@@ -50,7 +55,10 @@ class UserApi(APIView, TokenHandler):
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])"
             },
-            "email": {"required": True, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" },
+            "email": {
+                "required": True, "type": "string", 
+                "regex": EMAIL_REGEX
+            },
             "rol": {
                 "required": True, "type": "string",
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
@@ -68,7 +76,7 @@ class UserApi(APIView, TokenHandler):
             },
             "password": {
                 "required": True, "type": "string",
-                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'
+                "regex": PASSWORD_REGEX
             },
         })
         if not validator.validate(request.data):
@@ -92,16 +100,22 @@ class UserApi(APIView, TokenHandler):
                 "detailed": "Ya existe un usuario registrado con ese documento o email"
             }, status=status.HTTP_409_CONFLICT)
 
-        request.data["token"] = random.randint(0000, 9999)
-        request.data["password"] = make_password(request.data["password"])
+        data = {}
+        for key, value in request.data.items():
+            if key == "password":
+                data[key] = make_password(value)
+            else:
+                data[key] = value
 
-        client = User.objects.create(**request.data)
+        data["token"] = random.randint(0000, 9999)
+
+        client = User.objects.create(**data)
 
         send_template_email(
             email_id=CLIENT_REGISTER_CONFIRMATION,
             params={
                 "full_name": client.get_full_name(),
-                "url": f"{getenv('API_HOSTNAME')}/api/v1/user/{client.pk}/confirm_email/{client.token}"
+                "url": f"{getenv('API_HOSTNAME_FRONT')}#/ConfirmarUser/{client.pk}/{client.token}"
             },
             receivers=client.email,
             tracking_dict={
@@ -131,14 +145,23 @@ class UserApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "rol": {"required": False, "type": "string", "allowed": [item[0] for item in _USER_ROL_CHOICES]},
-            "status": {"required": False, "type": "string", "allowed": [item[0] for item in _STATUS_CHOICES]},
+            "rol": {
+                "required": False, "type": "string",
+                "allowed": [item[0] for item in _USER_ROL_CHOICES]
+            },
+            "status": {
+                "required": False, "type": "string", 
+                "allowed": [item[0] for item in _STATUS_CHOICES]
+            },
             "document_type": {
                 "required": False, "type": "string", 
                 "allowed": [item[0] for item in _DOCUMENT_TYPE_CHOICES]
             },
             "document": {"required": False, "type": "string", "regex": r"^\d*$"},
-            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
+            "email": {
+                "required": False, "type": "string", 
+                "regex": EMAIL_REGEX
+            },
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"}
         })
@@ -210,7 +233,10 @@ class SpecificUserApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "rol": {"required": True, "type": "string", "allowed": [item[0] for item in _USER_ROL_CHOICES]},
+            "rol": {
+                "required": True, "type": "string", 
+                "allowed": [item[0] for item in _USER_ROL_CHOICES]
+            }
         })
         if not validator.validate(request.GET):
             return Response({
@@ -269,7 +295,10 @@ class SpecificUserApi(APIView, TokenHandler):
             },
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"},
-            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
+            "email": {
+                "required": False, "type": "string", 
+                "regex": EMAIL_REGEX
+            },
             "address": {"required": False, "type": "string"},
             "cellphone": {"required": False, "type": "string", "minlength": 10},
             "gender": {
@@ -278,7 +307,7 @@ class SpecificUserApi(APIView, TokenHandler):
             },
             "password": {
                 "required": False, "type": "string",
-                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'
+                "regex": PASSWORD_REGEX
             },
             "token": {
                 "required": False, "type": "integer", 
@@ -440,7 +469,10 @@ class AdminApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "email": {"required": True, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
+            "email": {
+                "required": True, "type": "string", 
+                "regex": EMAIL_REGEX
+            },
             "document_type": {
                 "required": True, "type": "string",
                 "allowed": [item[0] for item in _DOCUMENT_TYPE_CHOICES]
@@ -448,7 +480,8 @@ class AdminApi(APIView, TokenHandler):
             "document": {"required": True, "type": "string", "regex": r"^\d*$"},
             "password": {
                 "required": True, "type": "string",
-                "regex": r'^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$'},
+                "regex": PASSWORD_REGEX
+            },
         })
         if not validator.validate(request.data):
             return Response({
@@ -472,17 +505,23 @@ class AdminApi(APIView, TokenHandler):
                 "detailed": "Ya existe un usuario registrado con ese documento o email"
             }, status=status.HTTP_409_CONFLICT)
 
-        request.data["rol"] = ADMIN
-        request.data["token"] = random.randint(0000, 9999)
-        request.data["password"] = make_password(request.data["password"])
+        data = {}
+        for key, value in request.data.items():
+            if key == "password":
+                data[key] = make_password(value)
+            else:
+                data[key] = value
 
-        admin = User.objects.create(**request.data)
+        data["rol"] = ADMIN
+        data["token"] = random.randint(0000, 9999)
+
+        admin = User.objects.create(**data)
 
         send_template_email(
             email_id=ADMIN_REGISTER_CONFIRMATION,
             params={
                 "full_name": admin.get_full_name,
-                "url": "" ## Acá lo tengo que mandar a una vista de front, donde pueda llenar los datos, con el token y el pk
+                "url": f"{getenv('API_HOSTNAME_FRONT')}/#/ConfirmarAdmin/{admin.pk}/{admin.token}"
             },
             receivers=admin.email,
             tracking_dict={
@@ -572,7 +611,10 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
             },
-            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
+            "email": {
+                "required": False, "type": "string", 
+                "regex": EMAIL_REGEX
+            },
             "address": {"required": True, "type": "string"},
             "cellphone": {
                 "required": True, "type": "string", 
