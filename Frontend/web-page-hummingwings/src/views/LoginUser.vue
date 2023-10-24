@@ -1,24 +1,29 @@
 <template>
-    <div class="container-sm mt-5" style="max-width: 600px;">
-      <h1>Iniciar Sesión</h1>
-      <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
-        <form>
-          <div class="mb-3">
-            <label for="EmailAdmin" class="form-label">Correo electrónico</label>
-            <input type="email" class="form-control" id="EmailAdmin" v-model="email">
-          </div>
-          <div class="mb-3">
-            <label for="Password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="Password" v-model="password">
-          </div>
-          <div class="d-grid gap-2 pb-5">
-            <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
-          </div>
-          <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
-        </form>
+  <div class="container-sm mt-5">
+    <h1>Iniciar Sesión</h1>
+    <div class="container" style="padding-left: 4rem; padding-right: 4rem; padding-top: 2rem;">
+      <form>
+        <div class="mb-3">
+          <label for="EmailAdmin" class="form-label">Correo electrónico</label>
+          <input type="text" class="form-control" id="EmailAdmin" v-model="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="Password" v-model="password" required>
+        </div>
+        <div class="d-grid gap-2 pb-5">
+          <button v-if="!isAdminButtonVisible" class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
+          <button v-if="isAdminButtonVisible" class="admin-button" @click="AdLogin">Iniciar Sesión como Administrador</button>
+        </div>
+        <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
+      </form>
+      <!-- Agrega un div para mostrar mensajes de error -->
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 import axios from 'axios';
@@ -28,30 +33,69 @@ export default {
     return {
       email: '',
       password: '',
+      errorMessage: '', // Variable para mostrar mensajes de error
+      isAdminButtonVisible: false, // Variable para mostrar el botón de inicio de sesión de administrador
     };
   },
+  created() {
+    // Escucha el evento global de teclado
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+  destroyed() {
+    // Limpia el evento global de teclado cuando se destruye el componente
+    window.removeEventListener('keydown', this.handleKeyDown);
+  },
   methods: {
+    handleKeyDown(event) {
+      // Comprueba si se presiona Ctrl + Shift + U y si estamos en la ruta deseada
+      if (event.ctrlKey && event.shiftKey && event.key === 'U' && this.$route.path === '/LoginUser') {
+        this.isAdminButtonVisible = !this.isAdminButtonVisible;
+      }
+    },
     async login() {
+  const clientLogin = await this.tryLogin('cliente');
+
+  if (clientLogin && clientLogin.success) {
+    this.handleSuccessfulLogin(clientLogin.data);
+  } 
+},
+
+async AdLogin() {
+  const adminLogin = await this.tryLogin('administrador');
+
+  if (adminLogin && adminLogin.success) {
+    this.handleSuccessfulLogin(adminLogin.data);
+  }
+},
+    async tryLogin(role) {
+      const requestData = {
+        user: this.email,
+        password: this.password,
+        keep_logged_in: true,
+        type: role,
+      };
+
       try {
-        const requestData = {
-          user: this.email,
-          password: this.password,
-          keep_logged_in: true,
-          type: 'cliente',
-        };
-
         const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/', requestData);
-
         if (response.status >= 200 && response.status < 300) {
-          // La solicitud fue exitosa (código de estado HTTP 2xx).
-          this.handleSuccessfulLogin(response.data);
-        } else {
-          // La solicitud no fue exitosa (código de estado HTTP diferente de 2xx).
-          console.error('Error en la solicitud:', response.status, response.data);
-          // Puedes mostrar un mensaje de error al usuario o realizar otras acciones según el caso.
+      // La solicitud fue exitosa
+      return {
+        success: true,
+        data: response.data,
+      };
+    } else {
+      // La solicitud no fue exitosa
+      this.errorMessage = 'Error en la solicitud. Por favor, intenta de nuevo más tarde.';
+      console.error('Error en la solicitud. Código de estado:', response.status);
+    }
+  } catch (error) {
+        // Error en la solicitud de red.
+        this.errorMessage = `Ingresa los campos necesarios y correctos`;
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Clave incorrecta.';
+        } else if (error.response && error.response.status === 404) {
+          this.errorMessage = 'Usuario no registrado o inactivo.';
         }
-      } catch (error) {
-        // Maneja los errores, por ejemplo, muestra un mensaje de error al usuario.
         console.error('Error en la solicitud:', error);
       }
     },
@@ -88,5 +132,6 @@ export default {
       border-radius: 40px;
       margin-bottom: 2rem;
       max-width: 600px;
+      box-shadow: 0 5px 10px rgba(71, 3, 6, 0.7);
     }
   </style>

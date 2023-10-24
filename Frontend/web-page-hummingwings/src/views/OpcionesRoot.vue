@@ -1,15 +1,9 @@
-<template>
+<template> 
     <div style="color: white;">
-      <h1>Perfil de usuario</h1>
-      <p>id: {{ id }} </p>
-      <p>Nombre de usuario: {{ username }}</p>
-      <p>tipo: {{ type }}</p>
-      <p>token: {{ token }}</p>
-      <div>sesion: {{ loggedIn }}</div>
 
       <div class="row bg-transparent" style="padding: 1.5rem;">
       <div class="col bg-transparent">
-        <p class="fs-1 text-danger" style="font-family: ;">Opciones de control del Root</p>
+        <p class="fs-1 myText" style="color: red;">Opciones de control del Root</p>
       </div>
     </div>
 

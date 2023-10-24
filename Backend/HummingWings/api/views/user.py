@@ -50,7 +50,7 @@ class UserApi(APIView, TokenHandler):
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])"
             },
-            "email": {"required": True, "type": "string"},
+            "email": {"required": True, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" },
             "rol": {
                 "required": True, "type": "string",
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
@@ -100,7 +100,7 @@ class UserApi(APIView, TokenHandler):
         send_template_email(
             email_id=CLIENT_REGISTER_CONFIRMATION,
             params={
-                "full_name": client.get_full_name,
+                "full_name": client.get_full_name(),
                 "url": f"{getenv('API_HOSTNAME')}/api/v1/user/{client.pk}/confirm_email/{client.token}"
             },
             receivers=client.email,
@@ -138,7 +138,7 @@ class UserApi(APIView, TokenHandler):
                 "allowed": [item[0] for item in _DOCUMENT_TYPE_CHOICES]
             },
             "document": {"required": False, "type": "string", "regex": r"^\d*$"},
-            "email": {"required": False, "type": "string"},
+            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"}
         })
@@ -269,7 +269,7 @@ class SpecificUserApi(APIView, TokenHandler):
             },
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"},
-            "email": {"required": False, "type": "string"},
+            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
             "address": {"required": False, "type": "string"},
             "cellphone": {"required": False, "type": "string", "minlength": 10},
             "gender": {
@@ -440,7 +440,7 @@ class AdminApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "email": {"required": True, "type": "string"},
+            "email": {"required": True, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
             "document_type": {
                 "required": True, "type": "string",
                 "allowed": [item[0] for item in _DOCUMENT_TYPE_CHOICES]
@@ -572,7 +572,7 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
                 "required": True, "type": "string", 
                 "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
             },
-            "email": {"required": True, "type": "string"},
+            "email": {"required": False, "type": "string", "regex": r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"},
             "address": {"required": True, "type": "string"},
             "cellphone": {
                 "required": True, "type": "string", 
