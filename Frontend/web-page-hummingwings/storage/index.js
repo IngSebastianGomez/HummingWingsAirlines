@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-
+import VuexPersistence from 'vuex-persist';
 const storage = createStore({
   state: {
     id: null,
@@ -71,26 +71,49 @@ const storage = createStore({
   },
   actions: {
     logout({ commit }) {
-      // Restablece las propiedades a sus valores iniciales
-      commit('setUsername', 'pepito sin iniciar');
-      commit('setId', null);
-      commit('setType', null);
-      commit('logoutLogged',false);
-      commit('setToken', null);
-      commit('setRefresh', null);
-      commit('setEmail', '');
-      commit('setCellphone', '');
-      commit('setFirstName', '');
-      commit('setLastName', '');
-      commit('setGender', '');
-      commit('setRol', '');
-      commit('setStatus', '');
-      commit('setDocument', '');  
-      commit('setDocumentType', '');
+      const initialState = {
+        id: null,
+        username: 'pepito sin iniciar sesion',
+        type: '',
+        loggedIn: false,
+        token: null,
+        refresh: null,
+        email: '',
+        cellphone: '',
+        first_name: '',
+        last_name: '',
+        gender: '',
+        rol: '',
+        status: '',
+        document: '',
+        document_type: '',
+      };
+
+      commit('setUsername', initialState.username);
+      commit('setId', initialState.id);
+      commit('setType', initialState.type);
+      commit('logoutLogged', initialState.loggedIn);
+      commit('setToken', initialState.token);
+      commit('setRefresh', initialState.refresh);
+      commit('setEmail', initialState.email);
+      commit('setCellphone', initialState.cellphone);
+      commit('setFirstName', initialState.first_name);
+      commit('setLastName', initialState.last_name);
+      commit('setGender', initialState.gender);
+      commit('setRol', initialState.rol);
+      commit('setStatus', initialState.status);
+      commit('setDocument', initialState.document);
+      commit('setDocumentType', initialState.document_type);
+
       // Elimina el token del Local Storage
       localStorage.removeItem('sessionToken');
     },
   },
+  plugins: [
+    new VuexPersistence({
+      storage: window.localStorage,
+    }).plugin,
+  ],
 });
 
 export default storage;
