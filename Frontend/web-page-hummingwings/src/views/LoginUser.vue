@@ -12,8 +12,8 @@
           <input type="password" class="form-control" id="Password" v-model="password" required>
         </div>
         <div class="d-grid gap-2 pb-5">
-          <button v-if="!isAdminButtonVisible" class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Ingresar</button>
-          <button v-if="isAdminButtonVisible" class="admin-button" @click="AdLogin">Iniciar Sesión como Administrador</button>
+          <button v-if="!isAdminButtonVisible" class="btn btn-dark" type="button" style="background-color: #182a3f;" @click="login">Ingresar</button>
+          <button v-if="isAdminButtonVisible" class="admin-button" type="button" style="background-color: #182a3f;" @click="AdLogin">Iniciar Sesión como Administrador</button>
         </div>
         <router-link to="/RegistroUsuario" style="color: #182a3f;">¿No tienes cuenta? Regístrate</router-link>
       </form>

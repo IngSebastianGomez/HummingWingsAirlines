@@ -12,7 +12,7 @@
           <input class="form-control" id="password" placeholder="password" type="password" v-model="password" required>
         </div>
         <div class="d-grid gap-2 pb-5">
-          <button class="btn btn-dark" type="button" style="background-color: #182a3f; border-radius: 40px;" @click="login">Login</button>
+          <button class="btn btn-dark" type="button" style="background-color: #182a3f;" @click="login">Login</button>
         </div>
       </form>
       <!-- Agrega un div para mostrar mensajes de error -->
