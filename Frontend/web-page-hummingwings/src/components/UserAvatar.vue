@@ -15,7 +15,7 @@
 
     <div class="dropdown-menu" aria-labelledby="avatar-button">
       <!-- Opciones del menú desplegable -->
-      <a class="dropdown-item" href="#" @click="irVisualDatos">Perfil</a> <!-- Agrega un enlace a la vista de perfil -->
+      <a class="dropdown-item" @click="irVisualDatos">Perfil</a> <!-- Agrega un enlace a la vista de perfil -->
       <a class="dropdown-item" href="#">Configuración</a>
       <div class="dropdown-divider"></div>
 
@@ -63,5 +63,9 @@ export default {
     border-radius: 50%; /* Crea una forma circular */
     object-fit: cover; /* Ajusta la imagen al tamaño del avatar */
   }
+  .dropdown-item {
+  cursor: pointer; /* Establece el cursor como puntero */
+}
+
 </style>
   
