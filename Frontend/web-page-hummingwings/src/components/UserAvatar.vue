@@ -13,7 +13,7 @@
       />
     </button>
 
-    <div class="dropdown-menu" aria-labelledby="avatar-button">
+    <div class="dropdown-menu custom-dropdown-menu" aria-labelledby="avatar-button">
       <!-- Opciones del menú desplegable -->
       <a class="dropdown-item" @click="irVisualDatos">Perfil</a>
       <a class="dropdown-item" href="#">Configuración</a>
@@ -81,6 +81,9 @@ export default {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+  }
+  .custom-dropdown-menu {
+    width: 200px; /* Establece el ancho deseado para el menú desplegable */
   }
   .dropdown-item {
     cursor: pointer;

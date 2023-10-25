@@ -59,6 +59,7 @@ export default {
       confirmPassword: '', // Campo de confirmación de contraseña
       document_type: '',
       document: '',
+      errorMessage: '',
       showSuccessMessage: false,
       showErrorMessage: false,
       insertedAccountId: null, // Variable para mostrar el ID de la cuenta insertada
