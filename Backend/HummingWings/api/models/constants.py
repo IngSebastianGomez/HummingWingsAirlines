@@ -44,3 +44,7 @@ _STATUS_400_MESSAGE = "Cuerpo con estructura inválida"
 _STATUS_401_MESSAGE = "No tienes permiso para ejecutar esta acción"
 _STATUS_403_MESSAGE = "No tienes permiso para ejecutar esta acción"
 _STATUS_404_MESSAGE = "No se encontró el recurso solicitado"
+
+################## REGEX ##############################
+EMAIL_REGEX = r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
+PASSWORD_REGEX = r"^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$"
