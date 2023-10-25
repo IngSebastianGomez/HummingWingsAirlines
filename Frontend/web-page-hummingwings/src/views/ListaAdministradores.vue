@@ -30,7 +30,6 @@
       </div>
       <div class="col-md-2">
         <div class="d-flex justify-content-end">
-          <button @click="editarAdmin(admin)" class="btn btn-primary" style="margin-left: 10px;">Editar</button>
           <button @click="mostrarConfirmacion(admin.id)" class="btn btn-danger" style="margin-left: 10px;">Eliminar</button>
         </div>
       </div>
