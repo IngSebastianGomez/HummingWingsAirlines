@@ -6,17 +6,17 @@
       <form @submit.prevent="enviarFormulario">
         <div class="mb-3">
           <label for="exampleInputName1" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="exampleInputName1" v-model="formData.first_name" />
+          <input type="text" class="form-control" id="exampleInputName1" v-model="formData.first_name" required/>
         </div>
 
         <div class="mb-3">
           <label for="exampleInputLastName1" class="form-label">Apellido</label>
-          <input type="text" class="form-control" id="exampleInputLastName1" v-model="formData.last_name" />
+          <input type="text" class="form-control" id="exampleInputLastName1" v-model="formData.last_name" required/>
         </div>
 
         <div class="mb-3">
           <label for="birthday" class="form-label">Fecha de Nacimiento</label>
-          <input type="date" class="form-control" id="birthday" min="1924-01-01" max="2022-10-15" v-model="formData.birth_date" />
+          <input type="date" class="form-control" id="birthday" min="1924-01-01" max="2022-10-15" v-model="formData.birth_date" required/>
         </div>
 
         <div class="mb-3">
@@ -25,19 +25,19 @@
             <option value="" disabled selected>Género</option>
             <option value="masculino">masculino</option>
             <option value="femenino">femenino</option>
-            <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+            <option value="otro">Prefiero no decirlo</option>
           </select>
         </div>
 
         <div class="mb-3">
           <label for="InputPhoneNumber" class="form-label">Número de teléfono</label>
-          <input type="text" class="form-control" id="InputPhoneNumber" v-model="formData.cellphone" />
+          <input type="text" class="form-control" id="InputPhoneNumber" v-model="formData.cellphone" required @blur="validarNumber"/>
         </div>
 
         <!-- Agregar campo para dirección de residencia -->
         <div class="mb-3">
           <label for="InputAddress" class="form-label">Dirección de Residencia</label>
-          <input type="text" class="form-control" id="InputAddress" v-model="formData.address" />
+          <input type="text" class="form-control" id="InputAddress" v-model="formData.address" required/>
         </div>
 
         <div class="d-grid gap-2 pb-5">
@@ -88,25 +88,48 @@ export default {
     redirigirAlInicio() {
       this.$router.push('/');
     },
-    enviarFormulario() {
-      const { pk, token } = this.$route.params;  // Obtén pk y token de la URL
-      const url = `${BASE_URL}${pk}/confirm_email/${token}`;
+    validarNumber() {
+      const telefono = this.formData.cellphone;
+      const soloDigitos = /^\d+$/; // Expresión regular para verificar que solo hay dígitos
 
-      // Realiza la solicitud PATCH con los datos del formulario
-      axios.patch(url, this.formData)
-        .then(response => {
-          // La solicitud fue exitosa, puedes manejar la respuesta aquí
-          this.statusCode = response.status; // Guarda el código de respuesta
-          this.showSuccessAlert = true; // Muestra el mensaje de aprobación
-          // Redirige a donde sea necesario
-        })
-        .catch(error => {
-          // Ocurrió un error, maneja el error aquí
-          this.statusCode = error.response.status; // Guarda el código de respuesta del error
-          this.showErrorAlert = true; // Muestra el mensaje de error
-        });
-        
-    }
+      if (telefono && !soloDigitos.test(telefono)) {
+        this.errorMessage = 'El número solo debe contener dígitos.';
+      } else if (telefono && telefono.length < 10) {
+        this.errorMessage = 'El número debe tener al menos 10 dígitos.';
+      } else {
+        this.errorMessage = ''; 
+      }
+    },
+    enviarFormulario() {
+  const { pk, token } = this.$route.params;  // Obtén pk y token de la URL
+  const url = `${BASE_URL}${pk}/confirm_email/${token}`;
+
+  // Realiza la solicitud PATCH con los datos del formulario
+  axios.patch(url, this.formData)
+    .then(response => {
+      // Verifica si la respuesta es válida antes de acceder a 'status'
+      if (response) {
+        // La solicitud fue exitosa, puedes manejar la respuesta aquí
+        // Guarda el código de respuesta
+        this.showSuccessAlert = true; // Muestra el mensaje de aprobación
+        this.showErrorAlert = false;  // Oculta el mensaje de error
+        // Redirige a donde sea necesario
+      } else {
+        // La respuesta es inválida, puedes manejarla aquí
+        // Esto podría ser un error de servidor o una respuesta vacía
+      }
+    })
+    .catch(error => {
+      // Ocurrió un error, maneja el error aquí
+      if (error.response) {
+         // Guarda el código de respuesta del error
+      } else {
+        // Puede manejar otros tipos de errores aquí si error.response no está disponible
+      }
+      this.showErrorAlert = true; // Muestra el mensaje de error
+    });
+}
+
     
   }
 }

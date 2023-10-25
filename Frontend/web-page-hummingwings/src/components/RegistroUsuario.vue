@@ -56,13 +56,26 @@
 
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Contraseña (debe tener al menos 7 caracteres)</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" v-model="formData.password" required
-          @blur="validarContrasena">
-        <div v-if="errorMessage" class="alert alert-danger" role="alert">
-          {{ errorMessage }}
+        <div class="input-group">
+          <input :type="showPassword ? 'text' : 'password'" class="form-control" id="exampleInputPassword1" v-model="formData.password" required @blur="validarContrasena">
+          <span class="input-group-text" @click="togglePasswordVisibility">
+            <i class="fas" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+          </span>
         </div>
       </div>
 
+      <div class="mb-3">
+        <label for="exampleInputPassword2" class="form-label">Confirmar Contraseña</label>
+        <input type="password" class="form-control" id="exampleInputPassword2" v-model="confirmPassword" required @blur="validarConfirmacionContrasena">
+      </div>
+      
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+      <div class="mb-3">
+        <label for="exampleInputAddress" class="form-label">Dirección</label>
+        <input type="text" class="form-control" id="exampleInputAddress" v-model="formData.address" required>
+      </div>
       <div class="d-grid gap-2 pb-5">
         <button class="btn btn-primary" type="button">Subir foto de perfil</button>
         <button class="btn btn-dark" type="submit" style="background-color: #182a3f; border-radius: 40px;">Enviar</button>
@@ -78,18 +91,20 @@ export default {
   data() {
     return {
       formData: {
-        address: "Mz 4 Cs 2",
-        birth_date: "1990-01-07",
-        cellphone: "3233123323",
-        document: "103213213",
-        email: "sebax@yopmail.com",
-        first_name: "Sebastian",
-        gender: "masculino",
-        last_name: "Gonzalez",
-        password: "humming23",
+        address: "",
+        birth_date: "",
+        cellphone: "",
+        document: "",
+        email: "",
+        first_name: "",
+        gender: "",
+        last_name: "",
+        password: "",
         rol: "cliente",
-        document_type: "C.C.",
+        document_type: "",
       },
+      confirmPassword: "", // Nueva propiedad para la confirmación de la contraseña
+      errorMessage: "", // Variable para mostrar mensajes de error
     };
   },
   methods: {
@@ -100,8 +115,11 @@ export default {
         return;
       }
 
-      // Resto del código para enviar el formulario
-      // ...
+      // Validar la confirmación de contraseña
+      if (this.formData.password !== this.confirmPassword) {
+        this.errorMessage = 'Las contraseñas no coinciden. Por favor, inténtalo de nuevo.';
+        return;
+      }
 
       axios.post('http://127.0.0.1:8000/api/v1/user/', this.formData)
         .then((response) => {

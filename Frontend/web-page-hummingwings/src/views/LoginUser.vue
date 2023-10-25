@@ -100,26 +100,32 @@ async AdLogin() {
       }
     },
     handleSuccessfulLogin(data) {
-      // Actualiza los datos de Vuex con los datos de la respuesta
-      this.$store.commit('setId', data.id);
-      this.$store.commit('setUsername', data.email);
-      this.$store.commit('setType', data.type);
-      this.$store.commit('setToken', data.token);
-      this.$store.commit('setRefresh', data.refresh);
-      this.$store.commit('setEmail', data.email);
-      this.$store.commit('setCellphone', data.cellphone);
-      this.$store.commit('setFirstName', data.first_name);
-      this.$store.commit('setLastName', data.last_name);
-      this.$store.commit('setGender', data.gender);
-      this.$store.commit('setRol', data.rol);
-      this.$store.commit('setStatus', data.status);
-      this.$store.commit('setDocument', data.document);
-      this.$store.commit('setDocumentType', data.document_type);
-      //poner loginLogged de vuex en true
-      this.$store.commit('loginLogged', true);
-      // Redirige al usuario a la página principal después del inicio de sesión exitoso
-      this.$router.push('/');
-    },
+  if (data.status === 'pending') {
+    // El estado es 'pending', muestra un mensaje o realiza alguna acción adicional
+    this.errorMessage = 'Tu cuenta está pendiente de aprobación. Por favor, espera a que se active tu cuenta.';
+  } else {
+    // Actualiza los datos de Vuex y redirige al usuario a la página principal después del inicio de sesión exitoso
+    this.$store.commit('setId', data.id);
+    this.$store.commit('setUsername', data.email);
+    this.$store.commit('setType', data.type);
+    this.$store.commit('setToken', data.token);
+    this.$store.commit('setRefresh', data.refresh);
+    this.$store.commit('setEmail', data.email);
+    this.$store.commit('setCellphone', data.cellphone);
+    this.$store.commit('setFirstName', data.first_name);
+    this.$store.commit('setLastName', data.last_name);
+    this.$store.commit('setGender', data.gender);
+    this.$store.commit('setRol', data.rol);
+    this.$store.commit('setStatus', data.status);
+    this.$store.commit('setDocument', data.document);
+    this.$store.commit('setDocumentType', data.document_type);
+    // Poner loginLogged de Vuex en true
+    this.$store.commit('loginLogged', true);
+    // Redirige al usuario a la página principal después del inicio de sesión exitoso
+    this.$router.push('/');
+  }
+}
+
   },
 };
 </script>

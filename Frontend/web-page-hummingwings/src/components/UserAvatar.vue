@@ -13,33 +13,53 @@
       />
     </button>
 
-    <div class="dropdown-menu" aria-labelledby="avatar-button">
+    <div class="dropdown-menu custom-dropdown-menu" aria-labelledby="avatar-button">
       <!-- Opciones del menú desplegable -->
-      <a class="dropdown-item" href="#" @click="irVisualDatos">Perfil</a> <!-- Agrega un enlace a la vista de perfil -->
+      <a class="dropdown-item" @click="irVisualDatos">Perfil</a>
       <a class="dropdown-item" href="#">Configuración</a>
       <div class="dropdown-divider"></div>
-
-      <!-- Agrega una opción adicional si el rol es 'administrador' -->
       <a v-if="rol === 'administrador'" class="dropdown-item" @click="irARutaAdmin">Admin</a>
-
       <a class="dropdown-item" href="#" @click="handleLogout">Cerrar Sesión</a>
     </div>
   </div>
-</template> 
+</template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import axios from 'axios';
 
 export default {
   computed: {
-    ...mapState(['username', 'id', 'type', 'loggedIn', 'rol']), // Asegúrate de incluir 'rol' en las propiedades computadas
-    token() {
+    ...mapState(['username', 'id', 'type', 'loggedIn', 'rol','token']),
+    tokenn() {
       return localStorage.getItem('sessionToken') || '';
     },
   },
   methods: {
     ...mapActions(['logout']),
     handleLogout() {
+      // Realiza la solicitud PATCH al cerrar sesión
+      axios.patch('http://127.0.0.1:8000/api/v1/auth/', null, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      })
+        .then(() => {
+          // Maneja la respuesta exitosa (si es necesario)
+          console.log('La sesión se ha deshabilitado con éxito.');
+        })
+        .catch(error => {
+          // Maneja los errores (si es necesario)
+          if (error.response.status === 400) {
+            console.log('Solicitud incorrecta: verifica la estructura de la solicitud JSON y el encabezado de autorización.');
+          } else if (error.response.status === 404) {
+            console.log('La sesión no se encontró. Verifica el token de autorización.');
+          } else {
+            console.log(`Error inesperado: ${error.response.status}`);
+          }
+        });
+
+      // Luego, realiza el logout localmente y redirige al usuario
       this.logout();
       this.$router.push('/');
     },
@@ -48,20 +68,24 @@ export default {
       this.$router.push('/AdminOptions');
     },
     irVisualDatos() {
-      // Agrega aquí la lógica para redirigir a la ruta de opciones de administrador
+      // Agrega aquí la lógica para redirigir a la ruta de perfil o visualización de datos
       this.$router.push('/VisualDatos');
     },
   },
 };
 </script>
 
-  
 <style scoped>
   .avatar {
-    width: 40px; /* Establece el tamaño de tu avatar */
+    width: 40px;
     height: 40px;
-    border-radius: 50%; /* Crea una forma circular */
-    object-fit: cover; /* Ajusta la imagen al tamaño del avatar */
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .custom-dropdown-menu {
+    width: 200px; /* Establece el ancho deseado para el menú desplegable */
+  }
+  .dropdown-item {
+    cursor: pointer;
   }
 </style>
-  

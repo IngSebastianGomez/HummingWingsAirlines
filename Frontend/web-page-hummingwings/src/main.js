@@ -17,6 +17,7 @@ import VisualDatos from './views/VisualDatos.vue'
 import ConfirmAdmin from './emails/ConfirmAdmin.vue'
 import ConfirmUser from './emails/ConfirmUser.vue'
 
+
 const About = { template: '<div>About</div>' }
 
 //definir rutas

@@ -5,13 +5,15 @@
       <form @submit.prevent="crearUsuario">
         <div class="mb-3">
           <label for="EmailAdmin" class="form-label">Correo electrónico</label>
-          <input type="email" class="form-control" id="EmailAdmin" v-model="email" required
-          @blur="validarEmail">
+          <input type="email" class="form-control" id="EmailAdmin" v-model="email" required @blur="validarEmail">
         </div>
         <div class="mb-3">
           <label for="Password" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" id="Password" v-model="password" required
-          @blur="validarContrasena">
+          <input type="password" class="form-control" id="Password" v-model="password" required @blur="validarContrasena">
+        </div>
+        <div class="mb-3">
+          <label for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+          <input type="password" class="form-control" id="ConfirmPassword" v-model="confirmPassword" required @blur="validarConfirmacionContrasena">
         </div>
         <div class="mb-3">
           <label for="identityDocument" class="form-label">Documento de identidad</label>
@@ -23,8 +25,7 @@
         </div>
         <div class="mb-3">
           <label for="exampleInputNumeroIdentificacion1" class="form-label">Número de identificación</label>
-          <input type="text" min="0" class="form-control" id="exampleInputNumeroIdentificacion1" v-model="document" required
-          @blur="validarDocNumber">
+          <input type="text" min="0" class="form-control" id="exampleInputNumeroIdentificacion1" v-model="document" required @blur="validarDocNumber">
         </div>
         <div class="d-grid gap-2 pb-5">
           <button class="btn btn-dark" type="submit" style="background-color: #182a3f; border-radius: 40px;" v-if="!insertedAccountId">Crear</button>
@@ -42,7 +43,7 @@
       Cuenta creada con éxito. ID de cuenta: {{ insertedAccountId }} <button type="button" class="btn btn-primary float-right" @click="redirigirAtras">OK</button>
     </div>
     <div v-if="errorMessage" class="alert alert-danger" role="alert">
-        {{ errorMessage }}
+      {{ errorMessage }}
     </div>
   </div>
 </template>
@@ -53,10 +54,12 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      email: 'admin5@yopmail.com',
-      password: 'admin123',
-      document_type: 'C.C.',
-      document: '1059709215',
+      email: '',
+      password: '',
+      confirmPassword: '', // Campo de confirmación de contraseña
+      document_type: '',
+      document: '',
+      errorMessage: '',
       showSuccessMessage: false,
       showErrorMessage: false,
       insertedAccountId: null, // Variable para mostrar el ID de la cuenta insertada
@@ -64,6 +67,16 @@ export default {
   },
   methods: {
     async crearUsuario() {
+      // Validar la contraseña y la confirmación de contraseña
+      if (this.password.length < 7) {
+        this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
+        return;
+      }
+      if (this.password !== this.confirmPassword) {
+        this.errorMessage = 'Las contraseñas no coinciden. Por favor, inténtalo de nuevo.';
+        return;
+      }
+
       const requestData = {
         email: this.email,
         document_type: this.document_type,
@@ -108,16 +121,25 @@ export default {
       if (this.password.length >= 7) {
         // Restablecer el mensaje de error si la contraseña es válida
         this.errorMessage = '';
-      }else{
+      } else {
         this.errorMessage = "Contraseña inválida"
       }
     },
-    validarEmail(){
+    validarConfirmacionContrasena() {
+      if (this.confirmPassword.length < 7) {
+        this.errorMessage = 'La confirmación de contraseña debe tener al menos 7 caracteres.';
+      } else if (this.password !== this.confirmPassword) {
+        this.errorMessage = 'Las contraseñas no coinciden. Por favor, inténtalo de nuevo.';
+      } else {
+        this.errorMessage = ''; 
+      }
+    },
+    validarEmail() {
       const email = this.email;
-      const regex = /^(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/;
-      if(regex.test(email)==false){
+      const regex = /^(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zAZ0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/;
+      if (regex.test(email) == false) {
         this.errorMessage = 'Email no válido';
-      }else{
+      } else {
         this.errorMessage = '';
       }
     },
@@ -129,3 +151,4 @@ export default {
   },
 };
 </script>
+

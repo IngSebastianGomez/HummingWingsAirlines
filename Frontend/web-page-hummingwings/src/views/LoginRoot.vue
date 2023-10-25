@@ -29,7 +29,7 @@
 <script>
 import axios from 'axios';
 // Importa Vuex y la mutación que definirás para actualizar el nombre de usuario
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   data() {
@@ -82,6 +82,9 @@ export default {
         console.error('Error en la solicitud:', error);
       }
     }, // poner los if por aqui 
+  },
+  computed: {
+    ...mapState(['loggedIn']) // Mapear 'loggedIn' de Vuex en la propiedad 'loggedIn' del componente
   },
 };
 </script>
