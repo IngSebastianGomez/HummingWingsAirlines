@@ -6,4 +6,4 @@ local_settings.py
 logs
 static
 
-api/migrations
+api/migrations/
