@@ -15,27 +15,19 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z^u56v!4*wr52)&n8hm#ip=o=)33bn!wflbr@g5hn3wh7$7qsn'
+SECRET_KEY = 'django-insecure-t0s*$^q*(1k^=l!tyt7g=uybszu+%+*k*8p4*=6sd8v9o^_-ok'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'local_humming_wings',
-        'USER': 'netropy',
-        'PASSWORD': 'admin123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1']
+APPEND_SLASH=False 
 
 # Application definition
 
@@ -46,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api.apps.ApiConfig',
+    'rest_framework',
+    'corsheaders',
+    'huey.contrib.djhuey'
 ]
 
 MIDDLEWARE = [
@@ -56,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'HummingWings.urls'
@@ -78,6 +76,41 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'HummingWings.wsgi.application'
 
+
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'local_humming_wings',
+        'USER': 'juanse_root',
+        'PASSWORD': 'admin123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+HUEY = {
+    'huey_class': 'huey.RedisHuey',
+    'name': DATABASES['default']['NAME'],
+    'immediate': False,
+    'consumer': {'workers': 10, 'worker_type': 'thread', 'periodic': True},
+    'connection': {
+        'host': '127.0.0.1',
+        'port': 6379,
+    }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -96,6 +129,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",  # Añade aquí la URL de tu aplicación Vue.js
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -108,6 +145,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+# AUTH_USER_MODEL= "HummingWings.User"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

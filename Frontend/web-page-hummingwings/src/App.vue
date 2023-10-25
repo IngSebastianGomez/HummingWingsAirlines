@@ -1,39 +1,64 @@
 <template>
   <div id="app">
-      <my-component></my-component>
+    <header>
+      <MyHeader/>
+    </header>
+    <div>
+      <RouterView> </RouterView>
+    </div>
   </div>
 </template>
 
 
 <script>
-import MyComponent from './components/MyComponent.vue'
-
+import { useRoute, useRouter } from 'vue-router'
+import MyHeader from './components/Header.vue'
 
 export default {
   name: 'App',
   components: {
-    MyComponent
-  }
+    MyHeader,
+  },
+  setup() {
+    const route = useRoute()
+    const router = useRouter() // Accede a $router desde el contexto setup
+
+    const isHomePage = route.path === '/' 
+
+    console.log('isHomePage:', isHomePage)
+    console.log('Current Route:', route.path)
+    
+    // Función para mostrar la vista oculta
+    function mostrarVistaOculta() {
+      // Usamos router para ir a la vista oculta de root LoginRoot
+      router.push('/LoginRoot');
+    }
+
+    // Función para manejar el evento de teclado
+    function handleKeyPress(event) {
+      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "r") {
+        mostrarVistaOculta();
+      }
+    }
+    
+    // Agregar un escuchador de eventos para detectar la combinación de teclas
+    document.addEventListener("keydown", handleKeyPress);
+
+    return {
+      isHomePage,
+    }
+  },
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  background-color: #182a3f;
-  min-height: 100vh;
-}
 
-body{
-  margin: 0; 
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Aclonica&display=swap');
+
+.myText{
+    font-family: 'Aclonica', sans-serif;
+  }
+#app {
   background-color: #182a3f;
   min-height: 100vh;
 }

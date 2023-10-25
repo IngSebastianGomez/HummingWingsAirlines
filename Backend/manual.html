@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#manual-de-instalación-backend-hummingwings-airlines">Manual de instalación Backend HummingWings Airlines</a>
+<ul>
+<li><a href="#requisitos">Requisitos</a></li>
+<li><a href="#clonar-repositorio">Clonar repositorio</a></li>
+<li><a href="#crear-entorno-virtual-de-python-e-instalar-requirements">Crear entorno virtual de python e instalar requirements</a></li>
+<li><a href="#instalar-requirements.txt">Instalar requirements.txt</a></li>
+<li><a href="#abrir-la-carpeta-en-un-editor-de-código">Abrir la carpeta en un editor de código</a></li>
+<li><a href="#crear-base-de-datos-local">Crear base de datos local</a></li>
+<li><a href="#realizar-migraciones">Realizar migraciones</a></li>
+<li><a href="#migrar">Migrar</a></li>
+<li><a href="#crear-super-usuario-de-django">Crear super usuario de Django</a></li>
+<li><a href="#ejecutar-servidor-de-django">Ejecutar servidor de django</a></li>
+<li><a href="#ingresar-al-modo-de-administrador-y-crear-variables-de-entorno">Ingresar al modo de administrador y crear variables de entorno</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="manual-de-instalación-backend-hummingwings-airlines">Manual de instalación Backend HummingWings Airlines</h1>
+<h2 id="requisitos">Requisitos</h2>
+<ul>
+<li>Sistema operativo (Windows, Mac, Linux)</li>
+<li>Python</li>
+<li>Gestor de paquetes de Python PIP</li>
+<li>PostgreSQL</li>
+<li>Navegador web</li>
+</ul>
+<h2 id="clonar-repositorio">Clonar repositorio</h2>
+<p>Clonar el siguiente repositorio de GitHub en una terminal con el comando.</p>
+<pre class=" language-python"><code class="prism  language-python">Git clone https<span class="token punctuation">:</span><span class="token operator">//</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>IngSebastianGomez<span class="token operator">/</span>HummingWingsAirlines<span class="token punctuation">.</span>git
+</code></pre>
+<h2 id="crear-entorno-virtual-de-python-e-instalar-requirements">Crear entorno virtual de python e instalar requirements</h2>
+<h3 id="crear-entorno-virtual">Crear entorno virtual</h3>
+<pre class=" language-python"><code class="prism  language-python">python <span class="token operator">-</span>m venv nombreEntornoVirtual
+</code></pre>
+<h3 id="activar-entorno-virtual">Activar entorno virtual</h3>
+<h4 id="windows">Windows</h4>
+<pre class=" language-python"><code class="prism  language-python">nombreEntornoVirtual\Scripts\activate
+</code></pre>
+<h4 id="maclinux">Mac/Linux</h4>
+<pre class=" language-python"><code class="prism  language-python">source nombreEntornoVirtual<span class="token operator">/</span><span class="token builtin">bin</span><span class="token operator">/</span>activate
+</code></pre>
+<h2 id="instalar-requirements.txt">Instalar requirements.txt</h2>
+<p>En una terminal dirigirse a la carpeta Backend donde estará el archivo llamado “requirements.txt” una vez estemos aquí ejecutaremos el siguiente comando</p>
+<pre class=" language-python"><code class="prism  language-python">pip install <span class="token operator">-</span>r requirements<span class="token punctuation">.</span>txt
+</code></pre>
+<h2 id="abrir-la-carpeta-en-un-editor-de-código">Abrir la carpeta en un editor de código</h2>
+<p>En la ruta Backend/HummingWings/HummingWings/ en el archivo <a href="http://settings.py">settings.py</a> cambiar el usuario y contraseña de acceso a la base de datos postgres, tenga en cuenta que estos datos son personales</p>
+<pre class=" language-python"><code class="prism  language-python">DATABASES  <span class="token operator">=</span> <span class="token punctuation">{</span>
+<span class="token string">'default'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+<span class="token string">'ENGINE'</span><span class="token punctuation">:</span> <span class="token string">'django.db.backends.postgresql_psycopg2'</span><span class="token punctuation">,</span>
+<span class="token string">'NAME'</span><span class="token punctuation">:</span> <span class="token string">'local_humming_wings'</span><span class="token punctuation">,</span>
+<span class="token string">'USER'</span><span class="token punctuation">:</span> <span class="token string">'Usuario'</span><span class="token punctuation">,</span> <span class="token comment">#Su usuario</span>
+<span class="token string">'PASSWORD'</span><span class="token punctuation">:</span> <span class="token string">'Password'</span><span class="token punctuation">,</span> <span class="token comment"># Su contraseña</span>
+<span class="token string">'HOST'</span><span class="token punctuation">:</span> <span class="token string">'localhost'</span><span class="token punctuation">,</span>
+<span class="token string">'PORT'</span><span class="token punctuation">:</span> <span class="token string">'5432'</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="crear-base-de-datos-local">Crear base de datos local</h2>
+<p>Crear en postgres la base de datos local con el nombre que se encuentra en el atributo ‘NAME’ del archivo de configuración en este caso “local_humming_wings”<br>
+<strong><strong><img src="https://lh5.googleusercontent.com/heHU88hZ0m40SdpYUKp54_YCeVz7J1-53DcL8Kxr2r-rWFQg929mM2ncGMLzhhSw_nimoDYoDvNkflMd27eiTPLtABHiNzHHoLk31V2XY3Tw1RXUvfW_4Rke8pDHWtC3uj6711Kdi80ug610y9COnxU" alt=""></strong></strong></p>
+<h2 id="realizar-migraciones">Realizar migraciones</h2>
+<p>En una terminal  dentro de la carpeta donde está el archivo <a href="http://manage.py">manage.py</a> ejecutar el comando</p>
+<pre class=" language-python"><code class="prism  language-python">python manage<span class="token punctuation">.</span>py makemigrations
+</code></pre>
+<h2 id="migrar">Migrar</h2>
+<p>En una terminal  dentro de la carpeta donde está el archivo <a href="http://manage.py">manage.py</a> ejecutar el comando</p>
+<pre class=" language-python"><code class="prism  language-python">python manage<span class="token punctuation">.</span>py migrate
+</code></pre>
+<h2 id="crear-super-usuario-de-django">Crear super usuario de Django</h2>
+<p>En una terminal  dentro de la carpeta donde está el archivo <a href="http://manage.py">manage.py</a> ejecutar el comando y seguir instrucciones de creación de súper usuario</p>
+<pre class=" language-python"><code class="prism  language-python">python manage<span class="token punctuation">.</span>py createsuperuser
+</code></pre>
+<h2 id="ejecutar-servidor-de-django">Ejecutar servidor de django</h2>
+<p>En una terminal  dentro de la carpeta donde está el archivo <a href="http://manage.py">manage.py</a> ejecutar el comando</p>
+<pre class=" language-python"><code class="prism  language-python">python manage<span class="token punctuation">.</span>py runserver
+</code></pre>
+<h2 id="ingresar-al-modo-de-administrador-y-crear-variables-de-entorno">Ingresar al modo de administrador y crear variables de entorno</h2>
+<p>En un navegador ingrese la siguiente dirección en la barra de busqueda</p>
+<pre class=" language-python"><code class="prism  language-python">http<span class="token punctuation">:</span><span class="token operator">//</span>localhost<span class="token punctuation">:</span><span class="token number">8000</span><span class="token operator">/</span>admin<span class="token operator">/</span>
+</code></pre>
+<p>Se mostrará la siguiente vista donde ingresará los datos del súper usuario creado previamente<br>
+<strong><img src="https://lh5.googleusercontent.com/8aQ6rwRWTJvSJc3dsfS28v3M8VB7Kz8MavpJXX9L4DhWFaeCn_uBGWR_AbXGLUxYZymrIfupZrtGgvAexQe_jgWr-TIeQq1VTjt029DV2KJ1WNPzjW2-oYdA67lYyMBRjuWDMgbKtDbzcRv1d-DarGw" alt=""></strong><br>
+Una vez ha ingresado al panel seleccionará el apartado Variables de entorno y creará las siguientes variables:	<br>
+<strong><img src="https://lh4.googleusercontent.com/s7H8_29IRf4QAQmzO63lidkNJ5q3WbWCNCGrqCt9tQ7mSwdmZswGqAsMorGS-cacrLyFpEABCWmxApw4jMY_2LHaldYfQZ5OaFGdByEhe0vvXeQoayicRpNmU_5NHCXFLTDCbPD0IZCa6hyY7zDWgTs" alt=""></strong><br>
+<strong><img src="https://lh5.googleusercontent.com/_RfCgf4urGGJERo5MfOQfeFrlYaIOHzFAVDJbx9dXZSjLfrBS7cz9M1cKlSUBNgqY6t_gN6wH2NLu903r6w5eARajFTe6vnaKGr9N8RAvip8dpfv_4UG5Qw8KZpNUfGEVh8h58fY_yh_EkYUh12vNpo" alt=""></strong><br>
+<strong><img src="https://lh4.googleusercontent.com/n1o3feyAHMV5VYeA_GQfbAwik6U_e-53359Yrv2jr17MbC3uCgF6shvH5oZiEjbUlSLVvmK67dFM5x-9zho3_GYwlyPy40KJWSWlLjczslkT5Utd8wYuyDt9u9Oj0V_rJyDZjzJfFWYqJEVPjmuKaxc" alt=""></strong></p>
+
+    </div>
+  </div>
+</body>
+
+</html>
