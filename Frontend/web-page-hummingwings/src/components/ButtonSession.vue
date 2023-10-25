@@ -1,7 +1,10 @@
 <template>
-        <div class="btn-group">
-            <button type="button" class="btn btn-primary" @click="navigateToLogin">Iniciar Sesión</button>
-        </div>
+    <div class="row align-items-start" style="padding-right: 1rem;">
+        <button type="button"
+                class="btn btn-primary"
+                style="background-color: #182a3f; border: 0px;"
+                @click="navigateToLogin">Iniciar Sesión</button>
+    </div>
 </template>
 
 <script>

@@ -2,18 +2,18 @@
   <div class="MyHeader">
     <div class="d-flex">
       <a href="#">
-        <img src="../assets/Logo_HummingWings.png" class="mr-3">
+        <img src="../assets/Logo_HummingWings.png">
       </a>
-      <h1 class="myText" id="titulo">Humming <br> Wings</h1>
+      <h1 class="myText" id="titulo" style="padding-left: 8px;">Humming <br> Wings</h1>
     </div>
     
-    <div class="btn-group">
-    <!-- Muestra el botón de inicio de sesión si el usuario no ha iniciado sesión -->
-    <button-session v-if="!loggedIn"></button-session>
-    
-    <!-- Muestra el avatar si el usuario ha iniciado sesión -->
-    <user-avatar v-else></user-avatar>
-  </div>
+    <div class="d-flex" style="align-items:center">
+      <!-- Muestra el botón de inicio de sesión si el usuario no ha iniciado sesión -->
+      <button-session v-if="!loggedIn"></button-session>
+      
+      <!-- Muestra el avatar si el usuario ha iniciado sesión -->
+      <user-avatar v-else></user-avatar>
+    </div>
   </div>
 </template>
 

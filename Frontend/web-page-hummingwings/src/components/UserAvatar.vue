@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="row align-items-center" style="padding-right: 1rem;">
     <button
       class="btn btn-link"
       id="avatar-button"
