@@ -130,7 +130,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Añade aquí la URL de tu aplicación Vue.js
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",  # Añade aquí la URL de tu aplicación Vue.js
 ]
 
 # Internationalization
