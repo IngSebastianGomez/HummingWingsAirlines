@@ -48,3 +48,9 @@ _STATUS_404_MESSAGE = "No se encontró el recurso solicitado"
 ################## REGEX ##############################
 EMAIL_REGEX = r"(?!.*\.\.)(?!.*@.*\.\.)(?!.*\.$)[a-zA-Z0-9._-]*[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
 PASSWORD_REGEX = r"^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*$"
+
+################# TYPE FLIGHTS #################
+DIRECT = "directo"
+_TYPE_FLIGHT_CHOICES = (
+    (DIRECT, "Directo")
+)
