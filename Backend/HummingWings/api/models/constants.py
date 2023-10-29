@@ -52,5 +52,5 @@ PASSWORD_REGEX = r"^.*(?=.{8,100})(?=.*[a-zA-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z0-9].*
 ################# TYPE FLIGHTS #################
 DIRECT = "directo"
 _TYPE_FLIGHT_CHOICES = (
-    (DIRECT, "Directo")
+    (DIRECT, "Directo"),
 )
