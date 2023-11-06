@@ -1,10 +1,50 @@
 <template>
     <div class="confirmation-page">
-      <div class="container">
+      <div class="container-sm" style="text-align: center;">
         <h2>Confirmación de Registro</h2>
         <p>Gracias por registrarte en nuestro sitio web. Para completar tu registro, por favor confirma tu dirección de correo electrónico:</p>
         <p>Haz clic en el siguiente botón para confirmar tu registro:</p>
-        <button class="button" @click="confirmarRegistro">Confirmar Registro</button>
+        
+  <!--Modal con bootstrap para mostrar estado de la verificacion-->
+        <button type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#Modal1"
+                @click="confirmarRegistro">Confirmar Registro
+        </button>
+
+        <div class="modal fade" id="Modal1" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" v-if="showSuccessAlert">
+                <p>Aprobacion realizada con exito.</p>
+              </div>
+              <div class="modal-body" v-if="showErrorAlert">
+                <p>Lo sentimos, hubo un error al hacer la verificacion.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        v-if="showErrorAlert" 
+                        data-bs-dismiss="modal">
+                        Close
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        v-if="showSuccessAlert"
+                        data-bs-dismiss="modal"
+                        @click="redirigirAlInicio">
+                        Volver a Inicio
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
     </div>
   </template>
@@ -62,15 +102,14 @@
   }
   
   h2 {
-    color: #333;
+    color: #fff;
   }
   
   p {
-    color: #666;
+    color: #000;
   }
   
   .button {
-    display: inline-block;
     padding: 10px 20px;
     background-color: #182a3f;
     color: #fff;

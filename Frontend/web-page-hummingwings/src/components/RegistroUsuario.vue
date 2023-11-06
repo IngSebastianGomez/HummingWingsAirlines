@@ -2,13 +2,21 @@
   <div class="container-sm mt-5">
     <form @submit="enviarFormulario">
       <div class="mb-3">
-        <label for="exampleInputName1" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="exampleInputName1" v-model="formData.first_name" required>
+        <label for="InputName1" class="form-label">Primer nombre</label>
+        <input type="text" class="form-control" id="InputName1" v-model="formData.first_name" required
+        @blur="validarNombre">
+      </div>
+      <div v-if="errorName" class="alert alert-danger" role="alert">
+        El nombre no puede contener espacios en blanco ni al inicio ni al final.
       </div>
 
       <div class="mb-3">
-        <label for="exampleInputLastName1" class="form-label">Apellido</label>
-        <input type="text" class="form-control" id="exampleInputLastName1" v-model="formData.last_name" required>
+        <label for="InputLastName1" class="form-label">Primer apellido</label>
+        <input type="text" class="form-control" id="InputLastName1" v-model="formData.last_name" required
+        @blur="validarApellido">
+      </div>
+      <div v-if="errorLastName" class="alert alert-danger" role="alert">
+        El apellido no puede contener espacios en blanco ni al inicio ni al final.
       </div>
 
       <div class="mb-3">
@@ -26,10 +34,14 @@
           @blur="validarDocNumber">
       </div>
 
+      <div v-if="errorDocument" class="alert alert-danger" role="alert">
+        El número de documento solo debe contener dígitos.
+      </div>
+
       <div class="mb-3">
         <label for="birthday" class="form-label">Fecha de Nacimiento</label>
         <input type="date" class="form-control" id="birthday" v-model="formData.birth_date" min="1924-01-01"
-          max="2022-10-15" required>
+          max="2004-10-15" required>
       </div>
 
       <div class="mb-3">
@@ -48,6 +60,10 @@
           @blur="validarNumber">
       </div>
 
+      <div v-if="errorTel" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+      </div>
+
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Correo Electrónico (debe ser una dirección de correo
           válida)</label>
@@ -64,13 +80,17 @@
         </div>
       </div>
 
+      <div v-if="errorLenPass" class="alert alert-danger" role="alert">
+        La contraseña debe tener al menos 7 caracteres.
+      </div>
+
       <div class="mb-3">
         <label for="exampleInputPassword2" class="form-label">Confirmar Contraseña</label>
         <input type="password" class="form-control" id="exampleInputPassword2" v-model="confirmPassword" required @blur="validarConfirmacionContrasena">
       </div>
       
-      <div v-if="errorMessage" class="alert alert-danger" role="alert">
-          {{ errorMessage }}
+      <div v-if="errorDiferPass" class="alert alert-danger" role="alert">
+        Las contraseñas no coinciden. Por favor, inténtalo de nuevo.
         </div>
       <div class="mb-3">
         <label for="exampleInputAddress" class="form-label">Dirección</label>
@@ -78,7 +98,7 @@
       </div>
       <div class="d-grid gap-2 pb-5">
         <button class="btn btn-primary" type="button">Subir foto de perfil</button>
-        <button class="btn btn-dark" type="submit" style="background-color: #182a3f; border-radius: 40px;">Enviar</button>
+        <button class="btn btn-dark" type="submit" style="background-color: #182a3f; border-radius: 40px;" @click="enviarFormulario">Enviar</button>
       </div>
     </form>
   </div>
@@ -105,22 +125,16 @@ export default {
       },
       confirmPassword: "", // Nueva propiedad para la confirmación de la contraseña
       errorMessage: "", // Variable para mostrar mensajes de error
+      errorDocument: false, //Verifica si hubo un error con el numero de documento
+      errorLenPass: false, //Verifica si hubo error con el largo de la contraseña
+      errorDiferPass: false, //Verifica si los dos campos de contraseña son diferentes
+      errorTel: false, //Verifica si hubo error con el numero de telefono
+      errorName: false, //Verifica que el primer nombre no sea espacios en blanco
+      errorLastName: false, //Verifica que el apellido no sea espacios en blanco
     };
   },
   methods: {
     enviarFormulario() {
-      // Validar la contraseña antes de enviar el formulario
-      if (this.formData.password.length < 7) {
-        this.errorMessage = 'La contraseña debe tener al menos 7 caracteres.';
-        return;
-      }
-
-      // Validar la confirmación de contraseña
-      if (this.formData.password !== this.confirmPassword) {
-        this.errorMessage = 'Las contraseñas no coinciden. Por favor, inténtalo de nuevo.';
-        return;
-      }
-
       axios.post('http://127.0.0.1:8000/api/v1/user/', this.formData)
         .then((response) => {
           // Redirigir a otra página o realizar otras acciones según el caso
@@ -134,11 +148,27 @@ export default {
         });
     },
 
+    
+
     validarContrasena() {
-      if (this.formData.password.length >= 7) {
-        // Restablecer el mensaje de error si la contraseña es válida
-        this.errorMessage = '';
-      }
+      // Validar la longitud de la contraseña
+      if (this.formData.password.length < 7) {
+          this.errorLenPass= true;
+          return;
+        } else {
+          this.errorLenPass = false;
+        }
+      },
+
+    validarConfirmacionContrasena(){
+        // Validar la confirmación de contraseña
+      if (this.formData.password !== this.confirmPassword) {
+          this.errorDiferPass = true;
+          return;
+        } else{
+          this.errorDiferPass = false;
+        }
+      
     },
 
     validarNumber() {
@@ -147,20 +177,42 @@ export default {
 
       if (telefono && !soloDigitos.test(telefono)) {
         this.errorMessage = 'El número solo debe contener dígitos.';
+        this.errorTel= true;
       } else if (telefono && telefono.length < 10) {
         this.errorMessage = 'El número debe tener al menos 10 dígitos.';
+        this.errorTel = true;
       } else {
-        this.errorMessage = ''; 
+        this.errorMessage = '';
+        this.errorTel = false;
       }
     },
     validarDocNumber() {
       const document = this.formData.document;
       const soloDigitos = /^\d+$/; // Expresión regular para verificar que solo hay dígitos
 
-      if (document && !soloDigitos.test(document)) {
-        this.errorMessage = 'El número de documento solo debe contener dígitos.';
+      if (!soloDigitos.test(document)) {
+        this.errorDocument = true;
       } else {
-        this.errorMessage = ''; 
+        this.errorDocument = false;
+      }
+    },
+    validarNombre() {
+      const nombreAValidar = this.formData.first_name;
+      //Expresion regular para que no hayan espacios en blanco ni al inicio ni al final de la cadena
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorName = true;
+      } else {
+        this.errorName = false;
+      }
+    },
+    validarApellido() {
+      const nombreAValidar = this.formData.last_name;
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorLastName = true;
+      } else {
+        this.errorLastName = false;
       }
     },
   },
