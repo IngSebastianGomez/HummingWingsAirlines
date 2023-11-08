@@ -8,7 +8,7 @@ from api.models.ticket import Ticket
 from api.models.booking_holder import BookingHolder
 from api.models.flights import Flights
 from api.models.seat import Seat
-from api.models.cards import Cards
+from api.models.card import Card
 from api.models.news import News
 from api.models.passenger import Passenger
 
@@ -24,7 +24,7 @@ admin.site.register(Ticket)
 admin.site.register(BookingHolder)
 admin.site.register(Flights)
 admin.site.register(Seat)
-admin.site.register(Cards)
+admin.site.register(Card)
 admin.site.register(News)
 admin.site.register(Passenger)
 

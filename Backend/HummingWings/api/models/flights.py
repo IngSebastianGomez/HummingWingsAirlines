@@ -10,7 +10,7 @@ class Flights(models.Model):
     price_of_ticket = models.DecimalField("Precio del ticket", max_digits=10, decimal_places=2)
     hour_start = models.TimeField("Hora de salida")
     hour_end = models.TimeField("Hora de llegada")
-    is_international = models.BooleanField("Es intenacional", default=False)
+    is_international = models.BooleanField("Es internacional", default=False)
 
     type_flight = models.CharField(
         "Tipo de vuelo",

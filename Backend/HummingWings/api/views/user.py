@@ -19,7 +19,7 @@ from ..helpers.envs import getenv
 from ..models.email_template import (
     ADMIN_REGISTER_CONFIRMATION, CLIENT_REGISTER_CONFIRMATION)
 from ..models.constants import (
-    _GENDER_CHOICES, _STATUS_CHOICES, _DOCUMENT_TYPE_CHOICES)
+    _GENDER_CHOICES, _STATUS_CHOICES, _DOCUMENT_TYPE_CHOICES, DATE_REGEX)
 from ..models.constants import (
     _USER_ROL_CHOICES, EMAIL_REGEX, PASSWORD_REGEX)
 from ..models.constants import (
@@ -53,7 +53,7 @@ class UserApi(APIView, TokenHandler):
             "last_name": {"required": True, "type": "string"},
             "birth_date": {
                 "required": True, "type": "string", 
-                "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])"
+                "regex": DATE_REGEX
             },
             "email": {
                 "required": True, "type": "string", 
@@ -443,7 +443,7 @@ class SpecificUserApi(APIView, TokenHandler):
 
         user_to_delete.delete()
         return Response({
-            "deleted": user_to_delete.pk,
+            "deleted": user_pk,
             "code": "user_deleted",
             "detailed": "Usuario eliminado correctamente"
         }, status=status.HTTP_200_OK)
@@ -609,7 +609,7 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
             "last_name": {"required": True, "type": "string", },
             "birth_date": {
                 "required": True, "type": "string", 
-                "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
+                "regex": DATE_REGEX,
             },
             "email": {
                 "required": False, "type": "string", 
