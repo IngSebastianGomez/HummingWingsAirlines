@@ -1,6 +1,7 @@
 from django.db import models
+from django_extensions.db.models import TimeStampedModel
 
-class Card(models.Model):
+class Card(TimeStampedModel):
     owner = models.ForeignKey("User", related_name="card", on_delete=models.CASCADE)
     number = models.CharField("Numero de tarjeta", max_length=16, unique=True)
     date_expire = models.DateField("Fecha de vencimiento", null=False, blank=False)
