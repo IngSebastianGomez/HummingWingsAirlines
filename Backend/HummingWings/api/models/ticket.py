@@ -7,6 +7,7 @@ from ..models.constants import _STATUS_CHOICES_TICKET, PENDING
 class Ticket(TimeStampedModel):
     """ Ticket model definition. """
     passenger = models.ForeignKey('Passenger', on_delete=models.CASCADE, related_name='passenger')
+    flight = models.ForeignKey('Flight', on_delete=models.CASCADE, related_name='ticket')
     seat = models.ForeignKey('Seat', on_delete=models.CASCADE)
     code_booking = models.CharField(max_length=10, editable=False)
     status = models.CharField(max_length=10, choices=_STATUS_CHOICES_TICKET, default=PENDING)

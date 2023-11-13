@@ -1,7 +1,6 @@
 """ Contains the Seat model """
 from django.db import models
-from ..models.flight import Flight
-from django_extensions.db.models import TimeStampedModel
+
 
 class Seat(models.Model):
     """ Seat model definition. """

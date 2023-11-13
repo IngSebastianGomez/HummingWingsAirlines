@@ -1,5 +1,6 @@
 """ Contains Card model management views """
 
+from decimal import Decimal
 import random
 from cerberus import Validator
 
@@ -34,10 +35,10 @@ class CardApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "owner": {"required": True, "type": "integer", "min": 1},
-            "number": {"required": True, "type": "string", "min-length":16},
-            "date_expire": {"required": True, "type": "string", "regex": DATE_REGEX},
-            "code_secure": {"required": True, "type": "string", "min-length": 3}
+            "code_secure": {"required": True, "type": "string"},
+            "date_expire": {"required": True, "type": "string"},
+            "number": {"required": True, "type": "string"},
+            "owner": {"required": True, "type": "integer", "min": 1}
         })
         if not validator.validate(request.data):
             return Response({
@@ -59,7 +60,7 @@ class CardApi(APIView, TokenHandler):
         request.data["owner"] = User.objects.filter(
             pk=request.data["owner"], rol=CLIENT).first()
 
-        request.data["cash"] = random.randint(1000000,15000000)
+        request.data["cash"] = Decimal(random.randint(1000000,15000000))
         card = Card.objects.create(**request.data)
 
         return Response({

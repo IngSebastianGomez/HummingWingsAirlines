@@ -1,13 +1,13 @@
 """ Contains Flight endpoint management definition """
 
-import datetime as dt
 from cerberus import Validator
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils import timezone
 
-from ..serializer.flight import FlightSerializer
+from ..serializers.flight import FlightSerializer
 
 from ..helpers.envs import getenv
 from ..helpers.token import TokenHandler
@@ -50,6 +50,8 @@ class FlightApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)
+        print(request.headers)
+        print(payload, user)
         if not payload or not isinstance(user, User) or user.rol != ADMIN:
             return Response({
                 "code": "do_not_have_permission",
@@ -110,34 +112,39 @@ class FlightApi(APIView, TokenHandler):
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+        limit_datetime = timezone.make_aware(
+            timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") - timezone.timedelta(
+                hours=getenv("LIMIT_HOURS_SAME_FLIGHT"))
+        )
+
         if (
             Flight.objects.filter(
-                city_start=request.GET["city_start"],
-                city_end=request.GET["city_end"],
-                date_start__lte=(
-                    request.GET["date_start"] + dt.timedelta(
-                        hours=getenv("LIMIT_HOURS_SAME_FLIGHT"))
-                )).exists()
+                city_start=request.data["city_start"],
+                city_end=request.data["city_end"],
+                date_start__gte=limit_datetime
+                ).exists()
         ):
             return Response({
                 "code": "flight_already_exists",
-                "detailed": "El vuelo ya existe"
+                "detailed": "Ya existe un vuelo con menos de 6 horas de diferencia"
             }, status=status.HTTP_409_CONFLICT)
 
-        request.GET["date_end"] = dt.datetime.strptime(
-            request.GET["date_start"], "%Y-%m-%d-%H:%M"
-        ) + dt.timedelta(hours=request.GET["hours_of_flight"])
+        request.data["date_end"] = timezone.make_aware(
+            timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M")
+            + timezone.timedelta(hours=request.data["hours_of_flight"])
+        )
+        request.data.pop("hours_of_flight")
+        
+        request.data["available_seats"] = 250 if request.data["is_international"] else 100
 
-        request.GET.pop("hours_of_flight")
-
-        flight = Flight.objects.create(**request.GET)
+        flight = Flight.objects.create(**request.data)
 
         New.objects.create(
-            title=f"Nuevo vuelo de {self.city_start} a {self.city_end}",
+            title=f"Nuevo vuelo de {flight.city_start} a {flight.city_end}",
             content=(
-                f"Disponible un super vuelo de {self.city_start} a "
-                f"{self.city_end}, aprovecha esta oportunidad, por "
-                f"tan solo {self.price_of_ticket} solo en "
+                f"Disponible un super vuelo de {flight.city_start} a "
+                f"{flight.city_end}, aprovecha esta oportunidad, por "
+                f"tan solo {flight.price_of_ticket} solo en "
                 f"HummingWings tu aerolínea de confianza"""
             )
         )
@@ -240,6 +247,31 @@ class SpecificFlightApi(APIView, TokenHandler):
                 "code": "flight_has_sold_tickets",
                 "detailed": "El vuelo ya tiene tickets vendidos"
             }, status=status.HTTP_409_CONFLICT)
+
+        if "date_start" in request.data:
+            limit_datetime = timezone.make_aware(
+                timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") - timezone.timedelta(
+                    hours=getenv("LIMIT_HOURS_SAME_FLIGHT"))
+            )
+
+            if (
+                Flight.objects.filter(
+                    city_start=request.data["city_start"],
+                    city_end=request.data["city_end"],
+                    date_start__gte=limit_datetime).exists()
+            ):
+                return Response({
+                    "code": "flight_already_exists",
+                    "detailed": "Ya existe un vuelo con menos de 6 horas de diferencia"
+                }, status=status.HTTP_409_CONFLICT)
+        
+        if "hours_of_flight" in request.data:
+            request.data["date_end"] = timezone.make_aware(
+                timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M")
+                + timezone.timedelta(hours=request.data["hours_of_flight"])
+            )
+
+            request.data.pop("hours_of_flight")
 
         Flight.objects.filter(pk=flight_id).update(**request.data)
 

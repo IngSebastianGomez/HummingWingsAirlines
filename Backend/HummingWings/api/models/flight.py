@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from ..models.constants import _TYPE_FLIGHT_CHOICES, DIRECT
 from ..models.seat import Seat
+from ..models.ticket import Ticket
 
 
 class Flight(TimeStampedModel):
@@ -16,6 +17,7 @@ class Flight(TimeStampedModel):
     date_start = models.DateTimeField("Fecha de salida")
     date_end = models.DateTimeField("Fecha de llegada")
     is_international = models.BooleanField("Es internacional", default=False)
+    available_seats = models.IntegerField("Asientos disponibles", default=0)
     type_flight = models.CharField("Tipo de vuelo", max_length=10,
         choices=_TYPE_FLIGHT_CHOICES,default=DIRECT)
 
@@ -29,9 +31,20 @@ class Flight(TimeStampedModel):
         verbose_name_plural = "Flights"
 
     def time_of_flight(self):
-        """ Returns the total time of flight """
-        return self.date_end - self.date_start
+        """Returns the number of hours between two datetime objects"""
+        time_difference = self.date_end - self.date_start
+        hours = time_difference.total_seconds() / 3600
+        return hours
 
     def has_sold_seats(self):
         """ Returns if the flight has sold seats """
         return Seat.objects.filter(flight__pk=self.pk).exists()
+
+    def has_sold_tickets(self):
+        """ Returns if the flight has sold tickets """
+        return Ticket.objects.filter(flight__pk=self.pk).exists()
+
+    def update_seats(self):
+        """ Updates the available seats of the flight """
+        self.available_seats = Seat.objects.filter(flight__pk=self.pk).count()
+        self.save()
