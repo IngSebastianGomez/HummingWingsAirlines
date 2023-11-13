@@ -6,9 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from ..serializers.flight import PublicFlightSerializer
+
 from ..helpers.token import TokenHandler
 
 from ..models.constants import _STATUS_400_MESSAGE, ONE_WAY, ROUND_TRIP
+from ..models.flight import Flight
+from ..models.search_log import SearchLog
+from ..models.user import User
 
 
 class PublicFlightApi(APIView, TokenHandler):
@@ -31,9 +36,9 @@ class PublicFlightApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "city_from": {"required": True, "type": "string"},
-            "city_to": {"required": True, "type": "string"},
-            "date_from": {"required": True, "type": "string"},
+            "city_start": {"required": True, "type": "string"},
+            "city_end": {"required": True, "type": "string"},
+            "date_start": {"required": True, "type": "string"},
             "seats": {"required": True, "type": "string"},
             "travel_type": {
                 "required": True, "type": "string",
@@ -52,18 +57,19 @@ class PublicFlightApi(APIView, TokenHandler):
             SearchLog.objects.create(
                 user=user,
                 ip=request.headers["ip"],
-                city_from=request.GET["city_from"],
-                city_to=request.GET["city_to"]
+                city_start=request.GET["city_start"],
+                city_end=request.GET["city_end"],
+                date_start=request.GET["date_start"]
             )
 
         query = {
-            "city_from__icontains": request.GET["city_from"],
-            "city_to__icontains": request.GET["city_to"],
-            "date_from__gte": request.GET["date_from"],
+            "city_start__icontains": request.GET["city_start"],
+            "city_end__icontains": request.GET["city_end"],
+            "date_start__gte": request.GET["date_start"],
             "avaliable_seats__gt": request.GET["seats"]
         }
 
-        flights = Flight.objects.filter(**query).all()
+        flights = Flight.objects.filter(**query).order_by("-date_start").all()
 
         return Response({
             "count": flights.count(),

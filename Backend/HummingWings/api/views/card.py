@@ -1,7 +1,17 @@
+""" Contains Card model management views """
 
 import random
+from cerberus import Validator
 
-from ..models.constants import CLIENT
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from ..helpers.token import TokenHandler
+
+from ..models.card import Card
+from ..models.constants import _STATUS_400_MESSAGE, _STATUS_401_MESSAGE, CLIENT, DATE_REGEX
+from ..models.user import User
 
 
 class CardApi(APIView, TokenHandler):
@@ -60,7 +70,7 @@ class CardApi(APIView, TokenHandler):
 class SpecificCardApi(APIView, TokenHandler):
     """ Contains specific card management methods """
 
-    def delete(self, request, card_pk):
+    def delete(self, request, card_id):
         """ deletes a specific card
 
         Parameters
@@ -69,7 +79,7 @@ class SpecificCardApi(APIView, TokenHandler):
         request: dict
             Contains http transaction information.
 
-        card_pk: string
+        card_id: string
             PK of the card
 
         Returns
@@ -89,7 +99,7 @@ class SpecificCardApi(APIView, TokenHandler):
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
 
-        card = Card.objects.filter(owner__pk=user.pk, pk=card_pk).first()
+        card = Card.objects.filter(owner__pk=user.pk, pk=card_id).first()
         if not card:
             return Response({
                 "code": "card_not_found",
@@ -98,7 +108,7 @@ class SpecificCardApi(APIView, TokenHandler):
 
         card.delete()
         return Response({
-            "deleted": card_pk,
+            "deleted": card_id,
             "code": "card_deleted",
             "detailed": "Tarjeta eliminado correctamente"
         }, status=status.HTTP_200_OK)

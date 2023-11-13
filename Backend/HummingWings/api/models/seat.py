@@ -22,9 +22,12 @@ class Seat(models.Model):
         ('E', 'E'),
     ]
 
-    flight = models.ForeignKey('Flight', verbose_name="Codigo vuelo",on_delete=models.CASCADE)
-    class_flight = models.CharField("Clase del asiento", max_length=8, choices=_CLASS_CHOICES)
-    type_location = models.CharField("Tipo de locacion", max_length=8, choices=_TYPE_LOCATION_CHOICES)
+    flight = models.ForeignKey(
+        "Flight", verbose_name="Codigo vuelo", on_delete=models.CASCADE)
+    class_flight = models.CharField(
+        "Clase del asiento",max_length=8, choices=_CLASS_CHOICES)
+    type_location = models.CharField(
+        "Tipo de locacion", max_length=8, choices=_TYPE_LOCATION_CHOICES)
     row = models.CharField("Fila", max_length=2, choices=_ROW_CHOICES)
     column = models.CharField("Columna", max_length=2, choices=_COLUMN_CHOICES)
 
@@ -34,7 +37,7 @@ class Seat(models.Model):
 
     def __str__(self):
         return f'Asiento {self.code_seat()} ({self.class_flight}) en vuelo {self.flight.city_start} - {self.flight.city_end}'
-    
+
     class Meta:
         """ Sets human readable name """
         db_table = "Seat"

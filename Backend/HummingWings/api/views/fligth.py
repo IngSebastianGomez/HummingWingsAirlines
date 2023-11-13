@@ -7,9 +7,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from ..serializer.flight import FlightSerializer
+
+from ..helpers.envs import getenv
 from ..helpers.token import TokenHandler
 
 from ..models.constants import _STATUS_400_MESSAGE, _STATUS_401_MESSAGE, ADMIN
+from ..models.flight import Flight
+from ..models.new import New
 from ..models.user import User
 
 
@@ -33,9 +38,9 @@ class FlightApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "city_from": {"required": False, "type": "string"},
-            "city_to": {"required": False, "type": "string"},
-            "date_from": {"required": False, "type": "string"}
+            "city_start": {"required": False, "type": "string"},
+            "city_end": {"required": False, "type": "string"},
+            "date_start": {"required": False, "type": "string"}
         })
         if not validator.validate(request.GET):
             return Response({
@@ -52,12 +57,12 @@ class FlightApi(APIView, TokenHandler):
             }, status=status.HTTP_401_UNAUTHORIZED)
 
         query = {}
-        if "city_from" in request.GET:
-            query["city_from__icontains"] = request.GET["city_from"]
-        if "city_to" in request.GET:
-            query["city_to__icontains"] = request.GET["city_to"]
-        if "date_from" in request.GET:
-            query["date_from__gte"] = request.GET["date_from"]
+        if "city_start" in request.GET:
+            query["city_start__icontains"] = request.GET["city_start"]
+        if "city_end" in request.GET:
+            query["city_end__icontains"] = request.GET["city_end"]
+        if "date_start" in request.GET:
+            query["date_start__gte"] = request.GET["date_start"]
 
         flights = Flight.objects.filter(**query).all()
 
@@ -84,12 +89,12 @@ class FlightApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "city_from": {"required": True, "type": "string"},
-            "city_to": {"required": True, "type": "string"},
-            "date_from": {"required": True, "type": "string"},
-            "departure_time": {"required": True, "type": "string"},
+            "city_start": {"required": True, "type": "string"},
+            "city_end": {"required": True, "type": "string"},
+            "date_start": {"required": True, "type": "string"},
             "hours_of_flight": {"required": True, "type": "integer"},
-            "price": {"required": True, "type": "integer"}
+            "price_of_ticket": {"required": True, "type": "integer"},
+            "is_international": {"required": True, "type": "boolean"}
         })
         if not validator.validate(request.data):
             return Response({
@@ -107,33 +112,34 @@ class FlightApi(APIView, TokenHandler):
 
         if (
             Flight.objects.filter(
-                city_from=request.GET["city_from"],
-                city_to=request.GET["city_to"],
-                date_from=request.GET["date_from"],
-                departure_time=request.GET["departure_time"]).exists()
+                city_start=request.GET["city_start"],
+                city_end=request.GET["city_end"],
+                date_start__lte=(
+                    request.GET["date_start"] + dt.timedelta(
+                        hours=getenv("LIMIT_HOURS_SAME_FLIGHT"))
+                )).exists()
         ):
             return Response({
                 "code": "flight_already_exists",
                 "detailed": "El vuelo ya existe"
             }, status=status.HTTP_409_CONFLICT)
 
-        request.GET["arrival_time"] = dt.datetime.strptime(
-            request.GET["departure_time"], "%H:%M:%S"
+        request.GET["date_end"] = dt.datetime.strptime(
+            request.GET["date_start"], "%Y-%m-%d-%H:%M"
         ) + dt.timedelta(hours=request.GET["hours_of_flight"])
-
-        request.GET["date_to"] = dt.datetime.strptime(
-            request.GET["date_from"], "%Y-%m-%d"
-        ) + dt.timedelta(days=request.GET["hours_of_flight"]%24)
 
         request.GET.pop("hours_of_flight")
 
         flight = Flight.objects.create(**request.GET)
 
-        ## Hay que revisarlo
         New.objects.create(
-            user=user,
-            flight=flight,
-            date=dt.datetime.now()
+            title=f"Nuevo vuelo de {self.city_start} a {self.city_end}",
+            content=(
+                f"Disponible un super vuelo de {self.city_start} a "
+                f"{self.city_end}, aprovecha esta oportunidad, por "
+                f"tan solo {self.price_of_ticket} solo en "
+                f"HummingWings tu aerolínea de confianza"""
+            )
         )
 
         return Response({
@@ -202,12 +208,11 @@ class SpecificFlightApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "city_from": {"required": False, "type": "string"},
-            "city_to": {"required": False, "type": "string"},
-            "date_from": {"required": False, "type": "string"},
-            "departure_time": {"required": False, "type": "string"},
+            "city_start": {"required": False, "type": "string"},
+            "city_end": {"required": False, "type": "string"},
+            "date_start": {"required": False, "type": "string"},
             "hours_of_flight": {"required": False, "type": "integer"},
-            "price": {"required": False, "type": "integer"}
+            "price_of_ticket": {"required": False, "type": "integer"}
         })
         if not validator.validate(request.data):
             return Response({
