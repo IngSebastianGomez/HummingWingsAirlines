@@ -5,7 +5,6 @@ from django_extensions.db.models import TimeStampedModel
 
 class Seat(models.Model):
     """ Seat model definition. """
-    #_FLIGHT_CHOICES = [(flight.code_flight, flight.city_start + " - " + flight.city_end) for flight in Flights.objects.all()]
     _CLASS_CHOICES = [
         ('Primera', 'Primera'),
         ('General', 'General'),
@@ -28,7 +27,6 @@ class Seat(models.Model):
     type_location = models.CharField("Tipo de locacion", max_length=8, choices=_TYPE_LOCATION_CHOICES)
     row = models.CharField("Fila", max_length=2, choices=_ROW_CHOICES)
     column = models.CharField("Columna", max_length=2, choices=_COLUMN_CHOICES)
-    #ticket_passenger = models.ForeignKey('api.Ticket', on_delete=models.SET_NULL, verbose_name="Tiquete del pasajero", null=True, blank=True, related_name='seats')
 
 
     def code_seat(self):

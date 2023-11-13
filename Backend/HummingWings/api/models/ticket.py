@@ -4,7 +4,6 @@ from django_extensions.db.models import TimeStampedModel
 from ..models.constants import _STATUS_CHOICES_TICKET, PENDING
 
 
-
 class Ticket(TimeStampedModel):
     """ Ticket model definition. """
     passenger = models.ForeignKey('Passenger', on_delete=models.CASCADE, related_name='passenger')

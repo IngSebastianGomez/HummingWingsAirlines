@@ -29,7 +29,7 @@ class Flight(TimeStampedModel):
 
 
     def __str__(self):
-        return f"Vuelo de {self.city_start} a {self.city_end}"
+        return f"Code: {self.code_flight} Vuelo de {self.city_start} a {self.city_end}"
     
     class Meta:
         """ Sets human readable name """
