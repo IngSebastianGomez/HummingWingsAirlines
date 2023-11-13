@@ -46,6 +46,9 @@ _DOCUMENT_TYPE_CHOICES = (
     (PASSPORT, "Pasaporte")
 )
 
+ROUND_TRIP = "round_trip"
+ONE_WAY = "one_way"
+
 ############### ERROR CODE MESSAGE ####################
 _STATUS_400_MESSAGE = "Cuerpo con estructura inválida"
 _STATUS_401_MESSAGE = "No tienes permiso para ejecutar esta acción"

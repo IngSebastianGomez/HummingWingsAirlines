@@ -32,7 +32,7 @@ from ..models.user import User
 class UserApi(APIView, TokenHandler):
     """ Defines the HTTP verbs to user model management """
 
-    def post(self, request): 
+    def post(self, request):
         """ Creates a new user.
 
         Parameters
@@ -52,11 +52,11 @@ class UserApi(APIView, TokenHandler):
             "first_name": {"required": True, "type": "string"},
             "last_name": {"required": True, "type": "string"},
             "birth_date": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "regex": DATE_REGEX
             },
             "email": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "regex": EMAIL_REGEX
             },
             "rol": {
@@ -150,16 +150,16 @@ class UserApi(APIView, TokenHandler):
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
             },
             "status": {
-                "required": False, "type": "string", 
+                "required": False, "type": "string",
                 "allowed": [item[0] for item in _STATUS_CHOICES]
             },
             "document_type": {
-                "required": False, "type": "string", 
+                "required": False, "type": "string",
                 "allowed": [item[0] for item in _DOCUMENT_TYPE_CHOICES]
             },
             "document": {"required": False, "type": "string", "regex": r"^\d*$"},
             "email": {
-                "required": False, "type": "string", 
+                "required": False, "type": "string",
                 "regex": EMAIL_REGEX
             },
             "first_name": {"required": False, "type": "string"},
@@ -234,7 +234,7 @@ class SpecificUserApi(APIView, TokenHandler):
         """
         validator = Validator({
             "rol": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
             }
         })
@@ -290,13 +290,13 @@ class SpecificUserApi(APIView, TokenHandler):
         """
         validator = Validator({
             "rol": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
             },
             "first_name": {"required": False, "type": "string"},
             "last_name": {"required": False, "type": "string"},
             "email": {
-                "required": False, "type": "string", 
+                "required": False, "type": "string",
                 "regex": EMAIL_REGEX
             },
             "address": {"required": False, "type": "string"},
@@ -310,7 +310,7 @@ class SpecificUserApi(APIView, TokenHandler):
                 "regex": PASSWORD_REGEX
             },
             "token": {
-                "required": False, "type": "integer", 
+                "required": False, "type": "integer",
                 "dependencies": "password"
             }
         })
@@ -338,7 +338,7 @@ class SpecificUserApi(APIView, TokenHandler):
             return Response({
                 "code": "invalid_body",
                 "detailed": "El token es requerido para actualizar la contraseña"
-            }, status=status.HTTP_400_BAD_REQUEST)  
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         user_to_update = User.objects.filter(pk=user_pk, rol=request.data["rol"])
         if not user:
@@ -363,7 +363,7 @@ class SpecificUserApi(APIView, TokenHandler):
         if "password" in request.data and request.data["token"] == user_to_update.first().token:
             data["password"] = make_password(request.data["password"])
             data["token"] = random.randint(0000, 9999)
-        elif ( 
+        elif (
             "password" in request.data and
             request.data["token"] != user_to_update.first().token
         ):
@@ -401,7 +401,7 @@ class SpecificUserApi(APIView, TokenHandler):
         """
         validator = Validator({
             "rol": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "allowed": [item[0] for item in _USER_ROL_CHOICES]
             }
         })
@@ -451,8 +451,8 @@ class SpecificUserApi(APIView, TokenHandler):
 
 class AdminApi(APIView, TokenHandler):
     """ Defines the http verbs to admin management """
-    
-    def post(self, request): 
+
+    def post(self, request):
         """ Creates a new Admin.
 
         Parameters
@@ -470,7 +470,7 @@ class AdminApi(APIView, TokenHandler):
         """
         validator = Validator({
             "email": {
-                "required": True, "type": "string", 
+                "required": True, "type": "string",
                 "regex": EMAIL_REGEX
             },
             "document_type": {
@@ -548,7 +548,7 @@ class ConfirmUserRegisterApi(APIView, TokenHandler):
 
         pk: int
             Pk of specific user
-            
+
         token: int
             Token to confirm the register
 
@@ -591,7 +591,7 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
 
         pk: int
             Pk of specific admin user
-            
+
         token: int
             Token to confirm the register
 
@@ -609,20 +609,20 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
             "last_name": {"required": True, "type": "string", },
             "birth_date": {
                 "required": True, "type": "string", 
-                "regex": DATE_REGEX,
+                "regex": r"(19[2-9]\d|20[0-1]\d|2023)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])",
             },
             "email": {
-                "required": False, "type": "string", 
+                "required": False, "type": "string",
                 "regex": EMAIL_REGEX
             },
             "address": {"required": True, "type": "string"},
             "cellphone": {
-                "required": True, "type": "string", 
-                "minlength": 10, 
+                "required": True, "type": "string",
+                "minlength": 10,
             },
             "gender": {
                 "required": True, "type": "string",
-                "allowed": [item[0] for item in _GENDER_CHOICES]   
+                "allowed": [item[0] for item in _GENDER_CHOICES]
             }
         })
         if not validator.validate(request.data):
@@ -635,7 +635,7 @@ class ConfirmAdminRegisterApi(APIView, TokenHandler):
         user = User.objects.filter(
             pk=pk, token=token, rol=ADMIN)
 
-        if not user:            
+        if not user:
             return Response({
                 "code": "invalid_token",
                 "detailed": "No existe un usuario administrador con ese id y token"
@@ -670,7 +670,7 @@ def is_adult(birth_date):
     birth_date = dt.datetime.strptime(birth_date, "%Y-%m-%d")
     today = dt.datetime.today()
     return (
-        (today.year - birth_date.year - 
+        (today.year - birth_date.year -
          ((today.month, today.day) < (birth_date.month, birth_date.day))
         ) >= 18
     )
