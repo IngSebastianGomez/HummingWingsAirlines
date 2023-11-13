@@ -1,8 +1,9 @@
 from django.db import models
-from ..models.flights import Flights
+from ..models.flight import Flight
+from django_extensions.db.models import TimeStampedModel
 
 class Seat(models.Model):
-    _FLIGHT_CHOICES = [(flight.code_flight, flight.city_start + " - " + flight.city_end) for flight in Flights.objects.all()]
+    #_FLIGHT_CHOICES = [(flight.code_flight, flight.city_start + " - " + flight.city_end) for flight in Flights.objects.all()]
     _CLASS_CHOICES = [
         ('Primera', 'Primera'),
         ('General', 'General'),
@@ -20,7 +21,7 @@ class Seat(models.Model):
         ('E', 'E'),
     ]
 
-    flight = models.ForeignKey('api.Flights', verbose_name="Codigo vuelo",on_delete=models.CASCADE)
+    flight = models.ForeignKey('Flight', verbose_name="Codigo vuelo",on_delete=models.CASCADE)
     class_flight = models.CharField("Clase del asiento", max_length=8, choices=_CLASS_CHOICES)
     type_location = models.CharField("Tipo de locacion", max_length=8, choices=_TYPE_LOCATION_CHOICES)
     row = models.CharField("Fila", max_length=2, choices=_ROW_CHOICES)

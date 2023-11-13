@@ -12,11 +12,18 @@ _USER_ROL_CHOICES = (
 PENDING = "pending"
 APPROVED = "approved"
 REJECTED = "rejected"
+CHECKIN = "checkin"
 
 _STATUS_CHOICES = (
     (PENDING, "Pendiente"),
     (APPROVED, "Aprobado"),
     (REJECTED, "Rechazado")
+)
+_STATUS_CHOICES_TICKET = (
+    (PENDING, "Pendiente"),
+    (APPROVED, "Aprobado"),
+    (REJECTED, "Rechazado"),
+    (CHECKIN, "Check-in")
 )
 
 MALE = "masculino"

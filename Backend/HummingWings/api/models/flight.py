@@ -1,9 +1,10 @@
 """Contains the flights model"""
 from django.db import models
+from django_extensions.db.models import TimeStampedModel
 from datetime import datetime, timedelta
 from ..models.constants import _TYPE_FLIGHT_CHOICES, DIRECT
 
-class Flights(models.Model):
+class Flight(TimeStampedModel):
     code_flight = models.AutoField("Codigo de vuelo", primary_key=True)
     city_start = models.CharField("Ciudad origen", max_length=100)
     city_end = models.CharField("Ciudad destino", max_length=100)
