@@ -38,8 +38,8 @@ class EmailTemplate(models.Model):
         indexes = [models.Index(fields=['email_id'], name='email_id_idx')]
 
         db_table = "email_template"
-        verbose_name = "Plantilla de correo"
-        verbose_name_plural = "Plantillas de correos"
+        verbose_name = "Email Template"
+        verbose_name_plural = "Email Templates"
 
     def __str__(self):
         return f"{self.email_id}"
