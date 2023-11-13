@@ -1,8 +1,10 @@
+""" Contains the Seat model """
 from django.db import models
 from ..models.flight import Flight
 from django_extensions.db.models import TimeStampedModel
 
 class Seat(models.Model):
+    """ Seat model definition. """
     #_FLIGHT_CHOICES = [(flight.code_flight, flight.city_start + " - " + flight.city_end) for flight in Flights.objects.all()]
     _CLASS_CHOICES = [
         ('Primera', 'Primera'),
@@ -37,6 +39,6 @@ class Seat(models.Model):
     
     class Meta:
         """ Sets human readable name """
-        db_table = "Sillas"
-        verbose_name = "Silla"
-        verbose_name_plural = "Sillas"
+        db_table = "Seat"
+        verbose_name = "Seat"
+        verbose_name_plural = "Seats"

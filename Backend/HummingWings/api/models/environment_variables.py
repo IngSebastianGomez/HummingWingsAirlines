@@ -29,9 +29,9 @@ class EnvironmentVariables(models.Model):
         indexes = [
             models.Index(fields=['var_name'], name='envs_var_name_idx')
         ]
-
-        verbose_name = "Variable de entorno"
-        verbose_name_plural = "Variables de entorno"
+        db_table = "environment_variables"
+        verbose_name = "environment_variable"
+        verbose_name_plural = "environment_variables"
 
     def __str__(self):
         return f'[{self.var_type}] {self.var_name}: {self.var_value}'

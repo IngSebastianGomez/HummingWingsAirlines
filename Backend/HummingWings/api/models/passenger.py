@@ -1,8 +1,10 @@
+""" Contains the Passenger model """
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from ..models.constants import _GENDER_CHOICES
 
 class Passenger(TimeStampedModel):
+    """ Passenger model definition. """
     _AGE_RANGE_CHOICES = [
         ('adulto', 'Adulto'),
         ('nino', 'Nino'),

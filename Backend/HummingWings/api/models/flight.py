@@ -1,10 +1,11 @@
-"""Contains the flights model"""
+"""Contains the flight model"""
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from datetime import datetime, timedelta
 from ..models.constants import _TYPE_FLIGHT_CHOICES, DIRECT
 
 class Flight(TimeStampedModel):
+    """ Flight model definition. """
     code_flight = models.AutoField("Codigo de vuelo", primary_key=True)
     city_start = models.CharField("Ciudad origen", max_length=100)
     city_end = models.CharField("Ciudad destino", max_length=100)
@@ -32,6 +33,6 @@ class Flight(TimeStampedModel):
     
     class Meta:
         """ Sets human readable name """
-        db_table = "Flights"
-        verbose_name = "Vuelo"
-        verbose_name_plural = "Vuelos"
+        db_table = "Flight"
+        verbose_name = "Flight"
+        verbose_name_plural = "Flights"
