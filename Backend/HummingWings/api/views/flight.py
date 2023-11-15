@@ -112,6 +112,21 @@ class FlightApi(APIView, TokenHandler):
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+        if request.data["city_start"] == request.data["city_end"]:
+            return Response({
+                "code": "same_cities",
+                "detailed": "La ciudad de origen no puede ser la misma que la de destino"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if (
+            timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") 
+            > timezone.timedelta(years=1) + timezone.now()
+        ):
+            return Response({
+                "code": "invalid_date_start",
+                "detailed": "La fecha de inicio no puede ser mayor a un año"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         limit_datetime = timezone.make_aware(
             timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") - timezone.timedelta(
                 hours=getenv("LIMIT_HOURS_SAME_FLIGHT"))
@@ -234,6 +249,21 @@ class SpecificFlightApi(APIView, TokenHandler):
                 "code": "do_not_have_permission",
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
+
+        if request.data["city_start"] == request.data["city_end"]:
+            return Response({
+                "code": "same_cities",
+                "detailed": "La ciudad de origen no puede ser la misma que la de destino"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if (
+            timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") 
+            > timezone.timedelta(years=1) + timezone.now()
+        ):
+            return Response({
+                "code": "invalid_date_start",
+                "detailed": "La fecha de inicio no puede ser mayor a un año"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         flight = Flight.objects.filter(pk=flight_id).first()
         if not flight:

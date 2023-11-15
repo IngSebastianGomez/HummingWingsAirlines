@@ -7,6 +7,7 @@ from cerberus import Validator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils import timezone
 
 from ..helpers.token import TokenHandler
 
@@ -57,8 +58,26 @@ class CardApi(APIView, TokenHandler):
                 "detailed": _STATUS_401_MESSAGE
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+        if Card.objects.filter(number=request.data["number"]).exists():
+            return Response({
+                "code": "card_already_exists",
+                "detailed": "Ya existe una tarjeta con ese número"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.data["date_expire"] < timezone.now().strftime("%Y-%m-%d"):
+            return Response({
+                "code": "invalid_date",
+                "detailed": "La fecha de expiración no puede ser menor a la actual"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         request.data["owner"] = User.objects.filter(
             pk=request.data["owner"], rol=CLIENT).first()
+
+        if not request.data["owner"]:
+            return Response({
+                "code": "owner_not_found",
+                "detailed": "No existe un usuario con ese id"
+            }, status=status.HTTP_404_NOT_FOUND)
 
         request.data["cash"] = Decimal(random.randint(1000000,15000000))
         card = Card.objects.create(**request.data)

@@ -4,6 +4,7 @@ from django.db import models
 
 CLIENT_REGISTER_CONFIRMATION = "client_register_confirmation"
 ADMIN_REGISTER_CONFIRMATION = "admin_register_confirmation"
+CARD_XEPRIED = "card_expired"
 
 _TEMPLATES = (
     (
@@ -14,6 +15,10 @@ _TEMPLATES = (
         ADMIN_REGISTER_CONFIRMATION,
         "Confirmación de registro - Administrador"
     ),
+    (
+        CARD_XEPRIED,
+        "Tarjeta expirada - Cliente"
+    )
 )
 
 
