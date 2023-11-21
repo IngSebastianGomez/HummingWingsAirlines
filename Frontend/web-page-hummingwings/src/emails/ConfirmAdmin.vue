@@ -6,12 +6,20 @@
       <form @submit.prevent="enviarFormulario">
         <div class="mb-3">
           <label for="exampleInputName1" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="exampleInputName1" v-model="formData.first_name" required/>
+          <input type="text" class="form-control" id="exampleInputName1" v-model="formData.first_name"
+          required @blur="validarNombre"/>
+        </div>
+        <div v-if="errorName" class="alert alert-danger" role="alert">
+          El nombre no puede contener espacios en blanco ni al inicio ni al final.
         </div>
 
         <div class="mb-3">
           <label for="exampleInputLastName1" class="form-label">Apellido</label>
-          <input type="text" class="form-control" id="exampleInputLastName1" v-model="formData.last_name" required/>
+          <input type="text" class="form-control" id="exampleInputLastName1" v-model="formData.last_name"
+          required @blur="validarApellido"/>
+        </div>
+        <div v-if="errorLastName" class="alert alert-danger" role="alert">
+          El apellido no puede contener espacios en blanco ni al inicio ni al final.
         </div>
 
         <div class="mb-3">
@@ -21,7 +29,7 @@
 
         <div class="mb-3">
           <label for="gender" class="form-label">Género</label>
-          <select class="form-select" v-model="formData.gender">
+          <select class="form-select" v-model="formData.gender" required>
             <option value="" disabled selected>Género</option>
             <option value="masculino">masculino</option>
             <option value="femenino">femenino</option>
@@ -31,8 +39,12 @@
 
         <div class="mb-3">
           <label for="InputPhoneNumber" class="form-label">Número de teléfono</label>
-          <input type="text" class="form-control" id="InputPhoneNumber" v-model="formData.cellphone" required @blur="validarNumber"/>
+          <input type="text" class="form-control" id="InputPhoneNumber" v-model="formData.cellphone"
+          required @blur="validarNumber"/>
         </div>
+        <div v-if="errorTel" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
 
         <!-- Agregar campo para dirección de residencia -->
         <div class="mb-3">
@@ -42,22 +54,48 @@
 
         <div class="d-grid gap-2 pb-5">
           <button class="btn btn-primary" type="button">Subir foto de perfil</button>
-          <button class="btn btn-dark" v-if="!showSuccessAlert" type="submit" style="background-color: #182a3f; border-radius: 40px;">Enviar</button>
+          <button class="btn btn-dark"
+                  data-bs-toggle="modal"
+                  data-bs-target="#Modal1"
+                  type="submit"
+                  style="background-color: #182a3f; border-radius: 40px;">
+                  Enviar
+          </button>
         </div>
-
-        <!-- Alerta de aprobación (éxito) -->
-    <div v-if="showSuccessAlert" class="alert alert-success" role="alert">
-      Aprobación realizada con éxito.
-      <button @click="redirigirAlInicio" class="btn btn-primary">Ir al inicio</button>
-    </div>
-    
-    <!-- Alerta de error -->
-    <div v-if="showErrorAlert" class="alert alert-danger" role="alert">
-      No se pudo realizar la solicitud.
-    </div>
+<!--Modal con bootstrap para mostrar estado de la verificacion-->
+        <div class="modal fade" id="Modal1" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" v-if="showSuccessAlert">
+                <p>Aprobacion realizada con exito.</p>
+              </div>
+              <div class="modal-body" v-if="showErrorAlert">
+                <p>Lo sentimos, hubo un error al hacer la verificacion.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        v-if="showErrorAlert" 
+                        data-bs-dismiss="modal">
+                        Close
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        v-if="showSuccessAlert"
+                        data-bs-dismiss="modal"
+                        @click="redirigirAlInicio">
+                        Volver a Inicio
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
-    
   </div>
 </template>
 
@@ -81,7 +119,10 @@ export default {
       },
       showSuccessAlert: false, // Mostrar mensaje de aprobación
       showErrorAlert: false,   // Mostrar mensaje de error
-      statusCode: null,       // Código de respuesta del servidor
+      statusCode: null,        // Código de respuesta del servidor
+      errorName: false,        // Verifica si hay error de espacios en blanco
+      errorLastName: false,
+      errorTel: false,         // Verifica error con el telefono
     };
   },
   methods: {
@@ -91,13 +132,34 @@ export default {
     validarNumber() {
       const telefono = this.formData.cellphone;
       const soloDigitos = /^\d+$/; // Expresión regular para verificar que solo hay dígitos
+      this.errorTel = true;
 
       if (telefono && !soloDigitos.test(telefono)) {
         this.errorMessage = 'El número solo debe contener dígitos.';
       } else if (telefono && telefono.length < 10) {
         this.errorMessage = 'El número debe tener al menos 10 dígitos.';
       } else {
-        this.errorMessage = ''; 
+        this.errorMessage = '';
+        this.errorTel = false; 
+      }
+    },
+    validarNombre() {
+      const nombreAValidar = this.formData.first_name;
+      //Expresion regular para que no hayan espacios en blanco ni al inicio ni al final de la cadena
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorName = true;
+      } else {
+        this.errorName = false;
+      }
+    },
+    validarApellido() {
+      const nombreAValidar = this.formData.last_name;
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorLastName = true;
+      } else {
+        this.errorLastName = false;
       }
     },
     enviarFormulario() {

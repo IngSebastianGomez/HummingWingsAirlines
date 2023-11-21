@@ -91,8 +91,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'local_humming_wings',
-        'USER': 'juanse_root',
-        'PASSWORD': 'admin123',
+        'USER': 'jesteban',
+        'PASSWORD': 'ject123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
