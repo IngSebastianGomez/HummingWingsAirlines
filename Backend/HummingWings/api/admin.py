@@ -11,6 +11,7 @@ from api.models.seat import Seat
 from api.models.card import Card
 from api.models.new import New
 from api.models.passenger import Passenger
+from api.models.payment_log import PaymentLog
 from api.models.search_log import SearchLog
 
 
@@ -28,3 +29,4 @@ admin.site.register(Card)
 admin.site.register(New)
 admin.site.register(Passenger)
 admin.site.register(SearchLog)
+admin.site.register(PaymentLog)

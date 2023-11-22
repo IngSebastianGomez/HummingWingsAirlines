@@ -132,3 +132,97 @@ class SpecificCardApi(APIView, TokenHandler):
             "code": "card_deleted",
             "detailed": "Tarjeta eliminado correctamente"
         }, status=status.HTTP_200_OK)
+
+
+    def patch(self, request, card_id):
+        """ Updates a specific card
+
+        Parameters
+        ----------
+
+        request: dict
+            Contains http transaction information.
+
+        card_id: string
+            Pk of the card
+
+        Returns
+        -------
+
+        Response: (dict, int)
+            Body response and status code.
+
+        """
+        validator = Validator({
+            "cash": {"required": True, "type": "integer"}
+        })
+        if not validator.validate(request.data):
+            return Response({
+                "code": "invalid_body",
+                "detailed": _STATUS_400_MESSAGE,
+                "data": validator.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        payload, user = self.get_payload(request)
+        if (
+            not payload or not user or not isinstance(user, User)
+            and user.rol == CLIENT
+        ):
+            return Response({
+                "code": "do_not_have_permission",
+                "detailed": _STATUS_401_MESSAGE
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        card = Card.objects.filter(owner__pk=user.pk, pk=card_id).first()
+        if not card:
+            return Response({
+                "code": "card_not_found",
+                "detailed": "No existe una tarjeta con ese id"
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        card.cash += Decimal(request.data["cash"])
+        card.save()
+
+        return Response({
+            "updated": card.pk
+        }, status=status.HTTP_200_OK)
+
+
+class UserCardApi(APIView, TokenHandler):
+    """ Contains user card management methods """
+
+    def get(self, request):
+        """ Gets all cards of the user
+
+        Parameters
+        ----------
+
+        request: dict
+            Contains http transaction information.
+
+        Returns
+        -------
+
+        Response: (dict, int)
+            Body response and status code.
+
+        """
+        payload, user = self.get_payload(request)
+        if (
+            not payload or not user or not isinstance(user, User)
+            and user.rol == CLIENT
+        ):
+            return Response({
+                "code": "do_not_have_permission",
+                "detailed": _STATUS_401_MESSAGE
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        cards = Card.objects.filter(owner__pk=user.pk)
+        return Response({
+            "cards": [{
+                "number": card.number,
+                "code_secure": card.code_secure,
+                "date_expire": card.date_expire.strftime("%Y-%m-%d"),
+                "cash": card.cash
+            } for card in cards]
+        }, status=status.HTTP_200_OK)

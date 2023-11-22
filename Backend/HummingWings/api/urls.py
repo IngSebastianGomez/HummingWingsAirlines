@@ -2,7 +2,7 @@
 from django.urls import path
 
 from .views.auth import AuthApi, NewPasswordApi, RefreshTokenApi
-from .views.card import CardApi, SpecificCardApi
+from .views.card import CardApi, SpecificCardApi, UserCardApi
 from .views.flight import FlightApi, SpecificFlightApi
 from .views.root import RootApi
 from .views.search import PublicFlightApi
@@ -15,6 +15,7 @@ urlpatterns = [
     path('refresh_token/', RefreshTokenApi.as_view(), name='refresh_token'),
     path('root/', RootApi.as_view(), name='root'), 
     path('user/', UserApi.as_view(), name='user'),
+    path('user/cards', UserCardApi.as_view()),
     path('admin/', AdminApi.as_view(), name='user'),
     path('user/<int:user_pk>', SpecificUserApi.as_view(), name='specific_user'),
     path('user/<int:pk>/confirm_email/<int:token>', ConfirmUserRegisterApi.as_view(), name='specific_user'),

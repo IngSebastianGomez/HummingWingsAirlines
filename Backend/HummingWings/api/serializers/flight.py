@@ -58,6 +58,5 @@ class PublicFlightSerializer(serializers.ModelSerializer):
         return obj.time_of_flight()
 
     def get_sold_seats(self, obj):
-        seat = Seat.objects.filter(
-            flight__pk=obj.pk.first()
-        return seat.code_seat() if seat else None
+        """ Returns the sold seats of the flight """
+        return obj.get_sold_seats()
