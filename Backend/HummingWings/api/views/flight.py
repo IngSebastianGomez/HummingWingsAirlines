@@ -1,4 +1,5 @@
 """ Contains Flight endpoint management definition """
+from datetime import datetime, timedelta
 
 from cerberus import Validator
 
@@ -117,11 +118,9 @@ class FlightApi(APIView, TokenHandler):
                 "code": "same_cities",
                 "detailed": "La ciudad de origen no puede ser la misma que la de destino"
             }, status=status.HTTP_400_BAD_REQUEST)
-
-        if (
-            timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") 
-            > timezone.timedelta(years=1) + timezone.now()
-        ):
+        
+        fecha_limite = timezone.now() + timedelta(days=365)
+        if timezone.datetime.strptime(request.data["date_start"], "%Y-%m-%d-%H:%M") > timezone.datetime.strptime(fecha_limite.strftime("%Y-%m-%d-%H:%M"),"%Y-%m-%d-%H:%M"):
             return Response({
                 "code": "invalid_date_start",
                 "detailed": "La fecha de inicio no puede ser mayor a un año"
