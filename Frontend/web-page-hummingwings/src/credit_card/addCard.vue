@@ -70,11 +70,12 @@ export default {
     axios.post('http://127.0.0.1:8000/api/v1/card', data, config)
     .then(response => {
       console.log(response.data);
+
+      this.$router.push('/VisualCard');
     })
     .catch(error => {
       console.error(error);
     });
-     this.$router.push('/VisualCard');
 },
     submitForm() {
       if (this.formIsValid) {
