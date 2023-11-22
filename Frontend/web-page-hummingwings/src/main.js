@@ -22,7 +22,8 @@ import ConfirmUser from './emails/ConfirmUser.vue'
 import addCard from './credit_card/addCard.vue'
 import listCard from './credit_card/listCard.vue'
 import VisualCard from './credit_card/VisualCard.vue'
-
+import AddFlight from './flights/AddFlight.vue'
+import manageFlight from './flights/manageFlights.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -42,6 +43,8 @@ const routes = [
   { path: '/addCard', component: addCard},
   { path: '/listCard', component: listCard},
   { path: '/VisualCard', component: VisualCard},
+  { path: '/AddFlight', component: AddFlight},
+  { path: '/manageFlight', component: manageFlight},
   {
     path: '/ConfirmarAdmin/:pk/:token',
     name: 'ConfirmarAdmin',

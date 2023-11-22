@@ -24,7 +24,7 @@
           <div class="card card-body">
             <p>la tarjeta seleccionada es: {{ tarjeta.id }} </p>
             <button @click="editarBalance(tarjeta.id)" class="btn btn-warning">Editar Balance</button>
-            <button @click="eliminarTarjeta" class="btn btn-danger">Eliminar</button>
+            <button @click="eliminarTarjeta(tarjeta.id)" class="btn btn-danger">Eliminar</button>
           </div>
         </div>
       </div>
@@ -86,8 +86,27 @@ export default {
         console.error('Error al editar el balance:', error);
       }
     },
-    eliminarTarjeta() {
+    async eliminarTarjeta(cardId) {
       // Lógica para eliminar la tarjeta seleccionada
+      const confirmacion = confirm('¿Estás seguro de que deseas eliminar esta tarjeta?');
+
+      if (!confirmacion) {
+        return; // El usuario canceló la eliminación
+      }
+
+      try {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/v1/card/${cardId}`, {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`,
+          },
+        });
+
+        console.log('Tarjeta eliminada con éxito:', response.data);
+        // Actualizar la lista de tarjetas después de eliminar
+        this.obtenerTarjetas();
+      } catch (error) {
+        console.error('Error al eliminar la tarjeta:', error);
+      }
     },
     cerrarModal() {
       this.mostrarModal = false;
