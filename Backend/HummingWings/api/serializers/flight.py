@@ -59,5 +59,5 @@ class PublicFlightSerializer(serializers.ModelSerializer):
 
     def get_sold_seats(self, obj):
         seat = Seat.objects.filter(
-            flight__pk=obj.pk).values("row","column").first()
+            flight__pk=obj.pk.first()
         return seat.code_seat() if seat else None

@@ -39,8 +39,8 @@ class PublicFlightApi(APIView, TokenHandler):
         validator = Validator({
             "city_start": {"required": True, "type": "string"},
             "city_end": {"required": True, "type": "string"},
-            "date_start": {"required": True, "type": "string"},
-            "seats": {"required": True, "type": "string"},
+            "date_start": {"required": False, "type": "string"},
+            "seats": {"required": False, "type": "string"},
             "travel_type": {
                 "required": True, "type": "string",
                 "allowed": [ROUND_TRIP, ONE_WAY]
@@ -58,14 +58,14 @@ class PublicFlightApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)
-        if payload and user and isinstance(user, User):
-            SearchLog.objects.create(
-                user=user,
-                ip=request.headers["ip"],
-                city_start=request.GET["city_start"],
-                city_end=request.GET["city_end"],
-                date_start=request.GET["date_start"]
-            )
+        # if payload and user and isinstance(user, User):
+        #     SearchLog.objects.create(
+        #         user=user,
+        #         ip=request.headers["ip"],
+        #         city_start=request.GET["city_start"],
+        #         city_end=request.GET["city_end"],
+        #         date_start=request.GET["date_start"]
+        #     )
 
         if request.GET["travel_type"] == ROUND_TRIP:
             return_date = timezone.datetime.strptime(request.GET["return_date"], "%Y-%m-%d")
@@ -77,6 +77,7 @@ class PublicFlightApi(APIView, TokenHandler):
                 "date_start__day": return_date.day,
                 "available_seats__gt": request.GET["seats"]
             }
+            
 
             if not Flight.objects.filter(**query).order_by("-date_start").exists():
                 return Response({
@@ -84,16 +85,16 @@ class PublicFlightApi(APIView, TokenHandler):
                     "detail": "No se encontraron vuelos de regreso",
                 }, status=status.HTTP_404_NOT_FOUND)
 
-        date_start = timezone.datetime.strptime(request.GET["date_start"], "%Y-%m-%d")
+        
+        date_start = timezone.datetime.strptime(request.GET["date_start"], "%Y-%m-%d %H:%M")
+        print(date_start)
+
         query = {
             "city_start__icontains": request.GET["city_start"],
             "city_end__icontains": request.GET["city_end"],
-            "date_start__year": date_start.year,
-            "date_start__month": date_start.month,
-            "date_start__day": date_start.day,
-            "available_seats__gt": request.GET["seats"]
+            "date_start__gte": date_start
         }
-
+            
         flights = Flight.objects.filter(**query).order_by("-date_start").all()
 
         return Response({

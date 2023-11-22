@@ -10,8 +10,8 @@ from .views.user import SpecificUserApi, UserApi, AdminApi
 from .views.user import ConfirmUserRegisterApi, ConfirmAdminRegisterApi
 
 urlpatterns = [
-    path('auth/', AuthApi.as_view(), name='authentication'),
     path('change_password/<int:user_pk>', NewPasswordApi.as_view(), name='change_password'),
+    path('auth/', AuthApi.as_view(), name='authentication'),
     path('refresh_token/', RefreshTokenApi.as_view(), name='refresh_token'),
     path('root/', RootApi.as_view(), name='root'), 
     path('user/', UserApi.as_view(), name='user'),

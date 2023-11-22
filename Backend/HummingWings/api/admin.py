@@ -11,7 +11,7 @@ from api.models.seat import Seat
 from api.models.card import Card
 from api.models.new import New
 from api.models.passenger import Passenger
-
+from api.models.search_log import SearchLog
 
 
 # Register your models here.
@@ -27,6 +27,4 @@ admin.site.register(Seat)
 admin.site.register(Card)
 admin.site.register(New)
 admin.site.register(Passenger)
-
-
-
+admin.site.register(SearchLog)
