@@ -39,8 +39,8 @@ class PublicFlightApi(APIView, TokenHandler):
         validator = Validator({
             "city_start": {"required": True, "type": "string"},
             "city_end": {"required": True, "type": "string"},
-            "date_start": {"required": False, "type": "string"},
-            "seats": {"required": False, "type": "string"},
+            "date_start": {"required": True, "type": "string"},
+            "seats": {"required": True, "type": "string"},
             "travel_type": {
                 "required": True, "type": "string",
                 "allowed": [ROUND_TRIP, ONE_WAY]
@@ -55,6 +55,15 @@ class PublicFlightApi(APIView, TokenHandler):
                 "code": "invalid_body",
                 "detailed": _STATUS_400_MESSAGE,
                 "data": validator.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if (
+            request.GET["travel_type"] == ROUND_TRIP
+            and "return_date" not in request.GET
+        ):
+            return Response({
+                "code": "invalid_body",
+                "detailed": "return_date is required when travel_type is round_trip"
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)

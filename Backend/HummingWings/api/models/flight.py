@@ -49,9 +49,9 @@ class Flight(TimeStampedModel):
         self.available_seats = Seat.objects.filter(flight__pk=self.pk).count()
         self.save()
 
-    def get_sold_seats(self, obj):
+    def get_sold_seats(self):
         """ Returns the sold seats of the flight """
-        seats = Seat.objects.filter(flight__pk=obj.pk).all()
+        seats = Seat.objects.filter(flight__pk=self.pk).all()
         return [seat.code_seat() for seat in seats]
 
     def get_available_seat(self, seat_code):
