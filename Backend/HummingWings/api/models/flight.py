@@ -3,7 +3,7 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from datetime import datetime, timedelta
 
-from ..models.constants import _TYPE_FLIGHT_CHOICES, DIRECT
+from ..models.constants import _TYPE_FLIGHT_CHOICES, DIRECT, FIRST_CLASS
 from ..models.seat import Seat
 from ..models.ticket import Ticket
 
@@ -48,3 +48,28 @@ class Flight(TimeStampedModel):
         """ Updates the available seats of the flight """
         self.available_seats = Seat.objects.filter(flight__pk=self.pk).count()
         self.save()
+
+    def get_sold_seats(self, obj):
+        """ Returns the sold seats of the flight """
+        seats = Seat.objects.filter(flight__pk=obj.pk).all()
+        return [seat.code_seat() for seat in seats]
+
+    def get_available_seat(self, seat_code):
+        """ Returns a seat with given code """
+        if Seat.objects.filter(flight__pk=self.pk, code_seat=seat_code).exists():
+            return None
+        class_flight = "Primera" if seat_code[:-1] in FIRST_CLASS else "General"
+        type_location = (
+            "Ventana" if seat_code[-1] in "AF" else
+            "Centro" if seat_code[-1] in "BE" else
+            "Pasillo"
+        )
+        seat = Seat.objects.create(
+            flight=self,
+            class_flight=class_flight,
+            type_location=type_location,
+            row=seat_code[:-1],
+            column=seat_code[-1],
+        )
+        self.update_seats()
+        return seat

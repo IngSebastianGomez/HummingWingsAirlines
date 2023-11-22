@@ -10,7 +10,7 @@ from ..models.seat import Seat
 class SearchLog(TimeStampedModel):
     """ SearchLog model definition. """
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="search_log")
-    ip = models.CharField("Dirección Ip", max_length=50)
+    ip = models.CharField("Dirección Ip", max_length=50, null=True, blank=True)
     city_start = models.CharField("Ciudad origen", max_length=100)
     city_end = models.CharField("Ciudad destino", max_length=100)
     date_start = models.DateTimeField("Fecha de salida")

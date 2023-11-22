@@ -39,11 +39,13 @@ _GENDER_CHOICES = (
 CC = "C.C."
 CE = "C.E."
 PASSPORT = "Pasaporte"
+TI = "Tarjeta de identidad"
 
 _DOCUMENT_TYPE_CHOICES = (
     (CC, "C.C."),
     (CE, "C.E."),
-    (PASSPORT, "Pasaporte")
+    (PASSPORT, "Pasaporte"),
+    (TI, "T.I.")
 )
 
 ROUND_TRIP = "round_trip"
@@ -65,3 +67,5 @@ DIRECT = "directo"
 _TYPE_FLIGHT_CHOICES = (
     (DIRECT, "Directo"),
 )
+
+FIRST_CLASS = ['1', '2']

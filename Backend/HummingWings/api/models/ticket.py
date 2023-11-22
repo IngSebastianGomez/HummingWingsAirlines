@@ -11,7 +11,7 @@ class Ticket(TimeStampedModel):
     seat = models.ForeignKey('Seat', on_delete=models.CASCADE)
     code_booking = models.CharField(max_length=10, editable=False)
     status = models.CharField(max_length=10, choices=_STATUS_CHOICES_TICKET, default=PENDING)
-    bookingholder = models.ForeignKey('BookingHolder', on_delete=models.CASCADE, related_name='booking_holder', blank=True)
+    payment_log = models.ForeignKey('PaymentLog', on_delete=models.CASCADE, related_name='payment_log', blank=True)
 
     def __str__(self):
         return f"Tiquete para {self.passenger} en asiento {self.seat}"

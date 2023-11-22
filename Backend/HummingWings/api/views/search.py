@@ -58,26 +58,25 @@ class PublicFlightApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)
-        # if payload and user and isinstance(user, User):
-        #     SearchLog.objects.create(
-        #         user=user,
-        #         ip=request.headers["ip"],
-        #         city_start=request.GET["city_start"],
-        #         city_end=request.GET["city_end"],
-        #         date_start=request.GET["date_start"]
-        #     )
+        if payload and user and isinstance(user, User):
+            SearchLog.objects.create(
+                user=user,
+                city_start=request.GET["city_start"],
+                city_end=request.GET["city_end"],
+                date_start=request.GET["date_start"]
+            )
 
         if request.GET["travel_type"] == ROUND_TRIP:
             return_date = timezone.datetime.strptime(request.GET["return_date"], "%Y-%m-%d")
             query = {
                 "city_start__icontains": request.GET["city_end"],
                 "city_end__icontains": request.GET["city_start"],
-                "date_start__year": return_date.year,
-                "date_start__month": return_date.month,
-                "date_start__day": return_date.day,
+                "date_start__gte": timezone.make_aware(return_date),
+                "date_start__lte": (
+                    timezone.make_aware(return_date) + timezone.timedelta(days=1)
+                ),
                 "available_seats__gt": request.GET["seats"]
             }
-            
 
             if not Flight.objects.filter(**query).order_by("-date_start").exists():
                 return Response({
@@ -85,16 +84,18 @@ class PublicFlightApi(APIView, TokenHandler):
                     "detail": "No se encontraron vuelos de regreso",
                 }, status=status.HTTP_404_NOT_FOUND)
 
-        
-        date_start = timezone.datetime.strptime(request.GET["date_start"], "%Y-%m-%d %H:%M")
-        print(date_start)
+        date_start = timezone.datetime.strptime(request.GET["date_start"], "%Y-%m-%d")
 
         query = {
             "city_start__icontains": request.GET["city_start"],
             "city_end__icontains": request.GET["city_end"],
-            "date_start__gte": date_start
+            "date_start__gte": timezone.make_aware(date_start),
+            "date_start__lte": (
+                timezone.make_aware(date_start) + timezone.timedelta(days=1)
+            ),
+            "available_seats__gt": request.GET["seats"]
         }
-            
+
         flights = Flight.objects.filter(**query).order_by("-date_start").all()
 
         return Response({

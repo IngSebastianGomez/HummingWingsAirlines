@@ -15,10 +15,12 @@ class Seat(models.Model):
     ]
     _ROW_CHOICES = [(str(i), str(i)) for i in range(1, 17)]
     _COLUMN_CHOICES = [
+        ('A', 'A'),
         ('B', 'B'),
         ('C', 'C'),
         ('D', 'D'),
         ('E', 'E'),
+        ('F', 'F')
     ]
 
     flight = models.ForeignKey(
