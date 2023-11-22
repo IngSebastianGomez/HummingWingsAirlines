@@ -21,6 +21,7 @@ import ConfirmAdmin from './emails/ConfirmAdmin.vue'
 import ConfirmUser from './emails/ConfirmUser.vue'
 import addCard from './credit_card/addCard.vue'
 import listCard from './credit_card/listCard.vue'
+import VisualCard from './credit_card/VisualCard.vue'
 
 
 const About = { template: '<div>About</div>' }
@@ -40,6 +41,7 @@ const routes = [
   { path: '/VisualDatos', component: VisualDatos},
   { path: '/addCard', component: addCard},
   { path: '/listCard', component: listCard},
+  { path: '/VisualCard', component: VisualCard},
   {
     path: '/ConfirmarAdmin/:pk/:token',
     name: 'ConfirmarAdmin',
