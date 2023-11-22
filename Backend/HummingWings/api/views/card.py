@@ -220,6 +220,7 @@ class UserCardApi(APIView, TokenHandler):
         cards = Card.objects.filter(owner__pk=user.pk)
         return Response({
             "cards": [{
+                "id": card.pk,
                 "number": card.number,
                 "code_secure": card.code_secure,
                 "date_expire": card.date_expire.strftime("%Y-%m-%d"),
