@@ -42,8 +42,8 @@ class EmailTracking(TimeStampedModel):
         """Sets human readable name"""
 
         db_table = "email_tracking"
-        verbose_name = "Seguimiento de correo electrónico"
-        verbose_name_plural = "Seguimientos de correos electrónicos"
+        verbose_name = "Email Tracking"
+        verbose_name_plural = "Email Trackings"
 
     def __str__(self):
         # pylint: disable=no-member
