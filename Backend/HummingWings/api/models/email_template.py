@@ -5,6 +5,8 @@ from django.db import models
 CLIENT_REGISTER_CONFIRMATION = "client_register_confirmation"
 ADMIN_REGISTER_CONFIRMATION = "admin_register_confirmation"
 CARD_XEPRIED = "card_expired"
+PAYMENT_CONFIRMATION_EMAIL = "payment_confirmation_email"
+TICKET_CONFIRMATION_EMAIL = "ticket_confirmation_email"
 
 _TEMPLATES = (
     (
@@ -18,6 +20,14 @@ _TEMPLATES = (
     (
         CARD_XEPRIED,
         "Tarjeta expirada - Cliente"
+    ),
+    (
+        PAYMENT_CONFIRMATION_EMAIL,
+        "Confirmación de pago - Cliente"
+    ),
+    (
+        TICKET_CONFIRMATION_EMAIL,
+        "Confirmación de tiquete - Cliente"
     )
 )
 
