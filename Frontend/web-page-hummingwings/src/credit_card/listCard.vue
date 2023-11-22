@@ -118,7 +118,7 @@ INFO: The selectable class adds a pointer and shadow animations on hover.
 
 .credit-card-last4 {
     font-family: "PT Mono", Helvetica, sans-serif;
-    font-size: 24px;
+    font-size: 14px;
 }
 
 .credit-card-last4:before {

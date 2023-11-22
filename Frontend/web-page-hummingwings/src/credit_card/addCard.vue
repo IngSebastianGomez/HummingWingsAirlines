@@ -8,13 +8,9 @@
             <span v-if="!validCardNumber">Please enter a valid card number</span>
           </div>
           <div>
-            <label for="cardholderName">Cardholder Name</label>
-            <input type="text" id="cardholderName" v-model="cardholderName" required>
-            <span v-if="!validCardholderName">Please enter a valid cardholder name</span>
-          </div>
-          <div>
-            <label for="expirationDate">Expiration Date (MM/YY)</label>
-            <input type="text" id="expirationDate" v-model="expirationDate" required>
+            <label for="expirationDate" class="form-label">Expiration Date (MM/YY)</label>
+            <input type="date" class="form-control" id="expirationDate" v-model="expirationDate" min="2024-01-01"
+            max="2050-12-15" required>
             <span v-if="!validExpirationDate">Please enter a valid expiration date</span>
           </div>
           <div>
@@ -22,29 +18,28 @@
             <input type="text" id="cvv" v-model="cvv" required>
             <span v-if="!validCvv">Please enter a valid CVV</span>
           </div>
-          <button type="submit" :disabled="!formIsValid">Submit</button>
+          <button type="submit" @click="enviarFormulario">Submit</button> <!-- :disabled="!formIsValid" -->
         </form>
       </div>
     </div>
   </template>
   
   <script>
+  import axios from 'axios';
+  import { mapState } from 'vuex';
+
   export default {
     data() {
       return {
         cardNumber: '',
-        cardholderName: '',
         expirationDate: '',
         cvv: ''
       }
     },
     computed: {
+      ...mapState(['id']),
       validCardNumber() {
         // Implement card number validation logic here
-        return true;
-      },
-      validCardholderName() {
-        // Implement cardholder name validation logic here
         return true;
       },
       validExpirationDate() {
@@ -60,6 +55,26 @@
       }
     },
     methods: {
+      enviarFormulario() {
+        const data = {
+          code_secure: this.cvv,
+          date_expire: this.expirationDate,
+          number: this.cardNumber,
+          owner: this.id,
+        };
+        const config = {
+        headers: {
+          Authorization: `Bearer ${this.$store.state.token}`,
+        },
+      };
+      axios.post('http://127.0.0.1:8000/api/v1/card', data, config)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
       submitForm() {
         if (this.formIsValid) {
           // Handle form submission logic here
