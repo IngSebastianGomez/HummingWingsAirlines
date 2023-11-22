@@ -8,7 +8,7 @@
           <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         <!--Zona de contenido-->
-        <div class="carousel-inner" style="max-height: min-content;">
+        <div class="carousel-inner">
           <div class="carousel-item active">
             <img src="../assets/Bogota.jpg" class="d-block w-100 " alt="banner1">
             <div class="carousel-caption d-none d-md-block">
@@ -17,14 +17,14 @@
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/medellin.jpg" class="d-block w-100 " alt="banner2">
+            <img src="../assets/Medellin.jpg" class="d-block w-100 " alt="banner2">
             <div class="carousel-caption d-none d-md-block">
               <h5>MEDELLIN</h5>
               <p>Disfruta de este descuento del 20%.</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/spain.jpg" class="d-block w-100" alt="banner3">
+            <img src="../assets/madrid.jpg" class="d-block w-100" alt="banner3">
             <div class="carousel-caption d-none d-md-block">
               <h5>MADRID</h5>
               <p>Ultimos tiquetes con el 25% de descuento!.</p>
