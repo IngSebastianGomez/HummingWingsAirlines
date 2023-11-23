@@ -42,7 +42,47 @@ class PaymentApi(APIView, TokenHandler):
             "card_number": {"required": True, "type": "string"},
             "date_expire": {"required": True, "type": "string", "regex": DATE_REGEX},
             "cvv": {"required": True, "type": "string", "minlength": 3, "maxlength": 4},
-            "payment_log": {"required": True, "type": "integer", "min": 1}
+            "payment_log": {"required": True, "type": "integer", "min": 1},
+            "services": {
+                "required": True, "type": "dict",
+                "schema": {
+                    "ticket": {
+                        "required": False, "type": "dict",
+                        "schema": {
+                            "name": {"required": True, "type": "string"},
+                            "cost": {"required": True, "type": "float", "min": 0}
+                        }
+                    },
+                    "extraLuggage": {
+                        "required": False, "type": "dict",
+                        "schema": {
+                            "name": {"required": True, "type": "string"},
+                            "cost": {"required": True, "type": "float", "min": 0}
+                        }
+                    },
+                    "bringPet": {
+                        "required": False, "type": "dict",
+                        "schema": {
+                            "name": {"required": True, "type": "string"},
+                            "cost": {"required": True, "type": "float", "min": 0}
+                        }
+                    },
+                    "connectivityService": {
+                        "required": False, "type": "dict",
+                        "schema": {
+                            "name": {"required": True, "type": "string"},
+                            "cost": {"required": True, "type": "float", "min": 0}
+                        }
+                    },
+                    "totalPrice": {
+                        "required": False, "type": "dict",
+                        "schema": {
+                            "name": {"required": True, "type": "string"},
+                            "cost": {"required": True, "type": "float", "min": 0}
+                        }
+                    },
+                }
+            }
         })
         if not validator.validate(request.data):
             return Response({
@@ -93,6 +133,8 @@ class PaymentApi(APIView, TokenHandler):
         payment_log.card = card
         payment_log.payment_status = APPROVED
         payment_log.save()
+        payment_log.booking_holder.status = APPROVED
+        payment_log.booking_holder.save()
         for passenger in payment_log.booking_holder.passengers.all():
             create_ticket(
                 passenger=passenger, 
@@ -103,6 +145,7 @@ class PaymentApi(APIView, TokenHandler):
         tickets = Ticket.objects.filter(
             payment_log=payment_log, status=APPROVED).all()
 
+        # MANDAR LA FACTURA
         send_template_email(
             email_id=PAYMENT_CONFIRMATION_EMAIL,
             params={

@@ -38,7 +38,6 @@ class BookingHolderApi(APIView, TokenHandler):
 
         """
         validator = Validator({
-            "only_booking_holder": {"required": True, "type": "boolean"},
             "flight": {"required": True, "type": "integer", "min": 1},
             "email": {"required": True, "type": "string"},
             "cellphone": {"required": True, "type": "string"},
@@ -83,7 +82,6 @@ class BookingHolderApi(APIView, TokenHandler):
             user=user,
             email=request.data["email"],
             cellphone=request.data["cellphone"],
-            status=request.data["status"],
             flight=request.data["flight"]
         )
 
@@ -94,14 +92,13 @@ class BookingHolderApi(APIView, TokenHandler):
                 passenger_data["birth_date"]).date()
             Passenger.objects.create(**passenger_data)
 
-        data = {"inserted": booking_holder.id}
+        payment_log = PaymentLog.objects.create(
+            booking_holder=booking_holder,
+            amount=booking_holder.get_payment_price(),
+            tickets_amount=booking_holder.get_passengers_amount()
+        )
 
-        if not request.data["only_booking_holder"]:
-            payment_log = PaymentLog.objects.create(
-                booking_holder=booking_holder,
-                amount=booking_holder.get_payment_price(),
-                tickets_amount=booking_holder.get_passengers_amount()
-            )
-            data["payment_log"] = payment_log.id
-
-        return Response(data, status=status.HTTP_201_CREATED)
+        return Response({
+            "inserted": booking_holder.pk,
+            "payment_log": payment_log.pk
+        }, status=status.HTTP_201_CREATED)

@@ -1,6 +1,8 @@
 """ API url configuration """
 from django.urls import path
 
+from Backend.HummingWings.api.views.booking_holder import BookingHolderApi
+
 from .views.auth import AuthApi, NewPasswordApi, RefreshTokenApi
 from .views.card import CardApi, SpecificCardApi, UserCardApi
 from .views.flight import FlightApi, SpecificFlightApi
@@ -25,4 +27,6 @@ urlpatterns = [
     path('flight/<int:flight_id>', SpecificFlightApi.as_view()),
     path('card', CardApi.as_view()),
     path('card/<int:card_id>', SpecificCardApi.as_view()),
+    path('booking', BookingHolderApi.as_view()),
+    path('payment', SpecificCardApi.as_view()),
 ]
