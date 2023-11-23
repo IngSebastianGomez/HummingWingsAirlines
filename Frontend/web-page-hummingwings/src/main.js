@@ -3,6 +3,7 @@ import App from './App.vue'
 import {createRouter, createWebHashHistory} from 'vue-router';
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import "bootstrap/dist/js/bootstrap.bundle"
 import HelloWorld from './components/HelloWorld.vue'
 import DetailComponent from './components/DetailComponent.vue'
 import LoginRoot from './views/LoginRoot.vue'
@@ -16,7 +17,10 @@ import AdminOptions from './views/AdminOptions.vue'
 import VisualDatos from './views/VisualDatos.vue'
 import ConfirmAdmin from './emails/ConfirmAdmin.vue'
 import ConfirmUser from './emails/ConfirmUser.vue'
-
+import TestingVuetify from './views/WarningWindow.vue'
+import AddFlight from './views/AddFlight.vue'
+import Results from './views/SearchResults.vue'
+import AirplaneSeat from './views/AirplaneSeatMap.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -43,6 +47,10 @@ const routes = [
     name: 'ConfirmarUser',
     component: ConfirmUser, // Reemplaza con el componente que corresponda
   },
+  { path: '/TestVuetify', component: TestingVuetify},
+  { path: '/AddFlight', component: AddFlight},
+  { path: '/Results', component: Results },
+  { path: '/AirplaneSeatMap', component: AirplaneSeat},
   
 ]
 //crear obejto rutas de vue router
@@ -58,5 +66,4 @@ export default router;
 const app = createApp(App)
 app.use(router)
 app.use(storage); // Agregar Vuex a la aplicación
-
 app.mount('#app');
