@@ -61,6 +61,7 @@
         
       </div>
       <PurchaseSummary />
+      
     </div>
   </template>
   
