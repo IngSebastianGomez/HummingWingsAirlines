@@ -1,21 +1,26 @@
 <template>
-    <div>
-      <h1>Mi Perfil</h1>
-      <div v-if="loggedIn">
-        <p><strong>ID:</strong> {{ id }}</p>
+    <div class="container-sm mt5">
+      <div class="row" style="display: flex;">
+        <h1>Mi Perfil</h1>
+      </div>
+      <div class="row" v-if="loggedIn">
+        <h1>Informacion de la cuenta</h1>
         <p><strong>Nombre de Usuario:</strong> {{ username }}</p>
+        <p><strong>ID:</strong> {{ id }}</p>
         <p><strong>Tipo:</strong> {{ type }}</p>
         <p><strong>Email:</strong> {{ email }}</p>
-        <p><strong>Celular:</strong> {{ cellphone }}</p>
+        <h1>Informacion del usuario</h1>
         <p><strong>Nombre:</strong> {{ first_name }} {{ last_name }}</p>
-        <p><strong>Género:</strong> {{ gender }}</p>
-        <p><strong>Rol:</strong> {{ rol }}</p>
-        <p><strong>Estado:</strong> {{ status }}</p>
-        <p><strong>Documento:</strong> {{ document }}</p>
+        <p><strong>Celular:</strong> {{ cellphone }}</p>
         <p><strong>Tipo de Documento:</strong> {{ document_type }}</p>
+        <p><strong>Documento:</strong> {{ document }}</p>
+        <p><strong>Rol:</strong> {{ rol }}</p>
+        <p><strong>Género:</strong> {{ gender }}</p>
+        <h1>Info adicional</h1>
+        <p><strong>Estado:</strong> {{ status }}</p>
         <p><strong>Token:</strong> {{ token }}</p>
         <p><strong>Refresh:</strong> {{ refresh }}</p>
-        <button @click="logout">Cerrar Sesión</button>
+        <button class="btn btn-primary" @click="logout">Cerrar Sesión</button>
       </div>
       <div v-else>
         <p>Debes iniciar sesión para ver tu perfil.</p>
@@ -36,7 +41,7 @@
   };
   </script>
 
-<style>
+<style scoped>
   .profile-container {
     text-align: center;
     max-width: 600px;
@@ -44,14 +49,14 @@
     padding: 20px;
   }
 
-  h1 {
+  .h1 {
     font-size: 24px;
-    color: #333;
+    color: white;
   }
 
-  p {
+  .p {
     font-size: 18px;
-    color: #555;
+    color: #000000;
     margin: 5px 0;
   }
 
