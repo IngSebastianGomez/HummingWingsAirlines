@@ -4,9 +4,7 @@
         <!-- Aquí va tu contenido del resumen y el costo de la compra -->
         <p>Resumen de la compra</p>
         <p>Costo total: {{ formatoPrecio(resultadoBusqueda.price_of_ticket) }} COP</p>
-        <div class="boton-derecha">
-          <button type="button" class="btn btn-secondary btn-lg boton-resumen" disabled>Button</button>
-        </div>
+        
       </div>
     </div>
   </template>

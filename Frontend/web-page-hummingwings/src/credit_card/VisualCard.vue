@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <button @click="agregarTarjeta" class="btn btn-primary">Agregar</button>
+    <button @click="agregarTarjeta" class="btn btn-primary" style="background-color: green; color: white;">Agregar</button>
 
     <div class="tarjeta-lista">
       <div v-for="(tarjeta, index) in tarjetas" :key="index" class="tarjeta" @click="mostrarOpciones(index)">
@@ -22,7 +22,6 @@
         
         <div :id="'collapseExample' + index" class="collapse">
           <div class="card card-body">
-            <p>la tarjeta seleccionada es: {{ tarjeta.id }} </p>
             <button @click="editarBalance(tarjeta.id)" class="btn btn-warning">Editar Balance</button>
             <button @click="eliminarTarjeta(tarjeta.id)" class="btn btn-danger">Eliminar</button>
           </div>

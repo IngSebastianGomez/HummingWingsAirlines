@@ -31,18 +31,31 @@
   <label class="form-check-label" for="connectivity">Servicios de Conectividad {{ formatoPrecio(connectivityServiceCost) }} COP</label>
 </div>
 
-<div>
-      <h3>Datos Actuales:</h3>
+
+    <button class="btn btn-primary" type="button" style="background-color: green; color: white;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Resumen de la compra</button>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h3 id="offcanvasRightLabel">Factura</h3>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div>
       <ul>
         <li><strong>Tiquete:</strong> {{ formatoPrecio(servicios.ticket.costo) }}</li>
         <li><strong>Asientos Preferenciales VIP:</strong> {{ formatoPrecio(servicios.vipSeats.costo) }}</li>
         <li><strong>Equipaje Adicional:</strong> {{ formatoPrecio(servicios.extraLuggage.costo) }}</li>
         <li><strong>Llevar una Mascota:</strong> {{ formatoPrecio(servicios.bringPet.costo) }}</li>
         <li><strong>Servicios de Conectividad:</strong> {{ formatoPrecio(servicios.connectivityService.costo) }}</li>
+        <li><strong>Total:</strong> {{ formatoPrecio(servicios.totalPrice.costo) }}</li>
       </ul>
     </div>
-  
-          <button type="submit" class="btn btn-primary">Continuar</button>
+    <button type="submit" style="background-color: green; color: white;" class="btn btn-primary">Continuar</button>
+
+  </div>
+</div>
+
+          
         </div>
         <!-- Aquí puedes acceder al resultado del store -->
         
@@ -104,6 +117,10 @@
             nombre: 'Servicios de Conectividad',
             costo: 0,
           },
+          totalPrice: {
+            nombre: 'Total',
+            costo: 0,
+          },
         },
       };
     },
@@ -128,6 +145,7 @@
     }
     //guardar en el diccionario
     this.servicios.ticket.costo = this.precioOriginal;
+    this.servicios.totalPrice.costo = this.precioOriginal;
   },
     methods: {
     updatePrice() {
@@ -175,6 +193,8 @@
       this.servicios.extraLuggage.costo = this.selectedExtraLuggage ? this.extraLuggageCost : 0;
       this.servicios.bringPet.costo = this.bringPet ? this.bringPetCost : 0;
       this.servicios.connectivityService.costo = this.connectivityService ? this.connectivityServiceCost : 0;
+      //total de los servicios
+      this.servicios.totalPrice.costo = numericPrice;
     },
     formatoPrecio(precio) {
         // Formatear el precio con el signo de dólar y formato de miles y millones
@@ -194,13 +214,14 @@
     background-color: #d3f7d2; /* Color verde claro */
     border-radius: 10px; /* Esquinas redondeadas */
     padding: 20px; /* Márgenes internos */
-    margin: 20px; /* Márgenes externos */
+    margin: 40px; /* Márgenes externos */
     margin-bottom: 100px;
   }
   
   /* Estilos para el formulario de personalización */
   .formulario-personalizacion {
   margin-top: 20px; /* Márgenes superiores para separar del contenido principal */
+  margin-left: 20px; /* Márgenes izquierdos para separar del contenido principal */
   max-height: 500px; /* Altura máxima para mostrar; ajusta según sea necesario */
   overflow-y: auto; /* Agrega scroll vertical si el contenido excede la altura máxima */
   margin-bottom: 100px;

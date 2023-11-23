@@ -114,7 +114,7 @@
             aria-label="Search"
           />
           </label>
-          <button class="btn btn-primary" type="submit">Buscar</button>
+          <button class="btn btn-primary" type="submit" style="background-color: green; color: white;">Buscar</button>
         </form>
 
         <!-- Resultados de la búsqueda -->
