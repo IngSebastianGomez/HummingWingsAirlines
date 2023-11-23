@@ -15,7 +15,12 @@
             </div>
             <div class="button-container">
               <button type="button" class="btn btn-danger" @click="deleteFlight(flight.code_flight)">Eliminar</button>
-              <button type="button" class="btn btn-info">Editar</button>
+              <!--El boton de editar vuelo debe redirigir al formulario pero con algun token que me permita saber
+              la info del vuelo y poderla poner en los campos-->
+              <!--
+              <button type="button" class="btn btn-info" @click="editFlight(flight.code_flight)">Editar</button>
+              -->
+              <RouterLink to="editFlight" class="btn btn-info">Editar</RouterLink>
             </div>
           </div>
         </div>
@@ -84,7 +89,12 @@
           .catch(error => {
             console.error('Error al eliminar el vuelo:', error);
           });
-      }
+      },
+      //Esta funcion es solo teorica, es la idea, pero no se si sirva realmente.
+      editFlight(codeFlight){
+        const editRoute = '/editFlight/'+codeFlight; //Concateno el codigo de vuelo a la direccion
+        this.$router.push(editRoute);
+      },
     }
   };
   </script>
