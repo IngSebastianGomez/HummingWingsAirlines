@@ -51,9 +51,9 @@ class User(AbstractBaseUser):
 
     class Meta:
         """ Sets human readable name """
-        db_table = "Usuarios"
-        verbose_name = "Usuario"
-        verbose_name_plural = "Usuarios"
+        db_table = "Users"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"  

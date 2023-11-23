@@ -29,7 +29,7 @@ export default {
     console.log('Current Route:', route.path)
     
     // Función para mostrar la vista oculta
-    function mostrarVistaOculta() {
+    const mostrarVistaOculta = () => {
       // Usamos router para ir a la vista oculta de root LoginRoot
       router.push('/LoginRoot');
     }

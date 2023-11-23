@@ -16,7 +16,7 @@
     <div class="dropdown-menu custom-dropdown-menu" aria-labelledby="avatar-button">
       <!-- Opciones del menú desplegable -->
       <a class="dropdown-item" @click="irVisualDatos">Perfil</a>
-      <a class="dropdown-item" href="#">Configuración</a>
+      <a class="dropdown-item" @click="irVisualCard">Card</a>
       <div class="dropdown-divider"></div>
       <a v-if="rol === 'administrador'" class="dropdown-item" @click="irARutaAdmin">Admin</a>
       <a class="dropdown-item" href="#" @click="handleLogout">Cerrar Sesión</a>
@@ -70,6 +70,10 @@ export default {
     irVisualDatos() {
       // Agrega aquí la lógica para redirigir a la ruta de perfil o visualización de datos
       this.$router.push('/VisualDatos');
+    },
+    irVisualCard() {
+      // Agrega aquí la lógica para redirigir a la ruta de tarjeta de crédito
+      this.$router.push('/VisualCard');
     },
   },
 };

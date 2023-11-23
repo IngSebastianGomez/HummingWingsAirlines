@@ -1,6 +1,3 @@
-<script>
-</script>
-
 <template>
   <div class="container">
     <div class="row bg-transparent" style="padding: 1.5rem;">
@@ -15,7 +12,7 @@
           <router-link to="/" class="btn btn-primary btn-lg btn-block">Administrar Promociones</router-link>
       </div>
       <div class="col-4">
-          <router-link to="/manageFlights" class="btn btn-primary btn-lg btn-block">Administrar Vuelos</router-link> 
+          <router-link to="/manageFlight" class="btn btn-primary btn-lg btn-block">Administrar Vuelos</router-link> 
       </div>
     </div>
   </div>
