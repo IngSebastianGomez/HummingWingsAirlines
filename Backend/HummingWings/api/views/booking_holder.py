@@ -83,7 +83,6 @@ class BookingHolderApi(APIView, TokenHandler):
             user=user,
             email=request.data["email"],
             cellphone=request.data["cellphone"],
-            status=request.data["status"],
             flight=request.data["flight"]
         )
 
