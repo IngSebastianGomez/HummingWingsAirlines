@@ -170,6 +170,7 @@
 <script>
 import CarouselSlider from './CarouselSliderAd.vue';
 import axios from 'axios';
+import {mapState} from 'vuex';
 
 export default {
   name: 'HelloWorld',
@@ -188,6 +189,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['loggedIn', 'type',]),
     currentDate() {
       const today = new Date();
       const year = today.getFullYear();
@@ -229,8 +231,26 @@ export default {
         });
     },
     reserveFlight(result) {
+      //llamar al metodo reservar
+      this.reservar(result);
       console.log('Vuelo reservado:', result);
       // Lógica para la reserva del vuelo, puedes redirigir a otra página, mostrar un modal, etc.
+    },
+    reservar(resultadoBusqueda) {
+      if (!this.loggedIn) {
+        // Si el usuario no ha iniciado sesión, redirige a la página de inicio de sesión.
+        alert('Debes iniciar sesion para realizar una reserva.');
+        this.$router.push('/LoginUser');
+      } else if (this.type === 'cliente') {
+        // Si el usuario está autenticado y es un cliente, permite hacer la reserva.
+        // Llamamos a la mutación para almacenar el resultado en el store
+        this.$store.commit('setResultadoBusqueda', resultadoBusqueda);
+
+        this.$router.push('/makeReservation');
+      } else {
+        // Si el usuario no es un cliente, muestra un mensaje.
+        alert('Usted no es un cliente, no puede hacer reservas.');
+      }
     },
   },
 };

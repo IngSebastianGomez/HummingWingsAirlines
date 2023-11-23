@@ -17,6 +17,7 @@ const storage = createStore({
     status: '',  // Agrega el campo status
     document: '',  // Agrega el campo document
     document_type: '',  // Agrega el campo document_type
+    resultadoBusqueda: null,
   },
   mutations: {
     setId(state, id) {
@@ -68,6 +69,12 @@ const storage = createStore({
     setDocumentType(state, document_type) {
       state.document_type = document_type;
     },
+    setResultadoBusqueda(state, resultado) {
+      state.resultadoBusqueda = resultado;
+    },
+    updatePriceInResultadoBusqueda(state, newPrice) {
+      state.resultadoBusqueda.price_of_ticket = newPrice;
+    },
   },
   actions: {
     logout({ commit }) {
@@ -104,6 +111,7 @@ const storage = createStore({
       commit('setStatus', initialState.status);
       commit('setDocument', initialState.document);
       commit('setDocumentType', initialState.document_type);
+      commit('setResultadoBusqueda', initialState.resultadoBusqueda);
 
       // Elimina el token del Local Storage
       localStorage.removeItem('sessionToken');
