@@ -25,6 +25,7 @@ import VisualCard from './credit_card/VisualCard.vue'
 import AddFlight from './flights/AddFlight.vue'
 import manageFlight from './flights/manageFlights.vue'
 import makeReservation from './reservation/makeReservation.vue'
+import editFlight from './flights/editFlight.vue'
 
 const About = { template: '<div>About</div>' }
 
@@ -47,6 +48,7 @@ const routes = [
   { path: '/AddFlight', component: AddFlight},
   { path: '/manageFlight', component: manageFlight},
   { path: '/makeReservation', component: makeReservation},
+  { path: '/editFlight', component: editFlight},
   {
     path: '/ConfirmarAdmin/:pk/:token',
     name: 'ConfirmarAdmin',

@@ -15,7 +15,7 @@
             </div>
             <div class="button-container">
               <button type="button" class="btn btn-danger" @click="deleteFlight(flight.code_flight)">Eliminar</button>
-              <button type="button" class="btn btn-info">Editar</button>
+              <button type="button" class="btn btn-info" @click="editFlight">Editar</button>
             </div>
           </div>
         </div>
@@ -84,7 +84,11 @@
           .catch(error => {
             console.error('Error al eliminar el vuelo:', error);
           });
-      }
+      },
+      editFlight() {
+        //ir a ruta de editar vuelo
+        this.$router.push('/editFlight');
+      },
     }
   };
   </script>
