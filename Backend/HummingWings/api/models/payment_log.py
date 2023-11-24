@@ -15,7 +15,7 @@ class PaymentLog(TimeStampedModel):
     payment_status = models.CharField("Estado de pago", choices=_STATUS_CHOICES, default=PENDING)
 
     def __str__(self):
-        return f"{self.pk}. {self.tickets}"
+        return f"{self.pk}. Pago de {self.amount} para {self.booking_holder}"
 
     class Meta:
         """ Sets human readable name """

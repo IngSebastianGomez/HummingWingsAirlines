@@ -40,7 +40,7 @@ class PaymentApi(APIView, TokenHandler):
         validator = Validator({
             "amount": {"required": True, "type": "float", "min": 0},
             "card_number": {"required": True, "type": "string"},
-            "date_expire": {"required": True, "type": "string", "regex": DATE_REGEX},
+            "date_expire": {"required": True, "type": "string"},
             "cvv": {"required": True, "type": "string", "minlength": 3, "maxlength": 4},
             "payment_log": {"required": True, "type": "integer", "min": 1},
             "services": {
@@ -104,17 +104,18 @@ class PaymentApi(APIView, TokenHandler):
         payment_log = PaymentLog.objects.select_related().filter(
             pk=request.data["payment_log"], payment_status=PENDING,
             amount=request.data["amount"]).first()
+        
         if not payment_log:
             return Response({
                 "code": "payment_log_not_found",
                 "detailed": "Registro de pago no encontrado"
             }, status=status.HTTP_404_NOT_FOUND)
-
+       
         card = Card.objects.filter(
             number=request.data["card_number"],
             date_expire=request.data["date_expire"],
             code_secure=request.data["cvv"],
-            owner_pk=user.pk
+            owner_id=user.pk
         ).first()
         if not card:
             return Response({
