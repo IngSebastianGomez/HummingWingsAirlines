@@ -1,5 +1,6 @@
 <template>
     <div>
+      
       <!-- Contenido principal de la página -->
       <div class="contenido-principal">
   
@@ -31,6 +32,65 @@
   <label class="form-check-label" for="connectivity">Servicios de Conectividad {{ formatoPrecio(connectivityServiceCost) }} COP</label>
 </div>
 
+<!-- segundo formulario --> 
+<div class="container-sm mt-5 mb-5">
+    <h1 style="color:black">Informacion de Pasajeros</h1>
+    <br>
+    <h2>Pasajero passenger</h2>
+    <form>
+      <div class="form-container">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="name" v-model="passName" required>
+        </div>
+        <div class="mb-3">
+          <label for="lastName" class="form-label">Apellido</label>
+          <input type="text" class="form-control" id="lastName" v-model="passLastName" required>
+        </div>
+        <div class="mb-3">
+          <label for="identityDocument" class="form-label">Documento de identidad</label>
+          <select class="form-select" v-model="passDocType" required>
+            <option value="" disabled selected>Documento de identidad</option>
+            <option value="C.C">C.C.</option>
+            <option value="Pasaporte">Pasaporte</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="name" class="form-label">Numero de documento</label>
+          <input type="text" class="form-control" id="name" v-model="passDocNum" required>
+        </div>
+        <div class="mb-3">
+          <label for="birthday" class="form-label">Fecha de Nacimiento</label>
+          <input type="date" class="form-control" id="birthday" v-model="passDateBirth" min="1924-01-01"
+            max="2004-10-15" required>
+        </div>
+        <div class="mb-3">
+          <label for="gender" class="form-label">Género</label>
+          <select class="form-select" v-model="passGender" required>
+            <option value="" disabled selected>Género</option>
+            <option value="mele">masculino</option>
+            <option value="femenino">femenino</option>
+            <option value="otro">Prefiero no decirlo</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label for="cellphoneNumber" class="form-label">Numero de celular</label>
+          <input type="text" class="form-control" id="cellphoneNumber" v-model="passCellphone" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo Electronico</label>
+          <input type="text" class="form-control" id="email" v-model="passEmail" required>
+        </div>
+        
+        <div class="d-grid gap-2 pb-5">
+          
+        </div>
+      </div>
+    </form>
+  </div>
+
+
 
     <button class="btn btn-primary" type="button" style="background-color: green; color: white;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Resumen de la compra</button>
 
@@ -50,7 +110,7 @@
         <li><strong>Total:</strong> {{ formatoPrecio(servicios.totalPrice.costo) }}</li>
       </ul>
     </div>
-    <button type="submit" style="background-color: green; color: white;" class="btn btn-primary">Continuar</button>
+    <button type="submit" style="background-color: green; color: white;" class="btn btn-primary" @click="enviarReservaAlServidor">Continuar</button>
 
   </div>
 </div>
@@ -67,6 +127,7 @@
   
   <script>
   import PurchaseSummary from '@/components/PurchaseSummary.vue';
+  import axios from 'axios';
   
   export default {
     name: 'makeReservation', // Nombre del componente
@@ -123,6 +184,17 @@
             costo: 0,
           },
         },
+        //datos para enviar del formulario al servidor
+        passName: 'Diego',
+        passLastName: 'Bedoya',
+        passDocType: 'C.C',
+        passDocNum: '103213213',
+        passDateBirth: '2000-01-01',
+        passGender: 'mele',
+        passCellphone: '3233123323',
+        passEmail: 'sebax@yopmail.com',
+
+        
       };
     },
     computed: {
@@ -132,6 +204,7 @@
       },
     },
     created() {
+      
     // Calcula el precioOriginal al entrar al componente
     if (this.resultadoBusqueda.price_of_ticket) {
       if (this.precioOriginal === 0) {
@@ -205,6 +278,78 @@
         });
         return formatter.format(precio);
       },
+      calcularEdad(fechaNacimiento) {
+    // Convierte la cadena de fecha de nacimiento a un objeto de fecha
+    var fechaNacimientoDate = new Date(fechaNacimiento);
+
+    // Obtiene la fecha actual
+    var fechaActual = new Date();
+
+    // Calcula la diferencia en años
+    var edad = fechaActual.getFullYear() - fechaNacimientoDate.getFullYear();
+
+    // Verifica si aún no ha pasado el cumpleaños de este año
+    if (
+        fechaActual.getMonth() < fechaNacimientoDate.getMonth() ||
+        (fechaActual.getMonth() === fechaNacimientoDate.getMonth() &&
+            fechaActual.getDate() < fechaNacimientoDate.getDate())
+    ) {
+        edad--;
+    }
+
+    return edad;
+}
+,
+      async enviarReservaAlServidor() {
+      try {
+        const url = 'http://127.0.0.1:8000/api/v1/booking';
+
+        const name = this.passName;
+        const LastName = this.passLastName;
+        const DocType = this.passDocType;
+        const DocNum = this.passDocNum;
+        const DateBirth = this.passDateBirth;
+        const Gender = this.passGender;
+        const Cellphone = this.passCellphone;
+        const Email = this.passEmail;
+        const Edad = this.calcularEdad(this.passDateBirth).toString();
+
+
+        
+        const data = {
+          flight: this.resultadoBusqueda.code_flight,
+          email: 'sebax@yopmail.com',
+          cellphone: Cellphone,
+          status: 'en proceso',
+          passengers: [
+            {
+              first_name: name,
+              last_name: LastName,
+              email: Email,
+              document_type: DocType,
+              document: DocNum,
+              gender: Gender,
+              age_range: Edad,
+              birth_date: DateBirth,
+              seat_code: '1A',
+            },
+          ],
+        };
+
+        const token = this.$store.state.token; // Asumiendo que el token está almacenado en Vuex bajo la propiedad 'token'
+
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.post(url, data, { headers });
+
+        console.log('Respuesta del servidor:', response.data);
+      } catch (error) {
+        console.error('Error al enviar la reserva al servidor:', error);
+      }
+    },
   },
   };
   </script>
