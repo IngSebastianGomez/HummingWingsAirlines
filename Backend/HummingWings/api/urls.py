@@ -10,6 +10,7 @@ from .views.root import RootApi
 from .views.search import PublicFlightApi
 from .views.user import SpecificUserApi, UserApi, AdminApi
 from .views.user import ConfirmUserRegisterApi, ConfirmAdminRegisterApi
+from .views.payment import PaymentApi
 
 urlpatterns = [
     path('change_password/<int:user_pk>', NewPasswordApi.as_view(), name='change_password'),
@@ -28,5 +29,5 @@ urlpatterns = [
     path('card', CardApi.as_view()),
     path('card/<int:card_id>', SpecificCardApi.as_view()),
     path('booking', BookingHolderApi.as_view()),
-    path('payment', SpecificCardApi.as_view()),
+    path('payment', PaymentApi.as_view()),
 ]
