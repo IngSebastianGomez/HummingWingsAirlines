@@ -4,12 +4,9 @@ import App from './App.vue'
 import {createRouter, createWebHashHistory} from 'vue-router';
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
-<<<<<<< HEAD
 import "bootstrap/dist/js/bootstrap.bundle"
-=======
 
 //RUTAS DE COMPONENTES 
->>>>>>> origin/integracion
 import HelloWorld from './components/HelloWorld.vue'
 import DetailComponent from './components/DetailComponent.vue'
 import LoginRoot from './views/LoginRoot.vue'
@@ -23,18 +20,14 @@ import AdminOptions from './views/AdminOptions.vue'
 import VisualDatos from './views/VisualDatos.vue'
 import ConfirmAdmin from './emails/ConfirmAdmin.vue'
 import ConfirmUser from './emails/ConfirmUser.vue'
-<<<<<<< HEAD
 import TestingVuetify from './views/WarningWindow.vue'
 import AddFlight from './views/AddFlight.vue'
 import Results from './views/SearchResults.vue'
 import AirplaneSeat from './views/AirplaneSeatMap.vue'
-=======
 import addCard from './credit_card/addCard.vue'
 import listCard from './credit_card/listCard.vue'
 import VisualCard from './credit_card/VisualCard.vue'
-import AddFlight from './flights/AddFlight.vue'
 import manageFlight from './flights/manageFlights.vue'
->>>>>>> origin/integracion
 
 const About = { template: '<div>About</div>' }
 
