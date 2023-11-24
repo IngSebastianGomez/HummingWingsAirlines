@@ -86,6 +86,13 @@ class BookingHolderApi(APIView, TokenHandler):
                 "detailed": "passengers is required"
             }, status=status.HTTP_400_BAD_REQUEST)
         
+        fligth_dont_exists = Flight.objects.filter(pk=request.data["flight"]).exists()
+        if not fligth_dont_exists:
+            return Response({
+                "code": "flight_dont_exists",
+                "detailed": "flight dont exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         already_exists_seat = Passenger.objects.filter(
             seat_code=request.data["passengers"][0]["seat_code"]).exists()
         if already_exists_seat:
