@@ -7,12 +7,18 @@
       <div class="form-container">
         <div class="mb-3">
           <label for="name" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="name" v-model="passName" required>
+          <input type="text" class="form-control" id="name" v-model="passName" required @blur="validarNombre">
         </div>
+        <div v-if="errorName" class="alert alert-danger" role="alert">
+          El nombre no puede ser espacios en blanco.
+      </div>
         <div class="mb-3">
           <label for="lastName" class="form-label">Apellido</label>
-          <input type="text" class="form-control" id="lastName" v-model="passLastName" required>
+          <input type="text" class="form-control" id="lastName" v-model="passLastName" @blur="validarApellido" required>
         </div>
+        <div v-if="errorLastName" class="alert alert-danger" role="alert">
+          El apellido no puede ser espacios en blanco.
+      </div>
         <div class="mb-3">
           <label for="identityDocument" class="form-label">Documento de identidad</label>
           <select class="form-select" v-model="passDocType" required>
@@ -23,8 +29,11 @@
         </div>
         <div class="mb-3">
           <label for="name" class="form-label">Numero de documento</label>
-          <input type="text" class="form-control" id="name" v-model="passName" required>
+          <input type="text" class="form-control" id="name" v-model="passDocNum" @blur="validarDocNum" required>
         </div>
+        <div v-if="errorDoc" class="alert alert-danger" role="alert">
+          El número solo debe contener dígitos.
+      </div>
         <div class="mb-3">
           <label for="birthday" class="form-label">Fecha de Nacimiento</label>
           <input type="date" class="form-control" id="birthday" v-model="passDateBirth" min="1924-01-01"
@@ -42,8 +51,11 @@
         
         <div class="mb-3">
           <label for="cellphoneNumber" class="form-label">Numero de celular</label>
-          <input type="text" class="form-control" id="cellphoneNumber" v-model="passCellphone" required>
+          <input type="text" class="form-control" id="cellphoneNumber" v-model="passCellphone" @blur="validarTelNum" required>
         </div>
+        <div v-if="errorTel" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+      </div>
         <div class="mb-3">
           <label for="email" class="form-label">Correo Electronico</label>
           <input type="text" class="form-control" id="email" v-model="passEmail" required>
@@ -72,12 +84,61 @@
         passGender: null,
         passCellphone: null,
         passEmail: null,
+        errorDoc: false,
+        errorTel: false,
+        errorMessage: null,
+        errorLastName: false,
+        errorName: false,
       }
     },
     methods:{
       enviarFormulario(){
         console.log('Editar segun la necesidad')
+      },
+      validarTelNum() {
+        const validateNumber = this.passCellphone;
+        const soloDigitos = /^\d+$/; // Expresión regular para verificar que solo hay dígitos
+
+        if (validateNumber && !soloDigitos.test(validateNumber)) {
+          this.errorMessage = 'El número solo debe contener dígitos.';
+          this.errorTel= true;
+        } else if (validateNumber && validateNumber.length < 10) {
+          this.errorMessage = 'El número debe tener al menos 10 dígitos.';
+          this.errorTel = true;
+        } else {
+          this.errorMessage = '';
+          this.errorTel = false;
+        }
+      },
+      validarDocNum() {
+        const validateNumber = this.passDocNum;
+        const soloDigitos = /^\d+$/; // Expresión regular para verificar que solo hay dígitos
+
+        if (validateNumber && !soloDigitos.test(validateNumber)) {
+          this.errorDoc = true;
+        } else {
+          this.errorDoc = false;
+        }
+      },
+      validarNombre() {
+      const nombreAValidar = this.passName;
+      //Expresion regular para que no hayan espacios en blanco ni al inicio ni al final de la cadena
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorName = true;
+      } else {
+        this.errorName = false;
       }
+    },
+    validarApellido() {
+      const nombreAValidar = this.passLastName;
+      const sinEspacios = /^(?!\s)(.*\S)(?!\s)*$/;
+      if(nombreAValidar && !sinEspacios.test(nombreAValidar)){
+        this.errorLastName = true;
+      } else {
+        this.errorLastName = false;
+      }
+    },
     }
   }
 </script>
