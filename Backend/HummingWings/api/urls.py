@@ -1,7 +1,7 @@
 """ API url configuration """
 from django.urls import path
 
-from Backend.HummingWings.api.views.booking_holder import BookingHolderApi
+from .views.booking_holder import BookingHolderApi
 
 from .views.auth import AuthApi, NewPasswordApi, RefreshTokenApi
 from .views.card import CardApi, SpecificCardApi, UserCardApi

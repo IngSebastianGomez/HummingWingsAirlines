@@ -26,7 +26,7 @@ class Passenger(TimeStampedModel):
     seat_code = models.CharField("Codigo de asiento", max_length=2)
 
     def __str__(self):
-        return self.full_name
+        return self.first_name + " " + self.last_name
 
     class Meta:
         """ Sets human readable name """
