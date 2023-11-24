@@ -72,14 +72,14 @@ class BookingHolderApi(APIView, TokenHandler):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         payload, user = self.get_payload(request)
-        # if (
-        #     not payload or not user or not isinstance(user, User)
-        #     and user.rol == CLIENT
-        # ):
-        #     return Response({
-        #         "code": "do_not_have_permission",
-        #         "detailed": _STATUS_401_MESSAGE
-        #     }, status=status.HTTP_401_UNAUTHORIZED)
+        if (
+            not payload or not user or not isinstance(user, User)
+            and user.rol == CLIENT
+        ):
+            return Response({
+                "code": "do_not_have_permission",
+                "detailed": _STATUS_401_MESSAGE
+            }, status=status.HTTP_401_UNAUTHORIZED)
         if request.data["passengers"] == []:
             return Response({
                 "code": "invalid_body",
