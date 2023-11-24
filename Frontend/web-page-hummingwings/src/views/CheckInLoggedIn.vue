@@ -16,7 +16,7 @@
   </div>
   <div class="row" v-if="!errorWhiteSpaces" style="margin-top: 2rem;">
     <div class="col">
-      <button class="btn btn-primary">Enviar</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="enviarDatos">Enviar</button>
     </div>
   </div>
   <div class="row" v-if="errorWhiteSpaces" style="margin-top: 1rem;">
@@ -26,6 +26,25 @@
       </div>
     </div>
   </div>
+<!--Modal para confirmar cambio de asientos-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmacion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Deseas cambiar de silla?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="regresarInicio">No</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="enviarACambioSilla">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Espacio para verificar que datos se estan guardando en codes[]
   <div class="row">
     <p>
@@ -75,6 +94,7 @@ input[type=text]{
                     {id:"103", name:"Fabi"}],
         codes:[],
         errorWhiteSpaces: null,
+        mostrandoConfirmacion: false,
       }
     },
     methods:{
@@ -89,8 +109,16 @@ input[type=text]{
           } else {
             this.errorWhiteSpaces = false;
           }
-        }
-        
+        }  
+    },
+    enviarDatos(){
+      console.log("No estoy seguro de como se deberian enviar los datos");
+    },
+    enviarACambioSilla(){
+      this.$router.push("/AirPlaneSeatMap");
+    },
+    regresarInicio(){
+      this.$router.push("/");
     },
     }
   }

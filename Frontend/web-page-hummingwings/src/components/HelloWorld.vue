@@ -38,6 +38,7 @@
 
     <!--Contenido de las pestañas, solo se muestra el contenido de la pestaña activa-->
     <div class="tab-content" id="nav-tabContent">
+    <!--Pestaña de vuelos-->
       <div
         class="tab-pane fade show active p-3"
         id="nav-flights"
@@ -93,30 +94,35 @@
             </div>
           </div>
           <!-- ... (el resto del formulario permanece igual) ... -->
-          <label class="form-check-label text-white ml-2">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="roundTrip"
-            />
-            Ida y Vuelta
-          </label>
-          
-          
-          <!--mostrar mensaje "numero de pasajeros"-->
-          <label class="form-check-label text-white ml-2">
-            Número de pasajeros <input
-            class="form-control me-2"
-            type="number"
-            placeholder="Número de Pasajeros"
-            v-model="passengers"
-            min="1"
-            aria-label="Search"
-          />
-          </label>
-          <button class="btn btn-primary" type="submit">Buscar</button>
+          <div class="row">
+            <div class="col">
+              <label class="form-check-label text-white ml-2">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="roundTrip"
+                />
+                Ida y Vuelta
+              </label>
+            </div>
+            <div class="col">
+              <!--mostrar mensaje "numero de pasajeros"-->
+              <label class="form-check-label text-white ml-2">
+                Número de pasajeros <input
+                class="form-control me-2"
+                type="number"
+                placeholder="Número de Pasajeros"
+                v-model="passengers"
+                min="1"
+                aria-label="Search"
+              />
+              </label>
+            </div>
+            <div class="col">
+              <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+          </div>
         </form>
-
         <!-- Resultados de la búsqueda -->
         <div v-if="searchResults.length > 0" class="mt-4">
           <h2>Resultados de la Búsqueda</h2>
@@ -130,7 +136,8 @@
           </ul>
         </div>
       </div>
-
+      <!--Pestaña de checkin-->
+      <!--Agregar el v-if para que se muestre si no se esta logeado-->
       <div
         class="tab-pane fade p-3"
         id="nav-checkin"
