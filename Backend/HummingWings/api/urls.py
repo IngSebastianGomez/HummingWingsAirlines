@@ -4,13 +4,14 @@ from django.urls import path
 from .views.booking_holder import BookingHolderApi
 
 from .views.auth import AuthApi, NewPasswordApi, RefreshTokenApi
+from .views.booking_holder import BookingHolderApi
 from .views.card import CardApi, SpecificCardApi, UserCardApi
 from .views.flight import FlightApi, SpecificFlightApi
 from .views.root import RootApi
 from .views.search import PublicFlightApi
-from .views.user import SpecificUserApi, UserApi, AdminApi
 from .views.user import ConfirmUserRegisterApi, ConfirmAdminRegisterApi
 from .views.payment import PaymentApi
+from .views.user import SpecificUserApi, UserApi, AdminApi
 
 urlpatterns = [
     path('change_password/<int:user_pk>', NewPasswordApi.as_view(), name='change_password'),

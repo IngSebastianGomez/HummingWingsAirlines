@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 
+from ..serializers.booking_holder import BookingHolderSerializer
+
 from ..helpers.token import TokenHandler
 
 from ..models.booking_holder import BookingHolder
@@ -137,9 +139,10 @@ class BookingHolderApi(APIView, TokenHandler):
             "inserted": booking_holder.pk,
             "payment_log": payment_log.pk
         }, status=status.HTTP_201_CREATED)
-    
+
+
     def get(self, request):
-        """ Returns all booking holders
+        """ Get all Booking Holders
 
         Parameters
         ----------
@@ -154,9 +157,15 @@ class BookingHolderApi(APIView, TokenHandler):
             Body response and status code.
 
         """
-        booking_holders = BookingHolder.objects.all()
-        serializer = BookingHolderSerializer(booking_holders, many=True)
+        payload, user = self.get_payload(request)
+        if not payload or not user or not isinstance(user, User) or user.rol != CLIENT:
+            return Response({
+                "code": "do_not_have_permission",
+                "detailed": _STATUS_401_MESSAGE
+            }, status=status.HTTP_401_UNAUTHORIZED)
 
+        booking_holders = BookingHolder.objects.filter(user=user, status=PENDING)
         return Response({
-            "booking_holders": serializer.data
+            "count": booking_holders.count(),
+            "data": BookingHolderSerializer(booking_holders, many=True).data
         }, status=status.HTTP_200_OK)
